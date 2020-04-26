@@ -128,8 +128,8 @@ having `set signcolumn=yes`). Again, edit this to your liking. They are just in
 here as an example.
 
 ```vim
-nnoremap <silent> gd          <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K           <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> K  <cmd>lua vim.lsp.buf.hover()<CR>
 ```
 
 You can sort of assume what many of the mappings do, but you can find more info
@@ -173,7 +173,7 @@ following plugin:
 - [completion-nvim](https://github.com/haorenW1025/completion-nvim)
 
 ```vim
-  Plug 'haorenW1025/completion-nvim'
+Plug 'haorenW1025/completion-nvim'
 ```
 This plugin will give you completion automatically in the floating window as
 your typing. I have a few other settings listed which allow you to use `<Tab>`
@@ -190,7 +190,7 @@ the docs to get an idea of all the options.
 - [diagnostic-nvim](https://github.com/haorenW1025/diagnostic-nvim)
 
 ```vim
-  Plug 'haorenW1025/diagnostic-nvim'
+Plug 'haorenW1025/diagnostic-nvim'
 ```
 
 **Keep in mind that both of these plugins are under active development as well
