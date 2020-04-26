@@ -1,3 +1,5 @@
+![Nvim + Metals](https://i.imgur.com/UvQ18ST.png)
+
 # nvim-metals
 
 This is a WIP guide for [Metals](https://scalameta.org/metals/) users to get
