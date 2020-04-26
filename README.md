@@ -126,3 +126,48 @@ some sections are just bare with `TODOs`.
 
 The mappings I've included are a combination of what Metals supports and also
 what Nvim LSP supports.
+
+## Plugins
+
+I include two external plugins in the examples that help the diagnostic and
+completion experience. The Nvim LSP integration exposes a bunch of call-backs
+that allow for easy customization. As far as I know the idea isn't to make an
+extremely polished experience out of the box with Nvim LSP, but rather offer a
+solid core that allows you to define custom callbacks for how you want to handle
+these things.
+
+### Completions
+
+Taken from the docs:
+
+> Nvim provides the _vim.lsp.omnifunc_ 'omnifunc' handler which allows
+_i_CTRL-X_CTRL-O_ to consume LSP completion. Example config (note the use of
+_v:lua_ to call Lua from Vimscript):
+
+```vim
+" Use LSP omni-completion in Python files.
+autocmd Filetype scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
+```
+
+This will give you completion in Scala files, but you'd need to trigger them
+using `i_CTRL-X_CTRL-O`, which you may not want. This is why I include the
+following plugin:
+
+- [completion-nvim](https://github.com/haorenW1025/completion-nvim)
+
+This plugin will give you completion automatically in the floating window as
+your typing. I have a few other settings listed which allow you to use `<Tab>`
+to navigate the popup menu.
+
+### Diagnostics
+
+The diagnostics plugin I include mainly allow for easy settings and
+customization for how your diagnostics are displayed. For example you can delay
+the syntactic diagnostics that Metals provides while typing when you're in
+insert mode. You can choose to display them as virtual text or not. Read through
+the docs to get an idea of all the options.
+
+- [diagnostic-nvim](https://github.com/haorenW1025/diagnostic-nvim)
+
+**Keep in mind that both of these plugins are under active development and
+things are likely to change**.

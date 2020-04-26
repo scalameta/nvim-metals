@@ -22,10 +22,10 @@ nnoremap <silent> K           <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gi          <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> gr          <cmd>lua vim.lsp.buf.references()<CR>
 " rename currently has issues https://github.com/neovim/neovim/pull/12185
-nnoremap <silent> <leader> rn <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> gn <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> [c          :NextDiagnostic<CR>
 nnoremap <silent> ]c          :PrevDiagnostic<CR>
-nnoremap <silent> <leader> do :OpenDiagnostic<CR>
+nnoremap <silent> go          :OpenDiagnostic<CR>
 nnoremap <silent> fb          <cmd>lua vim.lsp.buf.formatting()<CR>
 
 "-----------------------------------------------------------------------------
