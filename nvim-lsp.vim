@@ -22,11 +22,9 @@ nnoremap <silent> K           <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gi          <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> gr          <cmd>lua vim.lsp.buf.references()<CR>
 " rename currently has issues https://github.com/neovim/neovim/pull/12185
-nnoremap <silent> gn <cmd>lua vim.lsp.buf.rename()<CR>
-nnoremap <silent> [c          :NextDiagnostic<CR>
-nnoremap <silent> ]c          :PrevDiagnostic<CR>
-nnoremap <silent> go          :OpenDiagnostic<CR>
-nnoremap <silent> fb          <cmd>lua vim.lsp.buf.formatting()<CR>
+nnoremap <silent> <leader>rn  <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
+nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
 
 "-----------------------------------------------------------------------------
 " nvim-lsp Settings
@@ -67,6 +65,11 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 "-----------------------------------------------------------------------------
 let g:diagnostic_enable_virtual_text = 1
 let g:diagnostic_virtual_text_prefix = ' '
+
+" Mapping specific to complementary plugins
+nnoremap <silent> [c          :NextDiagnostic<CR>
+nnoremap <silent> ]c          :PrevDiagnostic<CR>
+nnoremap <silent> go          :OpenDiagnostic<CR>
 
 "-----------------------------------------------------------------------------
 " Helpful general settings
