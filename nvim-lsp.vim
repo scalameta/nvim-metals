@@ -48,7 +48,10 @@ let g:LspDiagnosticsWarningSign = '⚠'
       require'completion'.on_attach()
     end
 
-  nvim_lsp.metals.setup{ on_attach = M.on_attach }
+  nvim_lsp.metals.setup{
+    on_attach = M.on_attach,
+    message_level = vim.lsp.protocol.MessageType.Log
+  }
 EOF
 
 
@@ -76,9 +79,3 @@ set shortmess+=c
 
 " always show signcolumns
 set signcolumn=yes
-
-" TODO
-" [ ] Status messages
-" [ ] Status line
-" [ ] Initialization options
-" [ ] Server commands

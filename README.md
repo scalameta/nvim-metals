@@ -171,3 +171,8 @@ the docs to get an idea of all the options.
 
 **Keep in mind that both of these plugins are under active development and
 things are likely to change**.
+
+# TODO
+[ ] Status line             displaying diagnostics
+[ ] Initialization options  use this instead of server properties
+[ ] Server commands         needed for build import etc.
