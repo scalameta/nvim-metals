@@ -102,7 +102,7 @@ change I'll handle the Install / Uninstall / Update right in the plugin.
 
 Currently, the following commands are available:
 
-    Command       |   Description
+Command           |Description
 ------------------|-------------------------------------
 `:BuildImport`    | Import the build
 `:BuildConnect`   | Manually connect to the build server
