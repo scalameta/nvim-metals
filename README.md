@@ -102,14 +102,14 @@ change I'll handle the Install / Uninstall / Update right in the plugin.
 
 Currently, the following commands are available:
 
-|    Command       |   Description
-|--------------------------------------------------------
-|`:BuildImport`    | Import the build
-|`:BuildConnect`   | Manually connect to the build server
-|`:BuildRestart`   | Restart the build server
-|`:SourcesScan`    | Scan all workspace sources
-|`:CompileCascade` | Compile current open file along with all build targets that depend on it
-|`:Format`         | Format current buffer
+    Command       |   Description
+------------------|-------------------------------------
+`:BuildImport`    | Import the build
+`:BuildConnect`   | Manually connect to the build server
+`:BuildRestart`   | Restart the build server
+`:SourcesScan`    | Scan all workspace sources
+`:CompileCascade` | Compile current open file along with all build targets that depend on it
+`:Format`         | Format current buffer
 
 ## Settings and Mappings
 
