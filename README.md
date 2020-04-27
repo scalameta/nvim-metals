@@ -57,8 +57,10 @@ do it manually.
 If you want to use the latest stable version of Metals, you don't need to do
 anything, but if you'd like to use a SNAPSHOT, you'll need to set the following:
 
-**NOTE:** Don't actually do this until this is merged:
-https://github.com/neovim/nvim-lsp/pull/211
+**NOTE:** Setting the version this way won't work until the following pr is
+merged: https://github.com/neovim/nvim-lsp/pull/211
+For now, just do the install command listed below and it will default to the
+latest stable release.
 
 ```vim
 let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
