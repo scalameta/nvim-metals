@@ -49,10 +49,20 @@ call plug#end()
 
 ## Getting started
 
-First things first, you need to install Metals. For now, that's the main purpose
-of the [nvim-lsp](https://github.com/neovim/nvim-lsp) plugin. It offers
+First things first, you need to install Metals. This functionality is provided
+by the [nvim-lsp](https://github.com/neovim/nvim-lsp) plugin. It offers
 automated installation of servers and basic configurations so you don't have to
 do it manually.
+
+If you want to use the latest stable version of Metals, you don't need to do
+anything, but if you'd like to use a SNAPSHOT, you'll need to set the following:
+
+**NOTE:** Don't actually do this until this is merged:
+https://github.com/neovim/nvim-lsp/pull/211
+
+```vim
+let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+```
 
 ```vim
 :LspInstall metals
@@ -80,9 +90,55 @@ If it's installed, you should see something like the following:
 
 Make sure to take a look at the [`setup()`
 function](https://github.com/neovim/nvim-lsp#setup-function) which will show you
-how to override certain values. You can see some of the default Metals values in
+how to override certain values. You can see all of the default Metals values in
 the [readme](https://github.com/neovim/nvim-lsp#metals) or checkout
 [nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/metals.lua).
+
+If you don't want any of the extra stuff the other plugins offer, then just copy
+the mappings under the **nvim-lsp Mappings** section to get the mappings, add in
+the `autocmd` to get you completions (that you'll need to trigger yourself
+without the plugin), and then copy the **lua callbacks** chunk of lua code minus
+the things I'll point out below which are plugin specific:
+
+
+**NOTE:** Once https://github.com/neovim/nvim-lsp/pull/211 is merged, we can remove
+both `message_level` and `init_options` from below.
+
+```lua
+:lua << EOF
+  local nvim_lsp = require'nvim_lsp'
+  local M = {}
+
+  M.on_attach = function()
+      require'diagnostic'.on_attach() -- needed for the diagnostic plugin
+      require'completion'.on_attach() -- needed for the completion plugin
+    end
+
+  nvim_lsp.metals.setup{
+    on_attach = M.on_attach, -- Don't include this if you aren't using the other plugins
+    message_level = vim.lsp.protocol.MessageType.Log
+    init_options = {
+      statusBarProvider = "off",
+      didFocusProvider = false,
+      slowTaskProvider = false,
+      inputBoxProvider = false,
+      quickPickProvider = false,
+      executeClientCommandProvider = false,
+      doctorProvider = "html",
+      isExitOnShutdown = false,
+      isHttpEnabled = true,
+      compilerOptions = {
+        isCompletionItemDetailEnabled = true,
+        isCompletionItemDocumentationEnabled = true,
+        isHoverDocumentationEnabled = true,
+        snippetAutoIndent = false,
+        isSignatureHelpDocumentationEnabled = true,
+        isCompletionItemResolve = true
+      }
+    };
+  }
+EOF
+```
 
 **Fair warning, this is probably going to change.**
 
@@ -93,10 +149,9 @@ things.
 1. There is an automated way to install, but not uninstall or update
 2. The install feature will probably go away
 
-For now, this is still the best way to install Metals for Nvim. Some of the
-defaults are actually a bit off at the moment, but I'm working on fixing them,
-and sending in prs to update them. If the Install goes away, there is a decent
-change I'll handle the Install / Uninstall / Update right in the plugin.
+For now, this is still the best way to install Metals for Nvim.  If the Install
+goes away, there is a decent change I'll handle the Install / Uninstall / Update
+right in the plugin.
 
 ## Available Commands
 
@@ -162,7 +217,7 @@ _i_CTRL-X_CTRL-O_ to consume LSP completion. Example config (note the use of
 _v:lua_ to call Lua from Vimscript):
 
 ```vim
-" Use LSP omni-completion in Python files.
+" Use LSP omni-completion in Scala files.
 autocmd Filetype scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
 ```
 
@@ -196,6 +251,22 @@ Plug 'haorenW1025/diagnostic-nvim'
 **Keep in mind that both of these plugins are under active development as well
 and things are likely to change**.
 
+### Known limitations
+
+- Some of the default options are a bit off in nvim-lsp since we used coc.nvim
+    as a base. There is a pr to fix this here: https://github.com/neovim/nvim-lsp/pull/211
+- There is no `window/showMessageRequest` so you'll never get prompted to import
+    your build. There is an issue for this here: https://github.com/neovim/neovim/issues/11710
+- Renames aren't working correctly since Metals isn't versioning the Documents.
+    You can track the Metals part of this here:
+    https://github.com/scalameta/metals/issues/1668 and the Nvim side of this
+    here: https://github.com/neovim/neovim/pull/12191 since they should account
+    for this being `null`. Fair warning, I sent in a pr to fix this and botched
+    it... so this is the second attempt.
+- Multiline `textEdits` aren't being applied correctly. You can track this
+    issue here: https://github.com/neovim/neovim/issues/12195
+
 ##### TODO
-- [ ] Status line             displaying diagnostics
-- [ ] Initialization options  use this instead of server properties
+
+- [ ] Status line displaying diagnostics
+- [ ] Add in more commands

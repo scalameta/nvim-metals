@@ -37,6 +37,8 @@ let g:LspDiagnosticsWarningSign = '⚠'
 "-----------------------------------------------------------------------------
 " lua callbacks
 "-----------------------------------------------------------------------------
+"TODO: Once https://github.com/neovim/nvim-lsp/pull/211 is merged, we can remove
+" both `message_level` and `init_options` from here.
 :lua << EOF
   local nvim_lsp = require'nvim_lsp'
   local M = {}
@@ -49,6 +51,25 @@ let g:LspDiagnosticsWarningSign = '⚠'
   nvim_lsp.metals.setup{
     on_attach = M.on_attach,
     message_level = vim.lsp.protocol.MessageType.Log
+    init_options = {
+      statusBarProvider = "off",
+      didFocusProvider = false,
+      slowTaskProvider = false,
+      inputBoxProvider = false,
+      quickPickProvider = false,
+      executeClientCommandProvider = false,
+      doctorProvider = "html",
+      isExitOnShutdown = false,
+      isHttpEnabled = true,
+      compilerOptions = {
+        isCompletionItemDetailEnabled = true,
+        isCompletionItemDocumentationEnabled = true,
+        isHoverDocumentationEnabled = true,
+        snippetAutoIndent = false,
+        isSignatureHelpDocumentationEnabled = true,
+        isCompletionItemResolve = true
+      }
+    };
   }
 EOF
 
