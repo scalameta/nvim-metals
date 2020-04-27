@@ -7,142 +7,7 @@ utilizing the [Nvim built-in LSP module](https://neovim.io/doc/user/lsp.html).
 
 Keep in mind that the level of support is rapidly changing, there are bugs, and
 there are missing features. Some of this is changing daily, so expect stuff to
-break without warning or change.
-
-If you're first getting starting with Metals, consider using
-[coc-metals](https://github.com/scalameta/coc-metals) if you're looking for a
-more feature-full and stable Metals + Nvim experience.
-
-## Prerequisites
-
-Before you get started you need to ensure that you have the nighly/development
-build. LSP support hasn't landed in stable yet. You can find instructions for
-how to do this for you OS
-[here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
-re-build often as LSP support is changing daily. The easiest way to ensure
-you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
-then it didn't work. You're looking for `v0.5.x`:
-
-```vim
-❯ nvim --version
-NVIM v0.5.0-3de9452
-...
-```
-
-### Plugins
-
-Apart from this plugin, you'll also want to have the
-[neovim/nvim-lsp](https://github.com/neovim/nvim-lsp) plugin installed. For now,
-this plugin offers automated installation and some default configurations for
-Metals.
-
-Use whichever plugin manager to install both.
-[vim-plug](https://github.com/junegunn/vim-plug) is probably the most common, so
-I'll use that as an example:
-
-```vim
-call plug#begin('~/.vim/plugged')
-  Plug 'neovim/nvim-lsp'
-  Plug 'ckipp01/nvim-metals'
-call plug#end()
-```
-
-## Getting started
-
-First things first, you need to install Metals. This functionality is provided
-by the [nvim-lsp](https://github.com/neovim/nvim-lsp) plugin. It offers
-automated installation of servers and basic configurations so you don't have to
-do it manually.
-
-If you want to use the latest stable version of Metals, you don't need to do
-anything, but if you'd like to use a SNAPSHOT, you'll need to set the following:
-
-**NOTE:** Setting the version this way won't work until the following pr is
-merged: https://github.com/neovim/nvim-lsp/pull/211
-For now, just do the install command listed below and it will default to the
-latest stable release.
-
-```vim
-let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
-```
-
-```vim
-:LspInstall metals
-```
-
-There isn't a lot of feedback on whether or not this worked, so after you do
-this, issue the following command to ensure that it's installed. This will also
-show you the directory that it's installed in.
-
-```vim
-:LspInstallInfo
-```
-
-If it's installed, you should see something like the following:
-
-```vim
-{
-  metals = {
-    cmd = { "/Users/ckipp/.cache/nvim/nvim_lsp/metals/metals" },
-    install_dir = "/Users/ckipp/.cache/nvim/nvim_lsp/metals",
-    is_installed = "file"
-  }
-}
-```
-
-Make sure to take a look at the [`setup()`
-function](https://github.com/neovim/nvim-lsp#setup-function) which will show you
-how to override certain values. You can see all of the default Metals values in
-the [readme](https://github.com/neovim/nvim-lsp#metals) or checkout
-[nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/metals.lua).
-
-If you don't want any of the extra stuff the other plugins offer, then just copy
-the mappings under the **nvim-lsp Mappings** section to get the mappings, add in
-the `autocmd` to get you completions (that you'll need to trigger yourself
-without the plugin), and then copy the **lua callbacks** chunk of lua code minus
-the things I'll point out below which are plugin specific:
-
-
-**NOTE:** Once https://github.com/neovim/nvim-lsp/pull/211 is merged, we can remove
-both `message_level` and `init_options` from below.
-
-```lua
-:lua << EOF
-  local nvim_lsp = require'nvim_lsp'
-  local M = {}
-
-  M.on_attach = function()
-      require'diagnostic'.on_attach() -- needed for the diagnostic plugin
-      require'completion'.on_attach() -- needed for the completion plugin
-    end
-
-  nvim_lsp.metals.setup{
-    on_attach = M.on_attach, -- Don't include this if you aren't using the other plugins
-    message_level = vim.lsp.protocol.MessageType.Log
-    init_options = {
-      statusBarProvider = "off",
-      didFocusProvider = false,
-      slowTaskProvider = false,
-      inputBoxProvider = false,
-      quickPickProvider = false,
-      executeClientCommandProvider = false,
-      doctorProvider = "html",
-      isExitOnShutdown = false,
-      isHttpEnabled = true,
-      compilerOptions = {
-        isCompletionItemDetailEnabled = true,
-        isCompletionItemDocumentationEnabled = true,
-        isHoverDocumentationEnabled = true,
-        snippetAutoIndent = false,
-        isSignatureHelpDocumentationEnabled = true,
-        isCompletionItemResolve = true
-      }
-    };
-  }
-EOF
-```
-
-**Fair warning, this is probably going to change.**
+break without warning or change.**
 
 If you follow the conversation
 [here](https://github.com/neovim/nvim-lsp/issues/200), you'll notice a couple
@@ -152,7 +17,7 @@ things.
 2. The install feature will probably go away
 
 For now, this is still the best way to install Metals for Nvim.  If the Install
-goes away, there is a decent change I'll handle the Install / Uninstall / Update
+goes away, there is a decent chance I'll handle the Install / Uninstall / Update
 right in the plugin.
 
 ## Available Commands
