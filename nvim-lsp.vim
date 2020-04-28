@@ -11,7 +11,6 @@
 "     (completions much like your familiar to with other LSP clients)
 " - https://github.com/haorenW1025/diagnostic-nvim
 "     (a bit more sensible diagnostic than what ships by default)
-"
 "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 
 "-----------------------------------------------------------------------------
@@ -37,8 +36,8 @@ let g:LspDiagnosticsWarningSign = '⚠'
 "-----------------------------------------------------------------------------
 " lua callbacks
 "-----------------------------------------------------------------------------
-"TODO: Once https://github.com/neovim/nvim-lsp/pull/211 is merged, we can remove
-" both `message_level` and `init_options` from here.
+" NOTE: this is a bit verbose, but it easily allows you to add more to it, which
+" is the reason why it's done this way.
 :lua << EOF
   local nvim_lsp = require'nvim_lsp'
   local M = {}
@@ -50,29 +49,8 @@ let g:LspDiagnosticsWarningSign = '⚠'
 
   nvim_lsp.metals.setup{
     on_attach = M.on_attach,
-    message_level = vim.lsp.protocol.MessageType.Log
-    init_options = {
-      statusBarProvider = "show-message",
-      didFocusProvider = false,
-      slowTaskProvider = false,
-      inputBoxProvider = false,
-      quickPickProvider = false,
-      executeClientCommandProvider = false,
-      doctorProvider = "html",
-      isExitOnShutdown = false,
-      isHttpEnabled = true,
-      compilerOptions = {
-        isCompletionItemDetailEnabled = true,
-        isCompletionItemDocumentationEnabled = true,
-        isHoverDocumentationEnabled = true,
-        snippetAutoIndent = false,
-        isSignatureHelpDocumentationEnabled = true,
-        isCompletionItemResolve = true
-      }
-    };
   }
 EOF
-
 
 "-----------------------------------------------------------------------------
 " completion-nvim settings
