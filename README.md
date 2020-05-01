@@ -228,7 +228,7 @@ and things are likely to change**.
 - Renames aren't working correctly since Metals isn't versioning the Documents.
     You can track the Metals part of this here:
     https://github.com/scalameta/metals/issues/1668 and the Nvim side of this
-    here: https://github.com/neovim/neovim/pull/12191 since they should account
+    here: https://github.com/neovim/neovim/issues/12226 since they should account
     for this being `null`. Fair warning, I sent in a pr to fix this and botched
     it... so this is the second attempt.
 - Multiline `textEdits` aren't being applied correctly. You can track this

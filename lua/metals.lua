@@ -1,4 +1,3 @@
-local api = vim.api
 local M = {}
 
 function M.execute_command(command, callback)
