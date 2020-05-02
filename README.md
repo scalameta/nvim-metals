@@ -146,9 +146,10 @@ Command           |Description
 `:BuildImport`    | Import the build
 `:BuildConnect`   | Manually connect to the build server
 `:BuildRestart`   | Restart the build server
-`:SourcesScan`    | Scan all workspace sources
 `:CompileCascade` | Compile current open file along with all build targets that depend on it
+`:MetalsDoctor`   | Run Metals Doctor, which will open in your browser
 `:Format`         | Format current buffer
+`:SourcesScan`    | Scan all workspace sources
 
 ## Settings and Mappings
 
@@ -264,3 +265,4 @@ import your build.
 - [ ] Write up reasoning behind moving more towards the built-in lsp supported
 - [ ] Figure out how to add the `New Scala File` command
 - [ ] Is there a way to get `metals/status` to works?
+- [ ] Use virtual text for worksheets

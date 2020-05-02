@@ -35,13 +35,11 @@ function M.sources_scan()
 end
 
 
---[[ Need to add some more stuff in before enabling this
 function M.doctor_run()
   M.execute_command({
     command = 'metals.doctor-run';
   })
 end
---]]
 
 function M.compile_cascade()
   M.execute_command({

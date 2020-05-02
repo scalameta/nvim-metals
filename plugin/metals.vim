@@ -11,6 +11,7 @@ command! BuildRestart lua require'metals'.build_restart()
 command! SourcesScan lua require'metals'.sources_scan()
 command! CompileCascade lua require'metals'.compile_cascade()
 command! Format lua vim.lsp.buf.formatting()
+command! MetalsDoctor lua require'metals'.doctor_run()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
