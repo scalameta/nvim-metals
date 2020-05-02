@@ -1,0 +1,43 @@
+*metals.txt* nvim-metals
+A plugin for Metals utilizing the Neovim built-in LSP support.
+
+https://scalameta.org/metals/
+
+                            NVIM-METALS REFERENCE MANUAL
+
+CONTENTS                                                           *nvim-metals*
+
+    0. Introduction ......... |metals-introduction|
+    1. Prerequisites......... |metals-prerequisites|
+
+================================================================================
+INTRODUCTION						                                    *metals-introdction*
+
+nvim-metals is a plugin built to provide a better experience while using Metals,
+the Scala Language Server with Neovim's built-in LSP support. This plugin offers
+extras helpers that allow you to import your build, use specific Metals LSP
+extensions, and provide an overall smoother experience than using Metals and
+plain built-in LSP support with Neovim.
+
+================================================================================
+PREREQUISITES                                             *metals-prerequisites*
+
+- Nvim v0.5.x The latest the snapshot the better.
+- neovim/nvim-lsp This plugin contains both automated installation for Metals
+  and default setup and configuration. You can find instructions on how to
+  install it here: https://github.com/neovim/nvim-lsp
+- Snapshot version of Metals. You can find the most recent snapshot version on
+  the Metals webiste:
+  https://scalameta.org/metals/docs/editors/vim.html#using-latest-metals-snapshot
+
+In order to install the latest snapshot of metals, you'll need to set the
+following:
+
+>
+let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+<
+
+Then continue to follow the nvim-lsp instructions to install Metals via
+|:LspInstall metals|.
+
+vim:tw=80:ts=2:ft=help:
