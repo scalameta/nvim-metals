@@ -154,8 +154,7 @@ Command             |Description
 `:BuildConnect`     | Manually connect to the build server
 `:BuildRestart`     | Restart the build server
 `:CompileCascade`   | Compile current open file along with all build targets that depend on it
-`:Format`           | Format current buffer *Make sure to have a
-.scalafmt.conf*
+`:Format`           | Format current buffer **Make sure to have a .scalafmt.conf**
 `:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
 `:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
 `:SourcesScan`      | Scan all workspace sources
