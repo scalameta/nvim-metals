@@ -56,8 +56,12 @@ I'll use that as an example:
 
 ```vim
 call plug#begin('~/.vim/plugged')
+  " Main necessary plugins
   Plug 'neovim/nvim-lsp'
   Plug 'ckipp01/nvim-metals'
+  " Complementary plugins that I recommend and will go over down below
+  Plug 'haorenW1025/completion-nvim'
+  Plug 'haorenW1025/diagnostic-nvim'
 call plug#end()
 ```
 
@@ -68,8 +72,9 @@ by the [nvim-lsp](https://github.com/neovim/nvim-lsp) plugin. It offers
 automated installation of servers and basic configurations so you don't have to
 do it manually.
 
-If you want to use the latest stable version of Metals, you don't need to do
-anything, but if you'd like to use a SNAPSHOT, you'll need to set the following:
+Currently, you need the latest SNAPSHOT of Metals in order for this to work
+correctly. You can find the latest SNAPSHOT version [here on the
+website](https://scalameta.org/metals/docs/editors/vim.html#using-latest-metals-snapshot).
 
 ```vim
 let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
@@ -147,8 +152,8 @@ Command           |Description
 `:BuildConnect`   | Manually connect to the build server
 `:BuildRestart`   | Restart the build server
 `:CompileCascade` | Compile current open file along with all build targets that depend on it
-`:MetalsDoctor`   | Run Metals Doctor, which will open in your browser
 `:Format`         | Format current buffer
+`:MetalsDoctor`   | Run Metals Doctor, which will open in your browser
 `:SourcesScan`    | Scan all workspace sources
 
 ## Settings and Mappings
