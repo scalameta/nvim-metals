@@ -26,7 +26,6 @@ more feature-full and stable Metals + Nvim experience.
   - [Importing Your Build](#importing-your-build)
   - [Known Limitations](#known-limitations)
   - [Troubleshooting](#troubleshooting)
-  - [Roadmap](#roadmap)
 
 ## Prerequisites
 
@@ -293,11 +292,3 @@ couple pointers on tracking down the issue.
     and then you can `tail` the communication between the Nvim LSP client the
     Metals server.
 - When in doubt, just submit and issue, and we'll dive in together.
-
-##### Roadmap
-
-- [ ] Status line displaying diagnostics
-- [ ] Write up reasoning behind moving more towards the built-in LSP supported
-- [ ] Figure out how to add the `New Scala File` command
-- [ ] Is there a way to get `metals/status` to works?
-- [ ] Use virtual text for worksheets
