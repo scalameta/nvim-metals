@@ -48,8 +48,16 @@ function M.compile_cascade()
   })
 end
 
--- TODO: Add a check here in order to not open multiple terms
 function M.logs_toggle()
+  local bufs = vim.api.nvim_list_bufs()
+  for _,v in ipairs(bufs) do
+    local buftype = vim.api.nvim_buf_get_option(v, 'buftype')
+    if buftype == "terminal" then
+      print('Logs are already opened. Try an :ls to see where it is.')
+      return
+    end
+  end
+  -- Only open them if a termianl isn't already open
   vim.api.nvim_command [[vsp term://tail -f .metals/metals.log]]
 end
 
