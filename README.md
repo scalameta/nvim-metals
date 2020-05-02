@@ -25,6 +25,7 @@ wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-confli
   - [Getting Started](#getting-started)
   - [Available Commands](#available-commands)
   - [Settings and Mappings](#settings-and-mappings)
+      - [Custom Mappings](#custom-mappings)
   - [Complementary Plugins](#complementary-plugins)
       - [Completions](#completions)
       - [Diagnostics](#diagnostics)
@@ -147,6 +148,19 @@ things.
 For now, this is still the best way to install Metals for Nvim.  If the Install
 goes away, there is a decent chance I'll handle the Install / Uninstall / Update
 right in the plugin.
+
+## Custom Mappings
+
+If you'd like to add a custom mapping instead of using the commands, you're free
+to do so. For example, let's say we wanted to add a custom mapping for
+`BuildImport`, you could by doing the following:
+
+```vim
+nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
+```
+
+This would allow you to do `<leader>bi` to trigger an import, the same way
+`:BuildImport` does.
 
 ## Available Commands
 
