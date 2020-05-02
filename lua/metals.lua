@@ -1,3 +1,4 @@
+local vim = vim
 local M = {}
 
 function M.execute_command(command, callback)
@@ -47,6 +48,9 @@ function M.compile_cascade()
   })
 end
 
---[[ TODO: How do I send a shutdown request? ]]
+-- TODO: Add a check here in order to not open multiple terms
+function M.logs_toggle()
+  vim.api.nvim_command [[vsp term://tail -f .metals/metals.log]]
+end
 
 return M

@@ -12,6 +12,7 @@ command! SourcesScan lua require'metals'.sources_scan()
 command! CompileCascade lua require'metals'.compile_cascade()
 command! Format lua vim.lsp.buf.formatting()
 command! MetalsDoctor lua require'metals'.doctor_run()
+command! MetalsLogsToggle lua require'metals'.logs_toggle()
 
 let &cpo = s:save_cpo
 unlet s:save_cpo

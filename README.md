@@ -25,6 +25,7 @@ more feature-full and stable Metals + Nvim experience.
       - [Diagnostics](#diagnostics)
   - [Importing Your Build](#importing-your-build)
   - [Known Limitations](#known-limitations)
+  - [Troubleshooting](#troubleshooting)
   - [Roadmap](#roadmap)
 
 ## Prerequisites
@@ -146,16 +147,17 @@ right in the plugin.
 
 Currently, the following commands are available:
 
-Command           |Description
-------------------|-------------------------------------
-`:BuildImport`    | Import the build
-`:BuildConnect`   | Manually connect to the build server
-`:BuildRestart`   | Restart the build server
-`:CompileCascade` | Compile current open file along with all build targets that depend on it
-`:Format`         | Format current buffer *Make sure to have a
+Command             |Description
+--------------------|-------------------------------------
+`:BuildImport`      | Import the build
+`:BuildConnect`     | Manually connect to the build server
+`:BuildRestart`     | Restart the build server
+`:CompileCascade`   | Compile current open file along with all build targets that depend on it
+`:Format`           | Format current buffer *Make sure to have a
 .scalafmt.conf*
-`:MetalsDoctor`   | Run Metals Doctor, which will open in your browser
-`:SourcesScan`    | Scan all workspace sources
+`:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
+`:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
+`:SourcesScan`      | Scan all workspace sources
 
 ## Settings and Mappings
 
@@ -268,6 +270,27 @@ import your build.
     your terminal and show an error. You can track this here: https://github.com/haorenW1025/completion-nvim/issues/53
 - `textDocument/codeAction` is not yet supported. You can follow the progress
     here: https://github.com/neovim/neovim/pull/11607
+
+## Troubleshooting
+
+If you're using the built-in LSP support you may have to do a bit of
+troubleshooting. It may not always be easy to tell if the issue is coming from
+missing LSP support or misconfiguration between Metals and Nvim. Here are a
+couple pointers on tracking down the issue.
+
+- Use `:MetalsLogsToggle` which will open the embedded Nvim terminal tailing the
+    `.metals/metals.log` file. Take a look in there for something odd. More than
+    likely if something isn't working, it will have blown up and you'll see a
+    hint here.
+- If you see an error flash in your terminal and you want to see what it was,
+    `:messages` is your friend to find it.
+- Read through the [Known Limitation](#known-limitations) again to make sure
+    it's not something that is documented not working.
+- If you really want to get deep into debugging, create a [JSON-RPC trace
+    file](https://scalameta.org/metals/docs/contributors/getting-started.html#json-rpc-trace)
+    and then you can `tail` the communication between the Nvim LSP client the
+    Metals server.
+- When in doubt, just submit and issue, and we'll dive in together.
 
 ##### Roadmap
 
