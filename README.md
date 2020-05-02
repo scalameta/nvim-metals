@@ -2,8 +2,9 @@
 
 # nvim-metals
 
-This is a WIP [Metals](https://scalameta.org/metals/) plugin for Nvim users
-utilizing the [Nvim built-in LSP module](https://neovim.io/doc/user/lsp.html).
+This is a WIP [Metals](https://scalameta.org/metals/) plugin and guide for Nvim
+usere utilizing the [Nvim built-in LSP
+module](https://neovim.io/doc/user/lsp.html).
 
 Keep in mind that the level of support is rapidly changing, there are bugs, and
 there are missing features. Some of this is changing daily, so expect stuff to
@@ -12,6 +13,19 @@ break without warning or change.
 If you're first getting starting with Metals, consider using
 [coc-metals](https://github.com/scalameta/coc-metals) if you're looking for a
 more feature-full and stable Metals + Nvim experience.
+
+## Table of Contents
+  - [Prerequisites](#prerequisites)
+      - [Plugins](#plugins)
+  - [Getting Started](#getting-started)
+  - [Available Commands](#available-commands)
+  - [Settings and Mappings](#settings-and-mappings)
+  - [Complementary Plugins](#complementary-plugins)
+      - [Completions](#completions)
+      - [Diagnostics](#diagnostics)
+  - [Importing Your Build](#importing-your-build)
+  - [Known Limitations](#known-limitations)
+  - [Roadmap](#roadmap)
 
 ## Prerequisites
 
@@ -221,7 +235,15 @@ Plug 'haorenW1025/diagnostic-nvim'
 **Keep in mind that both of these plugins are under active development as well
 and things are likely to change**.
 
-### Known limitations
+
+## Importing your build
+
+Since `window/showMessageRequest` is not yet supported in the nvim LSP module,
+you need to trigger this manually. As you would normally, open your project and
+then issue a `:BuildImport` command which will send the request to Metals to
+import your build.
+
+## Known limitations
 
 - There is no `window/showMessageRequest` so you'll never get prompted to import
     your build. There is an issue for this here: https://github.com/neovim/neovim/issues/11710
@@ -233,8 +255,12 @@ and things are likely to change**.
     it... so this is the second attempt.
 - Multiline `textEdits` aren't being applied correctly. You can track this
     issue here: https://github.com/neovim/neovim/issues/12195
+- Using the completions sometimes cause the window to move off to the side of
+    your terminal and show an error. You can track this here: https://github.com/haorenW1025/completion-nvim/issues/53
 
-##### TODO
+##### Roadmap
 
 - [ ] Status line displaying diagnostics
-- [ ] Add in more commands
+- [ ] Write up reasoning behind moving more towards the built-in lsp supported
+- [ ] Figure out how to add the `New Scala File` command
+- [ ] Is there a way to get `metals/status` to works?
