@@ -28,6 +28,7 @@ nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
 "-----------------------------------------------------------------------------
 " nvim-lsp Settings
 "-----------------------------------------------------------------------------
+let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT' " Make sure to update this
 autocmd FileType scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
 let g:LspDiagnosticsErrorSign = '✘'

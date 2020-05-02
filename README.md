@@ -3,7 +3,7 @@
 # nvim-metals
 
 This is a WIP [Metals](https://scalameta.org/metals/) plugin and guide for Nvim
-usere utilizing the [Nvim built-in LSP
+users utilizing the [Nvim built-in LSP
 module](https://neovim.io/doc/user/lsp.html).
 
 Keep in mind that the level of support is rapidly changing, there are bugs, and
@@ -31,8 +31,8 @@ more feature-full and stable Metals + Nvim experience.
 ## Prerequisites
 
 Before you get started you need to ensure that you have the nighly/development
-build. LSP support hasn't landed in stable yet. You can find instructions for
-how to do this for you OS
+build of Nvim. LSP support hasn't landed in stable yet. You can find
+instructions for how to do this for you OS
 [here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
 re-build often as LSP support is changing daily. The easiest way to ensure
 you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
@@ -107,14 +107,15 @@ If it's installed, you should see something like the following:
 
 Make sure to take a look at the [`setup()`
 function](https://github.com/neovim/nvim-lsp#setup-function) which will show you
-how to override certain values. You can see all of the default Metals values in
-the [readme](https://github.com/neovim/nvim-lsp#metals) or checkout
+how to override certain values (which you shouldn't have to do). You can see all
+of the default Metals values in the
+[readme](https://github.com/neovim/nvim-lsp#metals) or checkout
 [nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/metals.lua).
 
 If you don't want any of the extra stuff the other plugins offer, then just copy
 the mappings under the **nvim-lsp Mappings** section to get the mappings, add in
 the `autocmd` to get you completions (that you'll need to trigger yourself
-without the plugin), and then copy the **lua callbacks** chunk of lua code minus
+without the plugin), and then copy the **Lua callbacks** chunk of Lua code minus
 the things I'll point out below which are plugin specific:
 
 ```lua
@@ -161,7 +162,7 @@ Command             |Description
 
 ## Settings and Mappings
 
-Some very basic things are enabled by default, like inline diagnostics, but
+Some very basic things are enabled by default, like in-line diagnostics, but
 you'll want a basic configuration for things like finding definitions and
 references. The [nvim-lsp.vim](./nvim-lsp.vim) file has these in along with some
 settings for the other complementary plugins. _These are opinionated_, and
@@ -247,6 +248,8 @@ and things are likely to change**.
 
 ## Importing your build
 
+**You need to do this before any Metals functionality will work**
+
 Since `window/showMessageRequest` is not yet supported in the nvim LSP module,
 you need to trigger this manually. As you would normally, open your project and
 then issue a `:BuildImport` command which will send the request to Metals to
@@ -295,7 +298,7 @@ couple pointers on tracking down the issue.
 ##### Roadmap
 
 - [ ] Status line displaying diagnostics
-- [ ] Write up reasoning behind moving more towards the built-in lsp supported
+- [ ] Write up reasoning behind moving more towards the built-in LSP supported
 - [ ] Figure out how to add the `New Scala File` command
 - [ ] Is there a way to get `metals/status` to works?
 - [ ] Use virtual text for worksheets
