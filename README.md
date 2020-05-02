@@ -152,7 +152,8 @@ Command           |Description
 `:BuildConnect`   | Manually connect to the build server
 `:BuildRestart`   | Restart the build server
 `:CompileCascade` | Compile current open file along with all build targets that depend on it
-`:Format`         | Format current buffer
+`:Format`         | Format current buffer *Make sure to have a
+.scalafmt.conf*
 `:MetalsDoctor`   | Run Metals Doctor, which will open in your browser
 `:SourcesScan`    | Scan all workspace sources
 
@@ -252,7 +253,9 @@ import your build.
 ## Known limitations
 
 - There is no `window/showMessageRequest` so you'll never get prompted to import
-    your build. There is an issue for this here: https://github.com/neovim/neovim/issues/11710
+    your build. Another issue is that if you do a `:Format` request and don't have
+    a .scalafmt.conf file, it will error out. There is an issue for this here:
+    https://github.com/neovim/neovim/issues/11710
 - Renames aren't working correctly since Metals isn't versioning the Documents.
     You can track the Metals part of this here:
     https://github.com/scalameta/metals/issues/1668 and the Nvim side of this
