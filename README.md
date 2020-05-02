@@ -14,6 +14,11 @@ If you're first getting starting with Metals, consider using
 [coc-metals](https://github.com/scalameta/coc-metals) if you're looking for a
 more feature-full and stable Metals + Nvim experience.
 
+If you're a `coc-metals` user and want to try this but are worried about
+`coc.nvim` and the built-in LSP conflicting in any way, take a look at how I
+handle this [in the
+wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-conflicting-with-coc-metals)
+
 ## Table of Contents
   - [Prerequisites](#prerequisites)
       - [Plugins](#plugins)
