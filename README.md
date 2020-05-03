@@ -286,8 +286,6 @@ import your build.
     it... so this is the second attempt.
 - Multiline `textEdits` aren't being applied correctly. You can track this
     issue here: https://github.com/neovim/neovim/issues/12195
-- Using the completions sometimes cause the window to move off to the side of
-    your terminal and show an error. You can track this here: https://github.com/haorenW1025/completion-nvim/issues/53
 - `textDocument/codeAction` is not yet supported. You can follow the progress
     here: https://github.com/neovim/neovim/pull/11607
 
