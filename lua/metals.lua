@@ -1,7 +1,7 @@
 local vim = vim
 local M = {}
 
-function M.execute_command(command, callback)
+local function execute_command(command, callback)
   vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, _, resp)
     if callback then
       callback(err, resp)
@@ -11,44 +11,37 @@ function M.execute_command(command, callback)
   end)
 end
 
-function M.build_import()
-  M.execute_command({
-    command = "metals.build-import";
-  })
-end
-
-function M.build_connect()
-  M.execute_command({
+M.build_connect = function()
+  execute_command({
     command = 'metals.build-connect';
   })
 end
 
-function M.build_restart()
-  M.execute_command({
+M.build_import = function()
+   execute_command({
+    command = "metals.build-import";
+  })
+end
+
+M.build_restart = function()
+  execute_command({
     command = 'metals.build-restart';
   })
 end
 
-function M.sources_scan()
-  M.execute_command({
-    command = 'metals.sources-scan';
-  })
-end
-
-
-function M.doctor_run()
-  M.execute_command({
-    command = 'metals.doctor-run';
-  })
-end
-
-function M.compile_cascade()
+M.compile_cascade = function()
   M.execute_command({
     command = 'metals.compile-cascade';
   })
 end
 
-function M.logs_toggle()
+M.doctor_run = function()
+  M.execute_command({
+    command = 'metals.doctor-run';
+  })
+end
+
+M.logs_toggle = function()
   local bufs = vim.api.nvim_list_bufs()
   for _,v in ipairs(bufs) do
     local buftype = vim.api.nvim_buf_get_option(v, 'buftype')
@@ -57,8 +50,14 @@ function M.logs_toggle()
       return
     end
   end
-  -- Only open them if a termianl isn't already open
+  -- Only open them if a terminal isn't already open
   vim.api.nvim_command [[vsp term://tail -f .metals/metals.log]]
+end
+
+M.sources_scan = function()
+  execute_command({
+    command = 'metals.sources-scan';
+  })
 end
 
 return M

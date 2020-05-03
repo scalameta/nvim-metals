@@ -9,10 +9,11 @@ CONTENTS                                                           *nvim-metals*
 
     0. Introduction ......... |metals-introduction|
     1. Prerequisites......... |metals-prerequisites|
-    2. Prerequisites......... |metals-commands|
+    2. Commands.............. |metals-commands|
+    3. API................... |metals-api|
 
 ================================================================================
-INTRODUCTION						                                    *metals-introdction*
+INTRODUCTION                                                *metals-introdction*
 
 nvim-metals is a plugin built to provide a better experience while using Metals,
 the Scala Language Server with Neovim's built-in LSP support. This plugin offers
@@ -82,4 +83,39 @@ MetalsLogsToggle          Opens the embedded Nvim terminal tailing the
 
                                                                    *SourcesScan*
 SourcesScan               Scan all workspaces sources.
+
+================================================================================
+API                                                                 *metals-api*
+
+The following Lua module functions are exposed for you to use in via mappings.
+In order to use any of these you'd need to require the module. As an example,
+ifi you wanted to bind the |buid_import()| to a mapping, you could do the
+following.
+>
+nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
+<
+
+                                                                 *build_connect()*
+build_connect()           Use to execute a |metals.build-connect| command.
+
+                                                                  *build_import()*
+build_import()            Use to execute a |metals.build-import| command.
+
+                                                                 *build_restart()*
+build_restart()           Use to execute a |metals.build-restart| command.
+
+                                                               *compile_cascade()*
+compile_cascade()         Use to execute a |metals.compile-cascade| command.
+
+                                                                    *doctor_run()*
+doctor_run()              Use to execute a |metals.doctor-run| command.
+
+                                                                   *logs_toggle()*
+logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
+                          workspace that will open in the embedded Neovim
+                          terminal.
+
+                                                                  *sources_scan()*
+sources_scan()            Use to execute a |metals.sources-scan| command.
+
 vim:tw=80:ts=2:ft=help:
