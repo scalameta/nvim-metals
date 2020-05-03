@@ -9,6 +9,7 @@ CONTENTS                                                           *nvim-metals*
 
     0. Introduction ......... |metals-introduction|
     1. Prerequisites......... |metals-prerequisites|
+    2. Prerequisites......... |metals-commands|
 
 ================================================================================
 INTRODUCTION						                                    *metals-introdction*
@@ -40,4 +41,45 @@ let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
 Then continue to follow the nvim-lsp instructions to install Metals via
 |:LspInstall metals|.
 
+================================================================================
+COMMANDS                                                       *metals-commands*
+
+The following commands are provided by nvim-metals.
+
+
+                                                                   *BuildImport*
+BuildImport                 Trigger an import for the current workspace.
+
+                                                                  *BuildConnect*
+BuildConnect                Manually connect to the build server.
+
+                                                                  *BuildRestart*
+BuildRestart                Manually restart the build server.
+
+                                                                *CompileCascade*
+CompileCascade             Compile the current open file along with all build
+                           targets that depend on it.
+
+                                                                        *Format*
+Format                     Format the current buffer utilizing. (Make sure to
+                           have a .scalafmt.conf file.)
+
+                                                                  *MetalsDoctor*
+MetalsDoctor               Run Metals Doctor, which will open in your browser.
+
+                                                                  *MetalsDoctor*
+MetalsDoctor               Run Metals Doctor, which will open in your browser.
+
+                                                               *MetalsLogToggle*
+MetalsLogsToggle          Opens the embedded Nvim terminal tailing the
+                          |.metals/metals.log| file in your worksapce. If
+                          triggered again, this won't actual toggle the logs.
+                          This is doen mainly to avoid someone simply |q|ing the
+                          terminal thinking it's closed when the buffer is
+                          actually still there. If this happens, you will be
+                          warned that the terminal buffer still exists and that
+                          you should do an |ls| to find it.
+
+                                                                   *SourcesScan*
+SourcesScan               Scan all workspaces sources.
 vim:tw=80:ts=2:ft=help:
