@@ -21,7 +21,6 @@ nnoremap <silent> K           <cmd>lua vim.lsp.buf.hover()<CR>
 nnoremap <silent> gi          <cmd>lua vim.lsp.buf.implementation()<CR>
 nnoremap <silent> gr          <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> gs          <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
-" rename currently has issues https://github.com/neovim/neovim/pull/12185
 nnoremap <silent> <leader>rn  <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
 

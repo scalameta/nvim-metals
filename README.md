@@ -278,16 +278,13 @@ import your build.
     your build. Another issue is that if you do a `:Format` request and don't have
     a .scalafmt.conf file, it will error out. There is an issue for this here:
     https://github.com/neovim/neovim/issues/11710
-- Renames aren't working correctly since Metals isn't versioning the Documents.
-    You can track the Metals part of this here:
-    https://github.com/scalameta/metals/issues/1665 and the Nvim side of this
-    here: https://github.com/neovim/neovim/issues/12226 since they should account
-    for this being `null`. Fair warning, I sent in a pr to fix this and botched
-    it... so this is the second attempt.
 - Multiline `textEdits` aren't being applied correctly. You can track this
     issue here: https://github.com/neovim/neovim/issues/12195
 - `textDocument/codeAction` is not yet supported. You can follow the progress
     here: https://github.com/neovim/neovim/pull/11607
+- The Quickfix List opens at times in an odd position (to the bottom right of
+    your viewport). You can follow a feature request to discuss this here:
+    https://github.com/neovim/neovim/issues/12241
 
 ## Troubleshooting
 
