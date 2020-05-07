@@ -1,9 +1,11 @@
 "=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
 " These settings are a work in progress for using https://scalameta.org/metals
-" with the built-in LSP support of Nvim. They assume that you have the
-" following plugins installed for the listed reasons. Also ensure that you have
-" Nvim nightly installed. The latest stable release does not yet have built-in
-" LSP support.
+" with the built-in LSP support of Nvim. They are also meant to serve as an
+" example of what a setup can look like. They aren't necessarily meant to be
+" copied verbatim, but rather referenced, improved, tweaked, etc.
+" They assume that you have the following plugins installed for the listed
+" reasons. Also ensure that you have Nvim nightly installed. The latest stable
+" release does not yet have built-in LSP support.
 "
 " - https://github.com/neovim/nvim-lsp
 "     (automated installation and basic setup info)
@@ -27,11 +29,16 @@ nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
 "-----------------------------------------------------------------------------
 " nvim-lsp Settings
 "-----------------------------------------------------------------------------
-let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT' " Make sure to update this
+" If you just use the latest sbatle version, then this setting isn't necessary
+let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+
+" This is needed to enable completions
 autocmd FileType scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
 
+" Edit these to your liking. I use them to show in the signcolumn
+" rather than showing E and W
 let g:LspDiagnosticsErrorSign = '✘'
-let g:LspDiagnosticsWarningSign = '⚠'
+let g:LspDiagnosticsWarningSign = ''
 
 "-----------------------------------------------------------------------------
 " lua callbacks
@@ -62,16 +69,45 @@ inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 "-----------------------------------------------------------------------------
 " diagnostic-nvim settings
 "-----------------------------------------------------------------------------
+" This is disabled by default. I'm still unsure if I like this on
 let g:diagnostic_enable_virtual_text = 1
+" Again edit this to your liking
 let g:diagnostic_virtual_text_prefix = ' '
 
-" Mapping specific to complementary plugins
 nnoremap <silent> [c          :NextDiagnostic<CR>
 nnoremap <silent> ]c          :PrevDiagnostic<CR>
 nnoremap <silent> go          :OpenDiagnostic<CR>
 
 "-----------------------------------------------------------------------------
-" Helpful general settings
+" statusline function examples
+"-----------------------------------------------------------------------------
+" I set there here to reuse what I may have already set for the LSP
+" diagnostic signs in my signcolumn, if not use defaults
+let s:LspStatusLineErrorSign = get(g:, 'LspDiagnosticsErrorSign', 'E')
+let s:LspStatusWarningSign = get(g:, 'LspDiagnosticsWarningSign', 'W')
+
+" An examle that I use to show a sign plus count of errors in my statusline
+function! LspErrors() abort
+  let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
+  if (errorCount > 0)
+    return s:LspStatusDiagnosticErrorSign . errorCount
+  else
+    return ''
+  endif
+endfunction
+
+" An examle that I use to show a sign plus count of warnings in my statusline
+function! LspWarnings() abort
+  let warningCount = luaeval('vim.lsp.util.buf_diagnostics_count("Warning")')
+  if (warningCount > 0)
+    return s:LspStatusDiagnosticWarningSign . warningCount
+  else
+    return ''
+  endif
+endfunction
+
+"-----------------------------------------------------------------------------
+" Helpful general settings, I recommend making sure these are set
 "-----------------------------------------------------------------------------
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noinsert,noselect

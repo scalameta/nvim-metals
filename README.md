@@ -4,7 +4,9 @@
 
 This is a WIP [Metals](https://scalameta.org/metals/) plugin and guide for Nvim
 users utilizing the [Nvim built-in LSP
-module](https://neovim.io/doc/user/lsp.html).
+module](https://neovim.io/doc/user/lsp.html). The goal of this plugin is to
+provide with the extra functionality that you need for Metals and the rest will
+serve as a guide and an example.
 
 Keep in mind that the level of support is rapidly changing, there are bugs, and
 there are missing features. Some of this is changing daily, so expect stuff to
@@ -26,6 +28,7 @@ wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-confli
   - [Available Commands](#available-commands)
   - [Settings and Mappings](#settings-and-mappings)
       - [Custom Mappings](#custom-mappings)
+  - [Statusline Integration](#statusline-integration)
   - [Complementary Plugins](#complementary-plugins)
       - [Completions](#completions)
       - [Diagnostics](#diagnostics)
@@ -35,7 +38,7 @@ wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-confli
 
 ## Prerequisites
 
-Before you get started you need to ensure that you have the nighly/development
+Before you get started you need to ensure that you have the nightly/development
 build of Nvim. LSP support hasn't landed in stable yet. You can find
 instructions for how to do this for you OS
 [here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
@@ -78,9 +81,10 @@ by the [nvim-lsp](https://github.com/neovim/nvim-lsp) plugin. It offers
 automated installation of servers and basic configurations so you don't have to
 do it manually.
 
-Currently, you need the latest SNAPSHOT of Metals in order for this to work
-correctly. You can find the latest SNAPSHOT version [here on the
-website](https://scalameta.org/metals/docs/editors/vim.html#using-latest-metals-snapshot).
+If you'd like to use a Snapshot version of metals, you can set it like below
+before you do the `LspInstall`. If you've already installed, you need to remove
+the installation, set this, and then install again. Hopefully this process will
+be smoother in the future.
 
 ```vim
 let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
@@ -112,16 +116,24 @@ If it's installed, you should see something like the following:
 
 Make sure to take a look at the [`setup()`
 function](https://github.com/neovim/nvim-lsp#setup-function) which will show you
-how to override certain values (which you shouldn't have to do). You can see all
-of the default Metals values in the
+how to override certain values (which you shouldn't have to do) or add extra
+settings. You can see all of the default Metals values in the
 [readme](https://github.com/neovim/nvim-lsp#metals) or checkout
 [nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/metals.lua).
 
 If you don't want any of the extra stuff the other plugins offer, then just copy
-the mappings under the **nvim-lsp Mappings** section to get the mappings, add in
-the `autocmd` to get you completions (that you'll need to trigger yourself
-without the plugin), and then copy the **Lua callbacks** chunk of Lua code minus
-the things I'll point out below which are plugin specific:
+the mappings under the [**nvim-lsp Mappings**](./nvim-lsp.vim) section to get
+the mappings, add in the `autocmd` to get you completions (that you'll need to
+trigger yourself without the plugin). Then you can just use the default setup
+like below which uses all defaults:
+
+```lua
+require'nvim_lsp'.metals.setup{}
+```
+
+However, I recommend that you use a few related plugins for a much better
+experience. If you're using extra nvim lsp plugins, they should have good
+instructions, but you'd set them up like the following:
 
 ```lua
 :lua << EOF
@@ -132,12 +144,12 @@ the things I'll point out below which are plugin specific:
       require'completion'.on_attach() -- needed for the completion plugin
     end
   nvim_lsp.metals.setup{
-    on_attach = M.on_attach, -- Don't include this if you aren't using the other plugins
+    on_attach = M.on_attach
   }
 EOF
 ```
 
-**Fair warning, this is probably going to change.**
+**Fair warning, they installation is probably all going to change.**
 If you follow the conversation
 [here](https://github.com/neovim/nvim-lsp/issues/200), you'll notice a couple
 things.
@@ -205,6 +217,44 @@ changing and some sections are just bare with `TODOs`.
 
 The mappings I've included are a combination of what Metals supports and also
 what Nvim LSP supports.
+
+## Statusline integration
+
+The Nvim LSP module provides some useful functions out of the box for you to
+customize what is shown in your statusline. Mainly,
+`:h lsp.util.buf_diagnostics_count`. They also provide a full example there.
+What I do in order to show warnings and errors in my statusline is that I have
+the following:
+
+```vim
+" I already set `LspDiagnosticsErrorSign` to show the symbol I want in the
+" sign gutter, so I just re-use it here or assign it a default if not
+let s:LspStatusLineErrorSign = get(g:, 'LspDiagnosticsErrorSign', 'E')
+
+" I then just use this function to grab the errors that exist in the buffer
+function! LspErrors() abort
+  let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
+  if (errorCount > 0)
+    return s:LspStatusLineErrorSign . errorCount
+  else
+    return ''
+  endif
+endfunction
+```
+Then when I'm setting my statusline, I have the following:
+
+```vim
+...
+set statusline+=%#StatusLineError#%{LspErrors()}\ " LSP Errors
+set statusline+=%#StatusLineWarning#%{LspWarnings()}%#StatusLine#\ " LSP Warnings
+...
+```
+
+You can see that I also have custom highlight groups that surround them. You can
+do this all in one function, two functions, etc. Customize it to your liking.
+For me, I like a minimal statusline, so having this setup looks like this:
+
+![Statusline](https://i.imgur.com/y4hij0S.png)
 
 ## Complementary Plugins
 
