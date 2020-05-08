@@ -1,4 +1,5 @@
 local vim = vim
+local lsp = vim.lsp
 local M = {}
 
 local function execute_command(command, callback)
@@ -58,6 +59,37 @@ M.sources_scan = function()
   execute_command({
     command = 'metals.sources-scan';
   })
+end
+
+
+-- Thanks to @clason for this
+-- This can be used to override the default ["textDocument/hover"]
+-- in order to wrap the hover on long methods
+M.hover_wrap = function(_, method, result)
+    local opts = {
+      pad_left = 1;
+      pad_right = 1;
+    }
+    lsp.util.focusable_float(method, function()
+        if not (result and result.contents) then
+            return
+        end
+        local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
+        markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
+        if vim.tbl_isempty(markdown_lines) then
+            return
+        end
+        local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
+        lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, winnr)
+        local hover_len = #vim.api.nvim_buf_get_lines(bufnr,0,-1,false)[1]
+        local win_width = vim.api.nvim_win_get_width(0)
+        if hover_len > win_width then
+            vim.api.nvim_win_set_width(winnr,math.min(hover_len,win_width))
+            vim.api.nvim_win_set_height(winnr,math.ceil(hover_len/win_width))
+            vim.wo[winnr].wrap = true
+        end
+        return bufnr, winnr
+    end)
 end
 
 return M

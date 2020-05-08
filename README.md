@@ -25,9 +25,10 @@ wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-confli
   - [Prerequisites](#prerequisites)
       - [Plugins](#plugins)
   - [Getting Started](#getting-started)
-  - [Available Commands](#available-commands)
   - [Settings and Mappings](#settings-and-mappings)
       - [Custom Mappings](#custom-mappings)
+  - [Available Commands](#available-commands)
+  - [Custom Callbacks](#custom-callbacks)
   - [Statusline Integration](#statusline-integration)
   - [Complementary Plugins](#complementary-plugins)
       - [Completions](#completions)
@@ -161,34 +162,6 @@ For now, this is still the best way to install Metals for Nvim.  If the Install
 goes away, there is a decent chance I'll handle the Install / Uninstall / Update
 right in the plugin.
 
-## Custom Mappings
-
-If you'd like to add a custom mapping instead of using the commands, you're free
-to do so. For example, let's say we wanted to add a custom mapping for
-`BuildImport`, you could by doing the following:
-
-```vim
-nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
-```
-
-This would allow you to do `<leader>bi` to trigger an import, the same way
-`:BuildImport` does.
-
-## Available Commands
-
-Currently, the following commands are available:
-
-Command             |Description
---------------------|-------------------------------------
-`:BuildImport`      | Import the build
-`:BuildConnect`     | Manually connect to the build server
-`:BuildRestart`     | Restart the build server
-`:CompileCascade`   | Compile current open file along with all build targets that depend on it
-`:Format`           | Format current buffer **Make sure to have a .scalafmt.conf**
-`:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
-`:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
-`:SourcesScan`      | Scan all workspace sources
-
 ## Settings and Mappings
 
 Some very basic things are enabled by default, like in-line diagnostics, but
@@ -217,6 +190,61 @@ changing and some sections are just bare with `TODOs`.
 
 The mappings I've included are a combination of what Metals supports and also
 what Nvim LSP supports.
+## Custom Mappings
+
+If you'd like to add a custom mapping instead of using the commands, you're free
+to do so. For example, let's say we wanted to add a custom mapping for
+`BuildImport`, you could by doing the following:
+
+```vim
+nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
+```
+
+This would allow you to do `<leader>bi` to trigger an import, the same way
+`:BuildImport` does.
+
+## Available Commands
+
+Currently, the following commands are available:
+
+Command             |Description
+--------------------|-------------------------------------
+`:BuildImport`      | Import the build
+`:BuildConnect`     | Manually connect to the build server
+`:BuildRestart`     | Restart the build server
+`:CompileCascade`   | Compile current open file along with all build targets that depend on it
+`:Format`           | Format current buffer **Make sure to have a .scalafmt.conf**
+`:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
+`:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
+`:SourcesScan`      | Scan all workspace sources
+
+## Custom Callbacks
+
+The Nvim LSP module heaving relies on callback for each type of message that it
+receives from the server. These can all be overridden and customized. You can
+either override them globally, or just for Metals. An example of global override
+using one of the custom callbacks nvim-metals provides would look like this:
+
+```lua
+local metals = require'metals'
+lsp.callbacks['textDocument/hover'] = metals.hover_wrap
+```
+
+Example usage for only Metals:
+```lua
+local metals = require'metals'
+nvim_lsp.metals.setup{
+  callbacks = {
+    ["textDocument/hover"] = metals.hover_wrap
+  }
+}
+```
+
+Currently, the following callbacks are available:
+
+Callback            |Description
+--------------------|-------------------------------------
+`hover_wrap()`      | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
 
 ## Statusline integration
 

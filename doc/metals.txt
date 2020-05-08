@@ -11,6 +11,7 @@ CONTENTS                                                           *nvim-metals*
     1. Prerequisites......... |metals-prerequisites|
     2. Commands.............. |metals-commands|
     3. LUA API............... |metals-api|
+    4. Custom Callbacks...... |metals-custom-callbacks|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -116,5 +117,42 @@ logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
 
                                                                 *sources_scan()*
 sources_scan()            Use to execute a |metals.sources-scan| command.
+
+                                                                *sources_scan()*
+sources_scan()            Use to execute a |metals.sources-scan| command.
+
+================================================================================
+CUSTOM CALLBACKS                                       *metals-custom-callbacks*
+
+The following are callbacks that users are able to utilize for Metals LSP
+extensions or to override existing Nvim LSP callbacks to improve the default
+behavior. These can be used either globally or for only Metals.
+
+Example global usage:
+>
+local metals = require'metals'
+lsp.callbacks['textDocument/hover'] = metals.hover_wrap
+<
+
+Example usage for only Metals:
+>
+local metals = require'metals'
+nvim_lsp.metals.setup{
+  callbacks = {
+    ["textDocument/hover"] = metals.hover_wrap
+  }
+}
+<
+
+                                                                  *hover_wrap()*
+hover_wrap({err}, {method}, {result})
+                          Used to override the default ["textDocument/hover"]
+                          callback since the default doesn't wrap lines.
+
+                          Parameters:
+                          {err}    Just ignored in this callback since
+                          {method} textDocument/hover in this case
+                          {result} hover results from the server
+
 
 vim:tw=80:ts=2:ft=help:
