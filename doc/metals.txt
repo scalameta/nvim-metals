@@ -118,9 +118,24 @@ logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
                                                                 *sources_scan()*
 sources_scan()            Use to execute a |metals.sources-scan| command.
 
-                                                                *sources_scan()*
-sources_scan()            Use to execute a |metals.sources-scan| command.
+                                                                *root_pattern()*
+root_pattern({target_build_files})
+                          Used to override the default |root_dir| function in
+                          nvim-lsp. The default does not take into accoun the
+                          possiblity of nested build files.
 
+                          Parameters:
+                          {target_build_files} Build files you'd like to be
+                          recognized.
+
+
+You use this be overriding the default |root_dir| like below:
+>
+local metals = require'metals'
+nvim_lsp.metals.setup{
+  root_dir = metals.root_pattern("build.sbt", "build.sc");
+}
+<
 ================================================================================
 CUSTOM CALLBACKS                                       *metals-custom-callbacks*
 

@@ -1,5 +1,7 @@
-local vim = vim
 local lsp = vim.lsp
+local vim = vim
+local util = require'metals.util'
+
 local M = {}
 
 local function execute_command(command, callback)
@@ -90,6 +92,25 @@ M.hover_wrap = function(_, method, result)
         end
         return bufnr, winnr
     end)
+end
+
+-- A replacement for the default `root_dir` function for metals. This is useful
+-- if you have a sbt/maven/gradle build that has nested build files. The default
+-- will not recognized this and instead re-initialize when you don't want it to.
+M.root_pattern = function(...)
+  local patterns = vim.tbl_flatten {...}
+  local function matcher(path)
+    for _, pattern in ipairs(patterns) do
+      local target = util.path.join(path, pattern)
+      local parent_target = util.path.join(util.path.dirname(path), pattern)
+      if util.path.exists(target) and not util.path.exists(parent_target) then
+        return path
+      end
+    end
+  end
+  return function(startpath)
+    return util.search_ancestors(startpath, matcher)
+  end
 end
 
 return M
