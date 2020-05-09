@@ -33,10 +33,9 @@ PREREQUISITES                                             *metals-prerequisites*
   https://scalameta.org/metals/docs/editors/vim.html#using-latest-metals-snapshot
 
 In order to install the latest snapshot of metals, you'll need to set the
-following:
+following: >
 
->
-let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+  let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
 <
 
 Then continue to follow the nvim-lsp instructions to install Metals via
@@ -90,9 +89,9 @@ LUA API                                                         *metals-lua-api*
 The following Lua module functions are exposed for you to use in via mappings.
 In order to use any of these you'd need to require the module. As an example,
 if you wanted to bind the |buid_import()| to a mapping, you could do the
-following.
->
-nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
+following. >
+
+  nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 <
 
                                                                *build_connect()*
@@ -129,12 +128,12 @@ root_pattern({target_build_files})
                           recognized.
 
 
-You use this be overriding the default |root_dir| like below:
->
-local metals = require'metals'
-nvim_lsp.metals.setup{
-  root_dir = metals.root_pattern("build.sbt", "build.sc");
-}
+You use this be overriding the default |root_dir| like below: >
+
+  local metals = require'metals'
+  nvim_lsp.metals.setup{
+    root_dir = metals.root_pattern("build.sbt", "build.sc");
+  }
 <
 ================================================================================
 CUSTOM CALLBACKS                                       *metals-custom-callbacks*
@@ -143,20 +142,20 @@ The following are callbacks that users are able to utilize for Metals LSP
 extensions or to override existing Nvim LSP callbacks to improve the default
 behavior. These can be used either globally or for only Metals.
 
-Example global usage:
->
-local metals = require'metals'
-lsp.callbacks['textDocument/hover'] = metals.hover_wrap
+Example global usage: >
+
+  local metals = require'metals'
+  lsp.callbacks['textDocument/hover'] = metals.hover_wrap
 <
 
-Example usage for only Metals:
->
-local metals = require'metals'
-nvim_lsp.metals.setup{
-  callbacks = {
-    ["textDocument/hover"] = metals.hover_wrap
+Example usage for only Metals: >
+
+  local metals = require'metals'
+  nvim_lsp.metals.setup{
+     callbacks = {
+      ["textDocument/hover"] = metals.hover_wrap
+    }
   }
-}
 <
 
                                                                   *hover_wrap()*
