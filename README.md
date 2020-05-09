@@ -28,6 +28,7 @@ wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-confli
   - [Settings and Mappings](#settings-and-mappings)
       - [Custom Mappings](#custom-mappings)
   - [Available Commands](#available-commands)
+  - [Custom Functions](#custom-functions)
   - [Custom Callbacks](#custom-callbacks)
   - [Statusline Integration](#statusline-integration)
   - [Complementary Plugins](#complementary-plugins)
@@ -217,6 +218,29 @@ Command             |Description
 `:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
 `:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
 `:SourcesScan`      | Scan all workspace sources
+
+## Custom Functions
+
+Custom functions are similar to Custom Callbacks in that you use them to
+override a default setup option for Metals.
+
+Currently if you use an build definition structure with multiple nested build
+files, the Nvim LSP client will re-initialize when you go into a module with
+another build file. In order to prevent this, use the `metals.root_pattern()`
+function to override the `root_dir` function like below:
+
+```lua
+local metals = require'metals'
+nvim_lsp.metals.setup{
+  root_dir = metals.root_pattern("build.sbt", "build.sc");
+}
+```
+
+This `root_patter()` function is almost identical to the one that is in
+`nvim-lsp`, but it adds in the ability to check to ensure that there isn't
+another build file in the parent directory. If you are only using nvim-metals
+with projects that only ever have one build file, then there is no need to set
+this.
 
 ## Custom Callbacks
 

@@ -29,8 +29,8 @@ nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
 "-----------------------------------------------------------------------------
 " nvim-lsp Settings
 "-----------------------------------------------------------------------------
-" If you just use the latest sbatle version, then this setting isn't necessary
-let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+" If you just use the latest stable version, then this setting isn't necessary
+let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
 
 " This is needed to enable completions
 autocmd FileType scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
@@ -43,10 +43,9 @@ let g:LspDiagnosticsWarningSign = ''
 "-----------------------------------------------------------------------------
 " lua callbacks
 "-----------------------------------------------------------------------------
-" NOTE: this is a bit verbose, but it easily allows you to add more to it, which
-" is the reason why it's done this way.
 :lua << EOF
   local nvim_lsp = require'nvim_lsp'
+  local metals = require'metals'
   local M = {}
 
   M.on_attach = function()
@@ -55,7 +54,11 @@ let g:LspDiagnosticsWarningSign = ''
     end
 
   nvim_lsp.metals.setup{
-    on_attach = M.on_attach,
+    on_attach = M.on_attach;
+    root_dir = metals.root_pattern("build.sbt", "build.sc");
+    callbacks = {
+      ["textDocument/hover"] = metals.hover_wrap
+    };
   }
 EOF
 
