@@ -63,7 +63,6 @@ M.sources_scan = function()
   })
 end
 
-
 -- Thanks to @clason for this
 -- This can be used to override the default ["textDocument/hover"]
 -- in order to wrap the hover on long methods
@@ -110,6 +109,19 @@ M.root_pattern = function(...)
   end
   return function(startpath)
     return util.search_ancestors(startpath, matcher)
+  end
+end
+
+-- Callback function to handle `metals/status`
+-- This simply sets a global variable `metals_status` which can be easily
+-- picked up and used in a statusline.
+-- Command and Tooltip are not covered from the spec.
+-- https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
+M.metals_status = function(_, _, params)
+  if params.hide then
+    vim.api.nvim_set_var('metals_status', '')
+  else
+    vim.api.nvim_set_var('metals_status', params.text)
   end
 end
 

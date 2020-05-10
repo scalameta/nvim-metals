@@ -56,8 +56,14 @@ let g:LspDiagnosticsWarningSign = ''
   nvim_lsp.metals.setup{
     on_attach = M.on_attach;
     root_dir = metals.root_pattern("build.sbt", "build.sc");
+    init_options = {
+      -- If you set this, make sure to have the `metals#status()` function
+      -- in your statusline, or you won't see any status messages
+      statusBarProvider = "on";
+    };
     callbacks = {
-      ["textDocument/hover"] = metals.hover_wrap
+      ["textDocument/hover"] = metals.hover_wrap;
+      ["metals/status"] = metals.metals_status;
     };
   }
 EOF

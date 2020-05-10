@@ -12,6 +12,7 @@ CONTENTS                                                           *nvim-metals*
     2. Commands.............. |metals-commands|
     3. LUA API............... |metals-api|
     4. Custom Callbacks...... |metals-custom-callbacks|
+    5. Functions............. |metals-functions|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -130,6 +131,7 @@ root_pattern({target_build_files})
 
 You use this be overriding the default |root_dir| like below: >
 
+  local nvim_lsp = require'nvim_lsp'
   local metals = require'metals'
   nvim_lsp.metals.setup{
     root_dir = metals.root_pattern("build.sbt", "build.sc");
@@ -150,6 +152,7 @@ Example global usage: >
 
 Example usage for only Metals: >
 
+  local nvim_lsp = require'nvim_lsp'
   local metals = require'metals'
   nvim_lsp.metals.setup{
      callbacks = {
@@ -164,9 +167,49 @@ hover_wrap({err}, {method}, {result})
                           callback since the default doesn't wrap lines.
 
                           Parameters:
-                          {err}    Just ignored in this callback since
-                          {method} textDocument/hover in this case
+                          {err}    Hover error
+                          {method} textDocument/hover
                           {result} hover results from the server
 
+                                                               *metals_status()*
+metals_status({err}, {method}, {result})
+                          Used to override the default ["textDocument/hover"]
+                          callback since the default doesn't wrap lines.
+
+
+                          Parameters:
+                          {err}    Error
+                          {method} metals/status
+                          {result} MetalsStatusParams
+
+The spec for this can be found here:
+
+https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
+
+If you are using this, you need to also override the default
+|StatusBarProvider| value in |init_options|. You'll also want to ensure that
+information is being displayed by your statusline by using the
+|metals#status()| function.
+>
+  local nvim_lsp = require'nvim_lsp'
+  local metals = require'metals'
+  nvim_lsp.metals.setup{
+    init_options = {
+      statusBarProvider = "on";
+    };
+    callbacks = {
+      ["metals/status"] = metals.metals_status;
+    };
+  }
+<
+================================================================================
+FUNCTIONS                                                     *metals-functions*
+
+                                                               *metals#status()*
+metals#status()           Able to be used in your statusline to show status
+                          messages from Metals. In order for this to be set,
+                          you need to ensure that |statusBarProvider| is set
+                          to |on|, and the |metals/status| callback is set to
+                          |metals_status|.
 
 vim:tw=80:ts=2:ft=help:
