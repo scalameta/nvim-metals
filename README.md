@@ -269,6 +269,7 @@ Currently, the following callbacks are available:
 Callback            |Description
 --------------------|-------------------------------------
 `hover_wrap()`      | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
+`metals_status()`   | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
 
 ## Statusline integration
 
@@ -307,6 +308,18 @@ do this all in one function, two functions, etc. Customize it to your liking.
 For me, I like a minimal statusline, so having this setup looks like this:
 
 ![Statusline](https://i.imgur.com/y4hij0S.png)
+
+You can also enable
+[`metals/status`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus)
+which will allow for you to use the `metals#status()` function in your
+statusline to show the status messages coming from Metals. This can be used like
+the below example or added into an existing statusline integration:
+
+```vim
+...
+set statusline+=%{metals#status()}\ " metals/status
+...
+```
 
 ## Complementary Plugins
 

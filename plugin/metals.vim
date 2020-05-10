@@ -14,6 +14,10 @@ command! Format lua vim.lsp.buf.formatting()
 command! MetalsDoctor lua require'metals'.doctor_run()
 command! MetalsLogsToggle lua require'metals'.logs_toggle()
 
+function! metals#status() abort
+  return get(g:, 'metals_status', '')
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 
