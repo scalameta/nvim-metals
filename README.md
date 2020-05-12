@@ -118,9 +118,9 @@ If it's installed, you should see something like the following:
 
 Make sure to take a look at the [`setup()`
 function](https://github.com/neovim/nvim-lsp#setup-function) which will show you
-how to override certain values (which you shouldn't have to do) or add extra
-settings. You can see all of the default Metals values in the
-[readme](https://github.com/neovim/nvim-lsp#metals) or checkout
+how to override certain values or add extra settings. You can see all of the
+default Metals values in the [readme](https://github.com/neovim/nvim-lsp#metals)
+or checkout
 [nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/metals.lua).
 
 If you don't want any of the extra stuff the other plugins offer, then just copy
@@ -152,7 +152,7 @@ EOF
 ```
 
 **Fair warning, they installation is probably all going to change.**
-If you follow the conversation
+In you following the conversation
 [here](https://github.com/neovim/nvim-lsp/issues/200), you'll notice a couple
 things.
 
@@ -161,23 +161,23 @@ things.
 
 For now, this is still the best way to install Metals for Nvim.  If the Install
 goes away, there is a decent chance I'll handle the Install / Uninstall / Update
-right in the plugin.
+right in this plugin.
 
 ## Settings and Mappings
 
 Some very basic things are enabled by default, like in-line diagnostics, but
 you'll want a basic configuration for things like finding definitions and
-references. The [nvim-lsp.vim](./nvim-lsp.vim) file has these in along with some
-settings for the other complementary plugins. _These are opinionated_, and
-catered to my work flow. There are also a two other plugin settings under
+references. The [nvim-lsp.vim](./nvim-lsp.vim) file has examples of these along
+with some settings for the other complementary plugins. _These are opinionated_,
+and catered to my work flow. There are also a two other plugin settings under
 `completion-nvim` and `diagnostic-nvim` headings. Those plugins, which are
-outlined below must also be installed for those settings to work. The The idea
-is to use them as a base or an example and to then build off of them or change
-them to your liking. The also serve as an example of how to use `lua` in your
-configuration if you're not familiar with them. They also have a few vim
-configurations that I'd argue are important for you to not go insane (like
-having `set signcolumn=yes`). Again, edit this to your liking. They are just in
-here as an example.
+outlined below must also be installed for those settings to work.  The idea of
+me including this file is for you to use them as a base or an example and to
+then build off of them or change them to your liking. They also serve as an
+example of how to use `lua` in your configuration if you're not familiar with
+them. They also have a few vim configurations that I'd argue are important for
+you to not go insane (like having `set signcolumn=yes`). Again, edit this to
+your liking. They are just in here as an example.
 
 ```vim
 nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
@@ -187,7 +187,7 @@ nnoremap <silent> K  <cmd>lua vim.lsp.buf.hover()<CR>
 You can sort of assume what many of the mappings do, but you can find more info
 on the available options by doing `:h lsp-config`. There is a lot of great info
 in the `lsp` section of the docs, but also keep in mind that things are often
-changing and some sections are just bare with `TODOs`.
+changing and many sections are just bare with `TODOs`.
 
 The mappings I've included are a combination of what Metals supports and also
 what Nvim LSP supports.
@@ -224,7 +224,7 @@ Command             |Description
 Custom functions are similar to Custom Callbacks in that you use them to
 override a default setup option for Metals.
 
-Currently if you use an build definition structure with multiple nested build
+Currently if you use a build definition structure with multiple nested build
 files, the Nvim LSP client will re-initialize when you go into a module with
 another build file. In order to prevent this, use the `metals.root_pattern()`
 function to override the `root_dir` function like below:
@@ -236,15 +236,15 @@ nvim_lsp.metals.setup{
 }
 ```
 
-This `root_patter()` function is almost identical to the one that is in
+This `root_pattern()` function is almost identical to the one that is in
 `nvim-lsp`, but it adds in the ability to check to ensure that there isn't
-another build file in the parent directory. If you are only using nvim-metals
+another build file in the parent directory. *If you are only using nvim-metals
 with projects that only ever have one build file, then there is no need to set
-this.
+this.*
 
 ## Custom Callbacks
 
-The Nvim LSP module heaving relies on callback for each type of message that it
+The Nvim LSP module heavily relies on callback for each type of message that it
 receives from the server. These can all be overridden and customized. You can
 either override them globally, or just for Metals. An example of global override
 using one of the custom callbacks nvim-metals provides would look like this:
@@ -276,7 +276,7 @@ Callback            |Description
 The Nvim LSP module provides some useful functions out of the box for you to
 customize what is shown in your statusline. Mainly,
 `:h lsp.util.buf_diagnostics_count`. They also provide a full example there.
-What I do in order to show warnings and errors in my statusline is that I have
+What I do in order to show warnings and errors in my statusline is the 
 the following:
 
 ```vim
@@ -324,7 +324,7 @@ set statusline+=%{metals#status()}\ " metals/status
 ## Complementary Plugins
 
 I've listed two external plugins in the examples that help the diagnostic and
-completion experience. The Nvim LSP integration exposes a bunch of call-backs
+completion experience. The Nvim LSP integration exposes a bunch of callbacks
 that allow for easy customization. As far as I know the idea isn't to make an
 extremely polished experience out of the box with Nvim LSP, but rather offer a
 solid core that allows you to define custom callbacks for how you want to handle
