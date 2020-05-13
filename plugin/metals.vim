@@ -13,6 +13,7 @@ command! CompileCascade lua require'metals'.compile_cascade()
 command! Format lua vim.lsp.buf.formatting()
 command! MetalsDoctor lua require'metals'.doctor_run()
 command! MetalsLogsToggle lua require'metals'.logs_toggle()
+command! NewScalaFile lua require'metals'.new_scala_file()
 
 function! metals#status() abort
   return get(g:, 'metals_status', '')
