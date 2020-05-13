@@ -400,6 +400,11 @@ import your build.
 - The Quickfix List opens at times in an odd position (to the bottom right of
     your viewport). You can follow a feature request to discuss this here:
     https://github.com/neovim/neovim/issues/12241
+- `additionalTextEdits` are not taken into account in `CompletionItem`. In
+    Metals this means things like the `s` getting added in front of a string
+    during a completion to make it an interpolated string won't work as
+    expected. You can follow this issue here:
+    https://github.com/neovim/neovim/issues/12310
 
 ## Troubleshooting
 
