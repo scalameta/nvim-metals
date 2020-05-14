@@ -273,41 +273,21 @@ Callback            |Description
 
 ## Statusline integration
 
-The Nvim LSP module provides some useful functions out of the box for you to
-customize what is shown in your statusline. Mainly,
-`:h lsp.util.buf_diagnostics_count`. They also provide a full example there.
-What I do in order to show warnings and errors in my statusline is the 
-the following:
-
-```vim
-" I re-utilize the signs that you may have already set for
-" `LspDiagnosticsErrorSign`, and if not give you defaults which are
-" displayed before the error total.
-function! LspErrors() abort
-  let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
-  if (errorCount > 0)
-    let possibleLspSign = sign_getdefined("LspDiagnosticsErrorSign")
-    let sign = get(possibleLspSign, 0, {"text": "E"})
-    return sign.text . errorCount
-  else
-    return ''
-  endif
-endfunction
-```
-Then when I'm setting my statusline, I have the following:
+nvim-metals provides a few functions that can be used in your statusline in
+order to show Errors, Warnings, and Metals status. For diagnostics you can use
+them like below:
 
 ```vim
 ...
-set statusline+=%#StatusLineError#%{LspErrors()}\ " LSP Errors
-set statusline+=%#StatusLineWarning#%{LspWarnings()}%#StatusLine#\ " LSP Warnings
+set statusline+=%{metals#errors()}
+set statusline+=%{metals#warnings()}
 ...
 ```
-
-You can see that I also have custom highlight groups that surround them. You can
-do this all in one function, two functions, etc. Customize it to your liking.
-For me, I like a minimal statusline, so having this setup looks like this:
 
 ![Statusline](https://i.imgur.com/y4hij0S.png)
+
+The colors are using a custom highlighting group that you'd need to define or
+assign yourself.
 
 You can also enable
 [`metals/status`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus)
@@ -317,7 +297,7 @@ the below example or added into an existing statusline integration:
 
 ```vim
 ...
-set statusline+=%{metals#status()}\ " metals/status
+set statusline+=%{metals#status()}
 ...
 ```
 
