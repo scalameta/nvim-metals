@@ -32,14 +32,6 @@ nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
 " If you just use the latest stable version, then this setting isn't necessary
 let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
 
-" This is needed to enable completions
-autocmd FileType scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
-
-" Edit these to your liking. I use them to show in the signcolumn
-" rather than showing E and W
-let g:LspDiagnosticsErrorSign = '✘'
-let g:LspDiagnosticsWarningSign = ''
-
 "-----------------------------------------------------------------------------
 " lua callbacks
 "-----------------------------------------------------------------------------
@@ -90,26 +82,26 @@ nnoremap <silent> go          :OpenDiagnostic<CR>
 "-----------------------------------------------------------------------------
 " statusline function examples
 "-----------------------------------------------------------------------------
-" I set there here to reuse what I may have already set for the LSP
-" diagnostic signs in my signcolumn, if not use defaults
-let s:LspStatusLineErrorSign = get(g:, 'LspDiagnosticsErrorSign', 'E')
-let s:LspStatusWarningSign = get(g:, 'LspDiagnosticsWarningSign', 'W')
-
-" An examle that I use to show a sign plus count of errors in my statusline
+" I re-utilize the signs that you may have already set for `LspDiagnosticsErrorSign`
+" and `LspDiagnosticsWarningSign`, and if not give you defaults. If you're wondering
+" how to set these, look at the `call sign_define` examples down below.
 function! LspErrors() abort
   let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
   if (errorCount > 0)
-    return s:LspStatusDiagnosticErrorSign . errorCount
+    let possibleLspSign = sign_getdefined("LspDiagnosticsErrorSign")
+    let sign = get(possibleLspSign, 0, {"text": "E"})
+    return sign.text . errorCount
   else
     return ''
   endif
 endfunction
 
-" An examle that I use to show a sign plus count of warnings in my statusline
 function! LspWarnings() abort
   let warningCount = luaeval('vim.lsp.util.buf_diagnostics_count("Warning")')
   if (warningCount > 0)
-    return s:LspStatusDiagnosticWarningSign . warningCount
+    let possibleLspSign = sign_getdefined("LspDiagnosticsWarningSign")
+    let sign = get(possibleLspSign, 0, {"text": "W"})
+    return sign.text . warningCount
   else
     return ''
   endif
@@ -118,6 +110,15 @@ endfunction
 "-----------------------------------------------------------------------------
 " Helpful general settings, I recommend making sure these are set
 "-----------------------------------------------------------------------------
+" This is needed to enable completions
+autocmd FileType scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
+
+" Needed if you want to set your own gutter signs
+" NOTE: the `texthl` groups I created. You can use the defaults or create your
+" own to match your statusline for example
+call sign_define("LspDiagnosticsErrorSign", {"text" : "✘", "texthl" : "LspGutterError"})
+call sign_define("LspDiagnosticsWarningSign", {"text" : "", "texthl" : "LspGutterWarning"})
+
 " Set completeopt to have a better completion experience
 set completeopt=menuone,noinsert,noselect
 
