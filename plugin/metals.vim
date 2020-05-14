@@ -18,6 +18,28 @@ function! metals#status() abort
   return get(g:, 'metals_status', '')
 endfunction
 
+function! metals#errors() abort
+  let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
+  let possibleLspSign = sign_getdefined("LspDiagnosticsErrorSign")
+  let sign = get(possibleLspSign, 0, {"text": "E"})
+  if (errorCount > 0)
+    return sign.text . errorCount
+  else
+    return ''
+  endif
+endfunction
+
+function! metals#warnings() abort
+  let warningCount = luaeval('vim.lsp.util.buf_diagnostics_count("Warning")')
+  let possibleLspSign = sign_getdefined("LspDiagnosticsWarningSign")
+  let sign = get(possibleLspSign, 0, {"text": "W"})
+  if (warningCount > 0)
+    return sign.text . warningCount
+  else
+    return ''
+  endif
+endfunction
+
 let &cpo = s:save_cpo
 unlet s:save_cpo
 

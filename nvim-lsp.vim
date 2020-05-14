@@ -80,34 +80,6 @@ nnoremap <silent> ]c          :PrevDiagnostic<CR>
 nnoremap <silent> go          :OpenDiagnostic<CR>
 
 "-----------------------------------------------------------------------------
-" statusline function examples
-"-----------------------------------------------------------------------------
-" I re-utilize the signs that you may have already set for `LspDiagnosticsErrorSign`
-" and `LspDiagnosticsWarningSign`, and if not give you defaults. If you're wondering
-" how to set these, look at the `call sign_define` examples down below.
-function! LspErrors() abort
-  let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
-  if (errorCount > 0)
-    let possibleLspSign = sign_getdefined("LspDiagnosticsErrorSign")
-    let sign = get(possibleLspSign, 0, {"text": "E"})
-    return sign.text . errorCount
-  else
-    return ''
-  endif
-endfunction
-
-function! LspWarnings() abort
-  let warningCount = luaeval('vim.lsp.util.buf_diagnostics_count("Warning")')
-  if (warningCount > 0)
-    let possibleLspSign = sign_getdefined("LspDiagnosticsWarningSign")
-    let sign = get(possibleLspSign, 0, {"text": "W"})
-    return sign.text . warningCount
-  else
-    return ''
-  endif
-endfunction
-
-"-----------------------------------------------------------------------------
 " Helpful general settings, I recommend making sure these are set
 "-----------------------------------------------------------------------------
 " This is needed to enable completions

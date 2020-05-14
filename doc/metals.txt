@@ -214,4 +214,17 @@ metals#status()           Able to be used in your statusline to show status
                           to |on|, and the |metals/status| callback is set to
                           |metals_status|.
 
+                                                               *metals#errors()*
+metals#errors()          Meant to be used with a statusline integration. This
+                         will re-use the existing |LspDiagnosticsErrorSign|
+                         and |lsp.util.buf_diagnostics_count("Error")| to
+                         return a string of sign + count of errors in the
+                         current buffer.
+
+                                                             *metals#warnings()*
+metals#warnings()        Meant to be used with a statusline integration. This
+                         will re-use the existing |LspDiagnosticsWarningSign|
+                         and |lsp.util.buf_diagnostics_count("Warning")| to
+                         return a string of sign + count of warnings in the
+                         current buffer.
 vim:tw=80:ts=2:ft=help:
