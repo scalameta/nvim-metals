@@ -68,7 +68,7 @@ M["metals/quickPick"] = function(_, _, resp)
   local labels = {}
   for i, item in pairs(resp.items) do
     table.insert(ids, item.id)
-    table.insert(labels, i .. '- ' .. item.label )
+    table.insert(labels, i .. ' - ' .. item.label )
   end
 
   local choice = util.input_list(labels)
@@ -97,11 +97,27 @@ M['metals/executeClientCommand'] = function(_, _, cmd_request)
   end
 end
 
-M.new_scala_file = function(directory_opt)
+--[[
+directory_uri_opt: Path URI for the new file. Defaults to current path. e.g. 'file:///home/...'
+name_opt: Name for the scala file. e.g.: 'MyNewClass'. If nil, it's asked in an input box.
+--]]
+M.new_scala_file = function(directory_uri_opt, name_opt)
+  local args_string_array = {}
+  if directory_uri_opt then
+    table.insert(args_string_array, 1, directory_uri_opt)
+  else
+    table.insert(args_string_array, 1, vim.NIL)
+  end
+  if name_opt then
+    table.insert(args_string_array, 2, name_opt)
+  else
+    table.insert(args_string_array, 2, vim.NIL)
+  end
+
   execute_command({
-    command = 'metals.new-scala-file';
-    arguments = { directory = directory_opt}
-  })
+      command = 'metals.new-scala-file';
+      arguments = args_string_array
+    })
 end
 
 -- Thanks to @clason for this
