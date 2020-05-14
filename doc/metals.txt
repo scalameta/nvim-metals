@@ -40,7 +40,9 @@ following: >
 <
 
 Then continue to follow the nvim-lsp instructions to install Metals via
-|:LspInstall metals|.
+>
+:LspInstall metals
+<
 
 ================================================================================
 COMMANDS                                                       *metals-commands*

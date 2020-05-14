@@ -280,15 +280,15 @@ What I do in order to show warnings and errors in my statusline is the
 the following:
 
 ```vim
-" I already set `LspDiagnosticsErrorSign` to show the symbol I want in the
-" sign gutter, so I just re-use it here or assign it a default if not
-let s:LspStatusLineErrorSign = get(g:, 'LspDiagnosticsErrorSign', 'E')
-
-" I then just use this function to grab the errors that exist in the buffer
+" I re-utilize the signs that you may have already set for
+" `LspDiagnosticsErrorSign`, and if not give you defaults which are
+" displayed before the error total.
 function! LspErrors() abort
   let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
   if (errorCount > 0)
-    return s:LspStatusLineErrorSign . errorCount
+    let possibleLspSign = sign_getdefined("LspDiagnosticsErrorSign")
+    let sign = get(possibleLspSign, 0, {"text": "E"})
+    return sign.text . errorCount
   else
     return ''
   endif
