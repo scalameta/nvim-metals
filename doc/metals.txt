@@ -149,7 +149,7 @@ behavior. These can be used either globally or for only Metals.
 Example global usage: >
 
   local metals = require'metals'
-  lsp.callbacks['textDocument/hover'] = metals.hover_wrap
+  lsp.callbacks['textDocument/hover'] = metals['textDocument/hover']
 <
 
 Example usage for only Metals: >
@@ -158,13 +158,13 @@ Example usage for only Metals: >
   local metals = require'metals'
   nvim_lsp.metals.setup{
      callbacks = {
-      ["textDocument/hover"] = metals.hover_wrap
+      ["textDocument/hover"] = metals['textDocument/hover']
     }
   }
 <
 
-                                                                  *hover_wrap()*
-hover_wrap({err}, {method}, {result})
+                                                        *['textDocument/hover']*
+['textDocument/hover']({err}, {method}, {result})
                           Used to override the default ["textDocument/hover"]
                           callback since the default doesn't wrap lines.
 
@@ -173,11 +173,9 @@ hover_wrap({err}, {method}, {result})
                           {method} textDocument/hover
                           {result} hover results from the server
 
-                                                               *metals_status()*
-metals_status({err}, {method}, {result})
-                          Used to override the default ["textDocument/hover"]
-                          callback since the default doesn't wrap lines.
-
+                                                             *['metals/status']*
+['metals/status']({err}, {method}, {result})
+                          Used to enable handling of |metals/status|
 
                           Parameters:
                           {err}    Error
@@ -204,6 +202,55 @@ information is being displayed by your statusline by using the
     };
   }
 <
+
+                                                           *['metals/inputBox']*
+['metals/inputBox']({err}, {method}, {result})
+                          Used to enable handling of |metals/inputBox|
+
+                          Parameters:
+                          {err}    Error
+                          {method} metals/status
+                          {result} MetalsInputBoxParams
+
+The spec for this can be found here:
+
+https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox
+
+If you are using this, make sure to also set |inputBoxProvider| to true in
+your |init_options|
+
+                                                          *['metals/quickPick']*
+['metals/quickPick']({err}, {method}, {result})
+                          Used to enable handling of |metals/quickPick|
+
+                          Parameters:
+                          {err}    Error
+                          {method} metals/status
+                          {result} MetalsQuickPickParams 
+
+The spec for this can be found here:
+
+https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick
+
+If you are using this, make sure to also set |quickPickProvider| to true in
+your |init_options|
+
+                                               *['metals/executeClientCommand']*
+['metals/executeClientCommand']({err}, {method}, {result})
+                          Used to enable handling of
+                          |metals/executeClientCommand|
+
+                          Parameters:
+                          {err}    Error
+                          {method} metals/status
+                          {result} MetalsQuickPickParams 
+
+The spec for this can be found here:
+
+https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand
+
+If you are using this, make sure to also set |executeClientCommandProvider| to
+true in your |init_options|
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
 

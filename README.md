@@ -218,6 +218,7 @@ Command             |Description
 `:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
 `:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
 `:SourcesScan`      | Scan all workspace sources
+`:NewScalaFile`     | Create a new Scala file
 
 ## Custom Functions
 
@@ -251,7 +252,7 @@ using one of the custom callbacks nvim-metals provides would look like this:
 
 ```lua
 local metals = require'metals'
-lsp.callbacks['textDocument/hover'] = metals.hover_wrap
+lsp.callbacks['textDocument/hover'] = metals['textDocument/hover']
 ```
 
 Example usage for only Metals:
@@ -264,12 +265,15 @@ nvim_lsp.metals.setup{
 }
 ```
 
-Currently, the following callbacks are available:
+Currently, nvim-metals has the following callbacks that you can use:
 
-Callback            |Description
---------------------|-------------------------------------
-`hover_wrap()`      | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
-`metals_status()`   | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
+Callback                              |Description
+--------------------------------------|-------------------------------------
+metals['textDocument/hover']          | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
+metals['metals/statust']              | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
+metals['metals/inputBox']             | Used to provide handling for [`metals/inputBox`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox) **Needed for the `:NewScalaFile` command**
+metals['metals/quickPick']            | Used to provide handling for [`metals/quickPick`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick) **Needed for `:NewScalaFile` command**
+metals['metals/executeClientCommand'] | Used to provide handling for [`metals/exeexecuteClientCommand`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand) **Needed for the `:NewScalaFile` command**
 
 ## Statusline integration
 

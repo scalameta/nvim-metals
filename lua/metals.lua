@@ -123,7 +123,7 @@ end
 -- Thanks to @clason for this
 -- This can be used to override the default ["textDocument/hover"]
 -- in order to wrap the hover on long methods
-M.hover_wrap = function(_, method, result)
+M['textDocument/hover'] = function(_, method, result)
     local opts = {
       pad_left = 1;
       pad_right = 1;
@@ -174,7 +174,7 @@ end
 -- picked up and used in a statusline.
 -- Command and Tooltip are not covered from the spec.
 -- https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
-M.metals_status = function(_, _, params)
+M['metals/status'] = function(_, _, params)
   if params.hide then
     vim.api.nvim_set_var('metals_status', '')
   else
