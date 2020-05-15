@@ -5,9 +5,9 @@ local util = require'metals.util'
 local M = {}
 
 local function execute_command(command, callback)
-  vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, _, resp)
+  vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, method, resp)
     if callback then
-      callback(err, resp)
+      callback(err, method, resp)
     elseif err then
       print('Could not execute command: ' .. err.message)
     end
@@ -61,6 +61,63 @@ M.sources_scan = function()
   execute_command({
     command = 'metals.sources-scan';
   })
+end
+
+M["metals/quickPick"] = function(_, _, resp)
+  local ids = {}
+  local labels = {}
+  for i, item in pairs(resp.items) do
+    table.insert(ids, item.id)
+    table.insert(labels, i .. ' - ' .. item.label )
+  end
+
+  local choice = util.input_list(labels)
+  if (choice == 0) then
+    print("\nmetals: operation cancelled")
+    return { cancelled = true; }
+  else
+    return { itemId = ids[choice] }
+  end
+end
+
+M['metals/inputBox'] = function(_, _, resp)
+    local name = util.input_box(resp.prompt .. ': ')
+
+    if (name == '') then
+      print("\nmetals: operation cancelled")
+      return { cancelled = true; }
+    else
+      return { value = name; }
+    end
+end
+
+M['metals/executeClientCommand'] = function(_, _, cmd_request)
+  if cmd_request.command == 'metals-goto-location' then
+    lsp.util.jump_to_location(cmd_request.arguments[1])
+  end
+end
+
+--[[
+directory_uri_opt: Path URI for the new file. Defaults to current path. e.g. 'file:///home/...'
+name_opt: Name for the scala file. e.g.: 'MyNewClass'. If nil, it's asked in an input box.
+--]]
+M.new_scala_file = function(directory_uri_opt, name_opt)
+  local args_string_array = {}
+  if directory_uri_opt then
+    table.insert(args_string_array, 1, directory_uri_opt)
+  else
+    table.insert(args_string_array, 1, vim.NIL)
+  end
+  if name_opt then
+    table.insert(args_string_array, 2, name_opt)
+  else
+    table.insert(args_string_array, 2, vim.NIL)
+  end
+
+  execute_command({
+      command = 'metals.new-scala-file';
+      arguments = args_string_array
+    })
 end
 
 -- Thanks to @clason for this

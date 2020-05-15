@@ -120,4 +120,30 @@ M.path = (function()
   }
 end)()
 
+---- UI. Probably this should be a separate ui.lua module if this grows.
+---- CMD based UI:
+M.input_box = function(prompt)
+  return vim.fn.input(prompt)
+end
+
+M.input_list = function( options)
+  return vim.fn.inputlist(options)
+end
+---------------------------------------------------------------------
+
+-- TODO: See if nvim provides similar debugging function
+M.to_string = function(o)
+   if type(o) == 'table' then
+      local s = '{ '
+      for k,v in pairs(o) do
+         if type(k) ~= 'number' then k = '"'..k..'"' end
+         s = s .. '['..k..'] = ' .. M.to_string(v) .. ','
+       end
+      return s .. '} '
+   else
+      return tostring(o)
+   end
+end
+
 return M
+

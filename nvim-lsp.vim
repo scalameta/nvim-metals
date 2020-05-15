@@ -52,10 +52,16 @@ let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
       -- If you set this, make sure to have the `metals#status()` function
       -- in your statusline, or you won't see any status messages
       statusBarProvider = "on";
+      inputBoxProvider  = true;
+      quickPickProvider = true;
+      executeClientCommandProvider = true;
     };
     callbacks = {
       ["textDocument/hover"] = metals.hover_wrap;
-      ["metals/status"] = metals.metals_status;
+      ["metals/status"]      = metals.metals_status;
+      ["metals/inputBox"]    = metals['metals/inputBox'];
+      ["metals/quickPick"]   = metals['metals/quickPick'];
+      ["metals/executeClientCommand"] = metals["metals/executeClientCommand"];
     };
   }
 EOF
