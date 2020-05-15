@@ -37,8 +37,8 @@ let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
 "-----------------------------------------------------------------------------
 :lua << EOF
   local nvim_lsp = require'nvim_lsp'
-  local metals = require'metals'
-  local M = {}
+  local metals   = require'metals'
+  local M        = {}
 
   M.on_attach = function()
       require'diagnostic'.on_attach()
@@ -46,21 +46,21 @@ let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
     end
 
   nvim_lsp.metals.setup{
-    on_attach = M.on_attach;
-    root_dir = metals.root_pattern("build.sbt", "build.sc");
+    on_attach    = M.on_attach;
+    root_dir     = metals.root_pattern("build.sbt", "build.sc");
     init_options = {
       -- If you set this, make sure to have the `metals#status()` function
       -- in your statusline, or you won't see any status messages
-      statusBarProvider = "on";
-      inputBoxProvider  = true;
-      quickPickProvider = true;
+      statusBarProvider            = "on";
+      inputBoxProvider             = true;
+      quickPickProvider            = true;
       executeClientCommandProvider = true;
     };
     callbacks = {
-      ["textDocument/hover"] = metals.hover_wrap;
-      ["metals/status"]      = metals.metals_status;
-      ["metals/inputBox"]    = metals['metals/inputBox'];
-      ["metals/quickPick"]   = metals['metals/quickPick'];
+      ["textDocument/hover"]          = metals['textDocument/hover'];
+      ["metals/status"]               = metals['metals/status'];
+      ["metals/inputBox"]             = metals['metals/inputBox'];
+      ["metals/quickPick"]            = metals['metals/quickPick'];
       ["metals/executeClientCommand"] = metals["metals/executeClientCommand"];
     };
   }
