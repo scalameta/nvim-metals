@@ -25,6 +25,7 @@ nnoremap <silent> gr          <cmd>lua vim.lsp.buf.references()<CR>
 nnoremap <silent> gs          <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 nnoremap <silent> <leader>rn  <cmd>lua vim.lsp.buf.rename()<CR>
 nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
+nnoremap <silent> <leader>ca  <cmd>lua vim.lsp.buf.code_action()<CR>
 
 "-----------------------------------------------------------------------------
 " nvim-lsp Settings

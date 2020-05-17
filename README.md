@@ -379,8 +379,6 @@ import your build.
     https://github.com/neovim/neovim/issues/11710
 - Multiline `textEdits` aren't being applied correctly. You can track this
     issue here: https://github.com/neovim/neovim/issues/12195
-- `textDocument/codeAction` is not yet supported. You can follow the progress
-    here: https://github.com/neovim/neovim/pull/11607
 - The Quickfix List opens at times in an odd position (to the bottom right of
     your viewport). You can follow a feature request to discuss this here:
     https://github.com/neovim/neovim/issues/12241
@@ -388,7 +386,9 @@ import your build.
     Metals this means things like the `s` getting added in front of a string
     during a completion to make it an interpolated string won't work as
     expected. You can follow this issue here:
-    https://github.com/neovim/neovim/issues/12310
+    https://github.com/neovim/neovim/issues/12310 **However, if you're using
+    the nvim-completion plugin, this does take `additionalTextEdits` into
+    account for completion items**
 
 ## Troubleshooting
 
