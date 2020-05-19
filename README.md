@@ -260,7 +260,7 @@ Example usage for only Metals:
 local metals = require'metals'
 nvim_lsp.metals.setup{
   callbacks = {
-    ["textDocument/hover"] = metals.hover_wrap
+    ['textDocument/hover'] = metals['textDocument/hover']
   }
 }
 ```
