@@ -19,7 +19,7 @@ more feature-full and stable Metals + Nvim experience.
 If you're a `coc-metals` user and want to try this but are worried about
 `coc.nvim` and the built-in LSP conflicting in any way, take a look at how I
 handle this [in the
-wiki](https://github.com/ckipp01/nvim-metals/wiki/Try-nvim-metals-without-conflicting-with-coc-metals)
+wiki](https://github.com/scalameta/nvim-metals/wiki/Try-nvim-metals-without-conflicting-with-coc-metals)
 
 ## Table of Contents
   - [Prerequisites](#prerequisites)
@@ -69,7 +69,7 @@ I'll use that as an example:
 call plug#begin('~/.vim/plugged')
   " Main necessary plugins
   Plug 'neovim/nvim-lsp'
-  Plug 'ckipp01/nvim-metals'
+  Plug 'scalameta/nvim-metals'
   " Complementary plugins that I recommend and will go over down below
   Plug 'haorenW1025/completion-nvim'
   Plug 'haorenW1025/diagnostic-nvim'
@@ -270,7 +270,7 @@ Currently, nvim-metals has the following callbacks that you can use:
 Callback                              |Description
 --------------------------------------|-------------------------------------
 metals['textDocument/hover']          | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
-metals['metals/statust']              | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
+metals['metals/status']              | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
 metals['metals/inputBox']             | Used to provide handling for [`metals/inputBox`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox) **Needed for the `:NewScalaFile` command**
 metals['metals/quickPick']            | Used to provide handling for [`metals/quickPick`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick) **Needed for `:NewScalaFile` command**
 metals['metals/executeClientCommand'] | Used to provide handling for [`metals/exeexecuteClientCommand`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand) **Needed for the `:NewScalaFile` command**
