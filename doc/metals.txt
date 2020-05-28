@@ -70,9 +70,6 @@ Format                     Format the current buffer utilizing. (Make sure to
                                                                   *MetalsDoctor*
 MetalsDoctor               Run Metals Doctor, which will open in your browser.
 
-                                                                  *MetalsDoctor*
-MetalsDoctor               Run Metals Doctor, which will open in your browser.
-
                                                                *MetalsLogToggle*
 MetalsLogsToggle          Opens the embedded Nvim terminal tailing the
                           |.metals/metals.log| file in your worksapce. If
