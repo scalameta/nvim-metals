@@ -33,13 +33,13 @@ M.build_restart = function()
 end
 
 M.compile_cascade = function()
-  M.execute_command({
+  execute_command({
     command = 'metals.compile-cascade';
   })
 end
 
 M.doctor_run = function()
-  M.execute_command({
+  execute_command({
     command = 'metals.doctor-run';
   })
 end
