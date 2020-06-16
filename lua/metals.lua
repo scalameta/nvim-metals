@@ -5,10 +5,7 @@ local util = require'metals.util'
 
 local M = {}
 
-M.decoration = {
-  namespace = api.nvim_create_namespace('metals_decoration');
-  color     = 'conceal';
-}
+local decoration_namespace = api.nvim_create_namespace('metals_decoration');
 
 local function execute_command(command, callback)
   vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, method, resp)
@@ -202,7 +199,7 @@ end
 
 M['metals/publishDecorations'] = function(err, _, decorations)
   if err then
-    print("metals.publishDecorations: Server error:", err)
+    print("metals.publishDecorations: Server error")
   end
   if not decorations then
     return
@@ -221,10 +218,12 @@ M['metals/publishDecorations'] = function(err, _, decorations)
     return
   end
 
-  api.nvim_buf_clear_namespace(bufnr, M.decoration.namespace, 0, -1)
+  local decoration_color = vim.g.metals_decoration_color
+
+  api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
 
   for _, deco in ipairs(decorations.options) do
-    util.set_decoration(bufnr, M.decoration.namespace, deco, M.decoration.color)
+    util.set_decoration(bufnr, decoration_namespace, deco, decoration_color)
   end
 end
 
