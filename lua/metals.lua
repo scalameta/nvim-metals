@@ -14,6 +14,18 @@ local function execute_command(command, callback)
   end)
 end
 
+M.ammonite_end = function()
+  execute_command({
+    command = 'metals.ammonite-end'
+  })
+end
+
+M.ammonite_start = function()
+  execute_command({
+    command = 'metals.ammonite-start'
+  })
+end
+
 M.build_connect = function()
   execute_command({
     command = 'metals.build-connect';
