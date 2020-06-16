@@ -36,7 +36,7 @@ PREREQUISITES                                             *metals-prerequisites*
 In order to install the latest snapshot of metals, you'll need to set the
 following: >
 
-  let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+  let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
 <
 
 Then continue to follow the nvim-lsp instructions to install Metals via
@@ -49,6 +49,11 @@ COMMANDS                                                       *metals-commands*
 
 The following commands are provided by nvim-metals.
 
+                                                                   *AmmoniteEnd*
+AmmoniteEnd               End the Ammonite BSP Server.
+
+                                                                 *AmmoniteStart*
+AmmoniteStart             Start the Ammonite BSP Server.
 
                                                                    *BuildImport*
 BuildImport                 Trigger an import for the current workspace.
@@ -93,6 +98,12 @@ following. >
 
   nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 <
+
+                                                                *ammonite_end()*
+ammonite_end()            Use to execute a |metals.ammonite-end| command.
+
+                                                              *ammonite_start()*
+ammonite_start()          Use to execute a |metals.ammonite-start| command.
 
                                                                *build_connect()*
 build_connect()           Use to execute a |metals.build-connect| command.

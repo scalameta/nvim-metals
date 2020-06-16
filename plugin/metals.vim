@@ -14,6 +14,8 @@ command! Format lua vim.lsp.buf.formatting()
 command! MetalsDoctor lua require'metals'.doctor_run()
 command! MetalsLogsToggle lua require'metals'.logs_toggle()
 command! NewScalaFile lua require'metals'.new_scala_file()
+command! AmmoniteStart lua require'metals'.ammonite_start()
+command! AmmoniteEnd lua require'metals'.ammonite_end()
 
 function! metals#status() abort
   return get(g:, 'metals_status', '')

@@ -31,7 +31,7 @@ nnoremap <silent> <leader>ca  <cmd>lua vim.lsp.buf.code_action()<CR>
 " nvim-lsp Settings
 "-----------------------------------------------------------------------------
 " If you just use the latest stable version, then this setting isn't necessary
-let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
+let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
 
 "-----------------------------------------------------------------------------
 " lua callbacks
@@ -48,7 +48,7 @@ let g:metals_server_version = '0.9.0+18-27d4652a-SNAPSHOT'
 
   nvim_lsp.metals.setup{
     on_attach    = M.on_attach;
-    root_dir     = metals.root_pattern("build.sbt", "build.sc");
+    root_dir     = metals.root_pattern("build.sbt", "build.sc", ".git");
     init_options = {
       -- If you set this, make sure to have the `metals#status()` function
       -- in your statusline, or you won't see any status messages

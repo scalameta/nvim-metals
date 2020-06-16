@@ -6,7 +6,7 @@ This is a WIP [Metals](https://scalameta.org/metals/) plugin and guide for Nvim
 users utilizing the [Nvim built-in LSP
 module](https://neovim.io/doc/user/lsp.html). The goal of this plugin is to
 provide with the extra functionality that you need for Metals and the rest will
-serve as a guide and an example.
+serve as a guide and example.
 
 Keep in mind that the level of support is rapidly changing, there are bugs, and
 there are missing features. Some of this is changing daily, so expect stuff to
@@ -89,7 +89,7 @@ the installation, set this, and then install again. Hopefully this process will
 be smoother in the future.
 
 ```vim
-let g:metals_server_version = '0.8.4+106-5f2b9350-SNAPSHOT'
+let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
 ```
 
 ```vim
@@ -151,7 +151,7 @@ instructions, but you'd set them up like the following:
 EOF
 ```
 
-**Fair warning, they installation is probably all going to change.**
+**Fair warning, the installation is probably all going to change.**
 In you following the conversation
 [here](https://github.com/neovim/nvim-lsp/issues/200), you'll notice a couple
 things.
@@ -210,6 +210,8 @@ Currently, the following commands are available:
 
 Command             |Description
 --------------------|-------------------------------------
+`:AmmoniteEnd`      | Stop the Ammonite Build Server
+`:AmmoniteStart`    | Start the Ammonite Build Server for use with Ammonite scripts
 `:BuildImport`      | Import the build
 `:BuildConnect`     | Manually connect to the build server
 `:BuildRestart`     | Restart the build server
@@ -233,7 +235,7 @@ function to override the `root_dir` function like below:
 ```lua
 local metals = require'metals'
 nvim_lsp.metals.setup{
-  root_dir = metals.root_pattern("build.sbt", "build.sc");
+  root_dir = metals.root_pattern("build.sbt", "build.sc", ".git");
 }
 ```
 
@@ -270,7 +272,7 @@ Currently, nvim-metals has the following callbacks that you can use:
 Callback                              |Description
 --------------------------------------|-------------------------------------
 metals['textDocument/hover']          | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
-metals['metals/status']              | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
+metals['metals/status']               | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
 metals['metals/inputBox']             | Used to provide handling for [`metals/inputBox`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox) **Needed for the `:NewScalaFile` command**
 metals['metals/quickPick']            | Used to provide handling for [`metals/quickPick`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick) **Needed for `:NewScalaFile` command**
 metals['metals/executeClientCommand'] | Used to provide handling for [`metals/exeexecuteClientCommand`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand) **Needed for the `:NewScalaFile` command**
@@ -357,10 +359,6 @@ the docs to get an idea of all the options.
 ```vim
 Plug 'haorenW1025/diagnostic-nvim'
 ```
-
-**Keep in mind that both of these plugins are under active development as well
-and things are likely to change**.
-
 
 ## Importing your build
 
