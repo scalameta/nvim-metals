@@ -48,6 +48,7 @@ let g:metals_decoration_color = 'Conceal'
   M.on_attach = function()
       require'diagnostic'.on_attach()
       require'completion'.on_attach()
+      setup.auto_commands()
     end
 
   nvim_lsp.metals.setup{
@@ -61,6 +62,7 @@ let g:metals_decoration_color = 'Conceal'
       quickPickProvider            = true;
       executeClientCommandProvider = true;
       decorationProvider           = true;
+      didFocusProvider             = true;
     };
 
     on_init = setup.on_init;
@@ -72,8 +74,10 @@ let g:metals_decoration_color = 'Conceal'
       ["metals/quickPick"]            = metals['metals/quickPick'];
       ["metals/executeClientCommand"] = metals["metals/executeClientCommand"];
       ["metals/publishDecorations"]   = metals["metals/publishDecorations"];
+      ["metals/didFocusTextDocument"] = metals["metals/didFocusTextDocument"];
     };
   }
+
 EOF
 
 "-----------------------------------------------------------------------------
