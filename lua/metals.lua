@@ -1,8 +1,11 @@
 local lsp = vim.lsp
 local vim = vim
+local api = vim.api
 local util = require'metals.util'
 
 local M = {}
+
+local decoration_namespace = api.nvim_create_namespace('metals_decoration');
 
 local function execute_command(command, callback)
   vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, method, resp)
@@ -191,6 +194,36 @@ M['metals/status'] = function(_, _, params)
     vim.api.nvim_set_var('metals_status', '')
   else
     vim.api.nvim_set_var('metals_status', params.text)
+  end
+end
+
+M['metals/publishDecorations'] = function(err, _, decorations)
+  if err then
+    print("metals.publishDecorations: Server error")
+  end
+  if not decorations then
+    return
+  end
+
+  local uri = decorations.uri
+  local bufnr = vim.uri_to_bufnr(uri)
+  if not bufnr then
+    print("metals.publishDecorations: Couldn't find buffer for ", uri)
+    return
+  end
+
+  -- Unloaded buffers should not handle diagnostics.
+  --    When the buffer is loaded, we'll call on_attach, which sends textDocument/didOpen.
+  if not api.nvim_buf_is_loaded(bufnr) then
+    return
+  end
+
+  local decoration_color = vim.g.metals_decoration_color
+
+  api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
+
+  for _, deco in ipairs(decorations.options) do
+    util.set_decoration(bufnr, decoration_namespace, deco, decoration_color)
   end
 end
 

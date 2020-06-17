@@ -47,3 +47,7 @@ let &cpo = s:save_cpo
 unlet s:save_cpo
 
 let g:nvim_metals_loaded = 1
+
+if ! exists('g:metals_decoration_color')
+    let g:metals_decoration_color = 'Conceal'
+endif

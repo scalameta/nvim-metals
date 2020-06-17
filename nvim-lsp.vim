@@ -33,12 +33,16 @@ nnoremap <silent> <leader>ca  <cmd>lua vim.lsp.buf.code_action()<CR>
 " If you just use the latest stable version, then this setting isn't necessary
 let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
 
+" Decoration color. Available options shown by :highlights
+let g:metals_decoration_color = 'Conceal'
+
 "-----------------------------------------------------------------------------
 " lua callbacks
 "-----------------------------------------------------------------------------
 :lua << EOF
   local nvim_lsp = require'nvim_lsp'
   local metals   = require'metals'
+  local setup    = require'metals.setup'
   local M        = {}
 
   M.on_attach = function()
@@ -56,13 +60,18 @@ let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
       inputBoxProvider             = true;
       quickPickProvider            = true;
       executeClientCommandProvider = true;
+      decorationProvider           = true;
     };
+
+    on_init = setup.on_init;
+
     callbacks = {
       ["textDocument/hover"]          = metals['textDocument/hover'];
       ["metals/status"]               = metals['metals/status'];
       ["metals/inputBox"]             = metals['metals/inputBox'];
       ["metals/quickPick"]            = metals['metals/quickPick'];
       ["metals/executeClientCommand"] = metals["metals/executeClientCommand"];
+      ["metals/publishDecorations"]   = metals["metals/publishDecorations"];
     };
   }
 EOF
