@@ -65,8 +65,6 @@ let g:metals_decoration_color = 'Conceal'
       didFocusProvider             = true;
     };
 
-    on_init = setup.on_init;
-
     callbacks = {
       ["textDocument/hover"]          = metals['textDocument/hover'];
       ["metals/status"]               = metals['metals/status'];
