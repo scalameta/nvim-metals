@@ -227,4 +227,15 @@ M['metals/publishDecorations'] = function(err, _, decorations)
   end
 end
 
+-- Notify the server when document has been focused
+-- This needs to be called in the appropriate autocommand, i.e. FocusGained
+M.did_focus = function()
+  local focused_uri = vim.uri_from_bufnr(0)
+  vim.lsp.buf_request(0, 'metals/didFocusTextDocument', focused_uri, function(err, _, _)
+    if err then
+      print('metals/didFocusTextDocument: Server Error')
+    end
+  end)
+end
+
 return M
