@@ -1,3 +1,4 @@
+local api = vim.api
 local validate = vim.validate
 local uv = vim.loop
 
@@ -125,7 +126,7 @@ M.set_decoration = function(bufnr, decoration_ns, decoration, color)
   local text = decoration.renderOptions.after.contentText
   local virt_texts = {}
   table.insert(virt_texts, {text, color})
-  vim.api.nvim_buf_set_virtual_text(bufnr, decoration_ns, line, virt_texts, {})
+  api.nvim_buf_set_virtual_text(bufnr, decoration_ns, line, virt_texts, {})
 end
 
 ---- UI. Probably this should be a separate ui.lua module if this grows.

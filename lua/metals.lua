@@ -1,5 +1,4 @@
 local lsp = vim.lsp
-local vim = vim
 local api = vim.api
 local util = require'metals.util'
 
@@ -60,16 +59,16 @@ M.doctor_run = function()
 end
 
 M.logs_toggle = function()
-  local bufs = vim.api.nvim_list_bufs()
+  local bufs = api.nvim_list_bufs()
   for _,v in ipairs(bufs) do
-    local buftype = vim.api.nvim_buf_get_option(v, 'buftype')
+    local buftype = api.nvim_buf_get_option(v, 'buftype')
     if buftype == "terminal" then
       print('Logs are already opened. Try an :ls to see where it is.')
       return
     end
   end
   -- Only open them if a terminal isn't already open
-  vim.api.nvim_command [[vsp term://tail -f .metals/metals.log]]
+  api.nvim_command [[vsp term://tail -f .metals/metals.log]]
 end
 
 M.sources_scan = function()
@@ -154,11 +153,11 @@ M['textDocument/hover'] = function(_, method, result)
         end
         local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
         lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, winnr)
-        local hover_len = #vim.api.nvim_buf_get_lines(bufnr,0,-1,false)[1]
-        local win_width = vim.api.nvim_win_get_width(0)
+        local hover_len = #api.nvim_buf_get_lines(bufnr,0,-1,false)[1]
+        local win_width = api.nvim_win_get_width(0)
         if hover_len > win_width then
-            vim.api.nvim_win_set_width(winnr,math.min(hover_len,win_width))
-            vim.api.nvim_win_set_height(winnr,math.ceil(hover_len/win_width))
+            api.nvim_win_set_width(winnr,math.min(hover_len,win_width))
+            api.nvim_win_set_height(winnr,math.ceil(hover_len/win_width))
             vim.wo[winnr].wrap = true
         end
         return bufnr, winnr
@@ -191,9 +190,9 @@ end
 -- https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
 M['metals/status'] = function(_, _, params)
   if params.hide then
-    vim.api.nvim_set_var('metals_status', '')
+    api.nvim_set_var('metals_status', '')
   else
-    vim.api.nvim_set_var('metals_status', params.text)
+    api.nvim_set_var('metals_status', params.text)
   end
 end
 
