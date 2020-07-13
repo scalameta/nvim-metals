@@ -1,5 +1,6 @@
 local lsp = vim.lsp
 local api = vim.api
+local decoration = require'metals.decoration'
 local util = require'metals.util'
 
 local M = {}
@@ -212,7 +213,7 @@ M['metals/publishDecorations'] = function(err, _, decorations)
   end
 
   -- Unloaded buffers should not handle diagnostics.
-  --    When the buffer is loaded, we'll call on_attach, which sends textDocument/didOpen.
+  -- When the buffer is loaded, we'll call on_attach, which sends textDocument/didOpen.
   if not api.nvim_buf_is_loaded(bufnr) then
     return
   end
@@ -220,9 +221,11 @@ M['metals/publishDecorations'] = function(err, _, decorations)
   local decoration_color = vim.g.metals_decoration_color
 
   api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
+  decoration.clear_hover_messages()
 
   for _, deco in ipairs(decorations.options) do
-    util.set_decoration(bufnr, decoration_namespace, deco, decoration_color)
+    decoration.set_decoration(bufnr, decoration_namespace, deco, decoration_color)
+    decoration.store_hover_message(deco)
   end
 end
 
