@@ -10,9 +10,10 @@ CONTENTS                                                           *nvim-metals*
     0. Introduction ......... |metals-introduction|
     1. Prerequisites......... |metals-prerequisites|
     2. Commands.............. |metals-commands|
-    3. LUA API............... |metals-api|
-    4. Custom Callbacks...... |metals-custom-callbacks|
-    5. Functions............. |metals-functions|
+    3. LUA API............... |metals-lua-api|
+    4. DECORATION API........ |metals-decoration-api|
+    5. Custom Callbacks...... |metals-custom-callbacks|
+    6. Functions............. |metals-functions|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -147,6 +148,18 @@ You use this be overriding the default |root_dir| like below: >
     root_dir = metals.root_pattern("build.sbt", "build.sc");
   }
 <
+
+================================================================================
+DECORATION API                                           *metals-decoration-api*
+
+The following decoration module functions are used for various decoration
+protocol related things.
+  https://scalameta.org/metals/docs/editors/decoration-protocol.html
+
+                                                          *show_hover_message()*
+show_hover_message()     Use to expand the decoration to show the full hover
+                         message that was returned from the decoration.
+
 ================================================================================
 CUSTOM CALLBACKS                                       *metals-custom-callbacks*
 
