@@ -154,13 +154,7 @@ M['textDocument/hover'] = function(_, method, result)
         end
         local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
         lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, winnr)
-        local hover_len = #api.nvim_buf_get_lines(bufnr,0,-1,false)[1]
-        local win_width = api.nvim_win_get_width(0)
-        if hover_len > win_width then
-            api.nvim_win_set_width(winnr,math.min(hover_len,win_width))
-            api.nvim_win_set_height(winnr,math.ceil(hover_len/win_width))
-            vim.wo[winnr].wrap = true  -- luacheck: ignore 122
-        end
+        util.wrap_hover(bufnr, winnr)
         return bufnr, winnr
     end)
 end
