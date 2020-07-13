@@ -3,7 +3,7 @@ local util = require 'vim.lsp.util'
 
 local M = {}
 
-M.hover_messages = {}
+local hover_messages = {}
 
 M.set_decoration = function(bufnr, decoration_ns, decoration, color)
   local line = decoration.range["end"].line
@@ -17,12 +17,12 @@ M.store_hover_message = function(decoration)
   local hover_line = decoration.range["end"].line + 1
   local hover_message  = util.convert_input_to_markdown_lines(decoration.hoverMessage)
   hover_message = util.trim_empty_lines(hover_message)
-  M.hover_messages[hover_line] = hover_message
+  hover_messages[hover_line] = hover_message
 end
 
 M.show_hover_message = function()
   local row, _ = unpack(api.nvim_win_get_cursor(0))
-  local hover_message = M.hover_messages[row]
+  local hover_message = hover_messages[row]
 
   if hover_message == nil then
     return
@@ -37,12 +37,12 @@ M.show_hover_message = function()
   if hover_len > win_width then
       api.nvim_win_set_width(winnr,math.min(hover_len,win_width))
       api.nvim_win_set_height(winnr,math.ceil(hover_len/win_width))
-      vim.wo[winnr].wrap = true
+      vim.wo[winnr].wrap = true -- luacheck: ignore 122
   end
 end
 
 M.clear_hover_messages = function()
-  M.hover_messages = {}
+  hover_messages = {}
 end
 
 return M

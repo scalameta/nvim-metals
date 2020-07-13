@@ -89,7 +89,7 @@ the installation, set this, and then install again. Hopefully this process will
 be smoother in the future.
 
 ```vim
-let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
+let g:metals_server_version = '0.9.1+22-2e59f225-SNAPSHOT'
 ```
 
 ```vim

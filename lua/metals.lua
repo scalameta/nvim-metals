@@ -159,7 +159,7 @@ M['textDocument/hover'] = function(_, method, result)
         if hover_len > win_width then
             api.nvim_win_set_width(winnr,math.min(hover_len,win_width))
             api.nvim_win_set_height(winnr,math.ceil(hover_len/win_width))
-            vim.wo[winnr].wrap = true
+            vim.wo[winnr].wrap = true  -- luacheck: ignore 122
         end
         return bufnr, winnr
     end)
