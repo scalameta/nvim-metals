@@ -3,14 +3,14 @@
 # nvim-metals
 
 This is a WIP [Metals](https://scalameta.org/metals/) plugin and guide for Nvim
-users utilizing the [Nvim built-in LSP
+users wanting to utilize the [Nvim built-in LSP
 module](https://neovim.io/doc/user/lsp.html). The goal of this plugin is to
-provide with the extra functionality that you need for Metals and the rest will
-serve as a guide and example.
+provide the extra functionality that you need for Metals and the rest will serve
+as a guide and example.
 
-Keep in mind that the level of support is rapidly changing, there are bugs, and
-there are missing features. Some of this is changing daily, so expect stuff to
-break without warning or change.
+_NOTE:_ Keep in mind that the level of support is rapidly changing, there are bugs, and
+there are a lot of missing features. Some of this is changing daily, *so expect
+stuff to break without warning or change*.
 
 If you're first getting starting with Metals, consider using
 [coc-metals](https://github.com/scalameta/coc-metals) if you're looking for a
@@ -26,16 +26,11 @@ wiki](https://github.com/scalameta/nvim-metals/wiki/Try-nvim-metals-without-conf
       - [Plugins](#plugins)
   - [Getting Started](#getting-started)
   - [Settings and Mappings](#settings-and-mappings)
-      - [Custom Mappings](#custom-mappings)
   - [Available Commands](#available-commands)
   - [Custom Functions](#custom-functions)
   - [Custom Callbacks](#custom-callbacks)
   - [Statusline Integration](#statusline-integration)
-  - [Complementary Plugins](#complementary-plugins)
-      - [Completions](#completions)
-      - [Diagnostics](#diagnostics)
   - [Importing Your Build](#importing-your-build)
-  - [Known Limitations](#known-limitations)
   - [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
@@ -67,14 +62,17 @@ I'll use that as an example:
 
 ```vim
 call plug#begin('~/.vim/plugged')
-  " Main necessary plugins
+  " Necessary plugins
   Plug 'neovim/nvim-lsp'
   Plug 'scalameta/nvim-metals'
-  " Complementary plugins that I recommend and will go over down below
-  Plug 'haorenW1025/completion-nvim'
-  Plug 'haorenW1025/diagnostic-nvim'
 call plug#end()
 ```
+
+_NOTE_: Some of the default LSP functionality is a bit rough around the edges,
+so take a look at some of the complimentary plugins out there. I have some
+listed in the [Example
+Configuration](https://github.com/scalameta/nvim-metals/wiki/Example-Configuration)
+in the wiki.
 
 ## Getting started
 
@@ -89,7 +87,7 @@ the installation, set this, and then install again. Hopefully this process will
 be smoother in the future.
 
 ```vim
-let g:metals_server_version = '0.9.1+22-2e59f225-SNAPSHOT'
+let g:metals_server_version = '0.9.4+18-744ffa6f-SNAPSHOT'
 ```
 
 ```vim
@@ -117,43 +115,30 @@ If it's installed, you should see something like the following:
 ```
 
 Make sure to take a look at the [`setup()`
-function](https://github.com/neovim/nvim-lsp#setup-function) which will show you
-how to override certain values or add extra settings. You can see all of the
-default Metals values in the [readme](https://github.com/neovim/nvim-lsp#metals)
-or checkout
-[nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/metals.lua).
+function](https://github.com/neovim/nvim-lspconfig#setup-function) which will
+show you how to override certain values or add extra settings. You can see all
+of the default Metals values in the
+[readme](https://github.com/neovim/nvim-lsp#metals) or checkout
+[nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lspconfig/blob/master/lua/nvim_lsp/metals.lua).
 
-If you don't want any of the extra stuff the other plugins offer, then just copy
-the mappings under the [**nvim-lsp Mappings**](./nvim-lsp.vim) section to get
-the mappings, add in the `autocmd` to get you completions (that you'll need to
-trigger yourself without the plugin). Then you can just use the default setup
-like below which uses all defaults:
+Once installed, you'll need to set up mappings for all of the common LSP
+functionality. I have an example of what this looks like along with some
+examples of how to use complementary plugins in the [wiki under
+Example-Configuration](https://github.com/scalameta/nvim-metals/wiki/Example-Configuration).
+
+If you'd want no other functionality than to use all the defaults you'd just
+have the following:
 
 ```lua
 require'nvim_lsp'.metals.setup{}
 ```
 
-However, I recommend that you use a few related plugins for a much better
-experience. If you're using extra nvim lsp plugins, they should have good
-instructions, but you'd set them up like the following:
-
-```lua
-:lua << EOF
-  local nvim_lsp = require'nvim_lsp'
-  local M = {}
-  M.on_attach = function()
-      require'diagnostic'.on_attach() -- needed for the diagnostic plugin
-      require'completion'.on_attach() -- needed for the completion plugin
-    end
-  nvim_lsp.metals.setup{
-    on_attach = M.on_attach
-  }
-EOF
-```
+However, this won't leave you with the best experience so it's recommended to
+look through the example configuration and the possible additional plugins.
 
 **Fair warning, the installation is probably all going to change.**
 In you following the conversation
-[here](https://github.com/neovim/nvim-lsp/issues/200), you'll notice a couple
+[here](https://github.com/neovim/nvim-lspconfig/issues/200), you'll notice a couple
 things.
 
 1. There is an automated way to install, but not uninstall or update
@@ -165,37 +150,10 @@ right in this plugin.
 
 ## Settings and Mappings
 
-Some very basic things are enabled by default, like in-line diagnostics, but
-you'll want a basic configuration for things like finding definitions and
-references. The [nvim-lsp.vim](./nvim-lsp.vim) file has examples of these along
-with some settings for the other complementary plugins. _These are opinionated_,
-and catered to my work flow. There are also a two other plugin settings under
-`completion-nvim` and `diagnostic-nvim` headings. Those plugins, which are
-outlined below must also be installed for those settings to work.  The idea of
-me including this file is for you to use them as a base or an example and to
-then build off of them or change them to your liking. They also serve as an
-example of how to use `lua` in your configuration if you're not familiar with
-them. They also have a few vim configurations that I'd argue are important for
-you to not go insane (like having `set signcolumn=yes`). Again, edit this to
-your liking. They are just in here as an example.
-
-```vim
-nnoremap <silent> gd <cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap <silent> K  <cmd>lua vim.lsp.buf.hover()<CR>
-```
-
-You can sort of assume what many of the mappings do, but you can find more info
-on the available options by doing `:h lsp-config`. There is a lot of great info
-in the `lsp` section of the docs, but also keep in mind that things are often
-changing and many sections are just bare with `TODOs`.
-
-The mappings I've included are a combination of what Metals supports and also
-what Nvim LSP supports.
-## Custom Mappings
-
-If you'd like to add a custom mapping instead of using the commands, you're free
-to do so. For example, let's say we wanted to add a custom mapping for
-`BuildImport`, you could by doing the following:
+In addition to the mappings in the wiki, you can also create custom mappings to
+utilize some of the commands that this plugin offers. For example, let's say we
+wanted to add a custom mapping for `BuildImport`, you could by doing the
+following:
 
 ```vim
 nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
@@ -206,21 +164,7 @@ This would allow you to do `<leader>bi` to trigger an import, the same way
 
 ## Available Commands
 
-Currently, the following commands are available:
-
-Command             |Description
---------------------|-------------------------------------
-`:AmmoniteEnd`      | Stop the Ammonite Build Server
-`:AmmoniteStart`    | Start the Ammonite Build Server for use with Ammonite scripts
-`:BuildImport`      | Import the build
-`:BuildConnect`     | Manually connect to the build server
-`:BuildRestart`     | Restart the build server
-`:CompileCascade`   | Compile current open file along with all build targets that depend on it
-`:Format`           | Format current buffer **Make sure to have a .scalafmt.conf**
-`:MetalsDoctor`     | Run Metals Doctor, which will open in your browser
-`:MetalsLogsToggle` | Opens the embedded terminal to view metals logs
-`:SourcesScan`      | Scan all workspace sources
-`:NewScalaFile`     | Create a new Scala file
+To view all of the available commands, check out `:h metals-commands`.
 
 ## Custom Functions
 
@@ -241,9 +185,11 @@ nvim_lsp.metals.setup{
 
 This `root_pattern()` function is almost identical to the one that is in
 `nvim-lsp`, but it adds in the ability to check to ensure that there isn't
-another build file in the parent directory. *If you are only using nvim-metals
+another build file in the parent directory.
+
+_NOTE:_ If you are only using nvim-metals
 with projects that only ever have one build file, then there is no need to set
-this.*
+this.
 
 ## Custom Callbacks
 
@@ -267,15 +213,8 @@ nvim_lsp.metals.setup{
 }
 ```
 
+To view all of the custom callbacks, check out `:h metals-custom-callbacks`.
 Currently, nvim-metals has the following callbacks that you can use:
-
-Callback                              |Description
---------------------------------------|-------------------------------------
-metals['textDocument/hover']          | The default floating window for hovers do not wrap for long text. This hover implementation will wrap for you.
-metals['metals/status']               | Used as a callback to enable `metals/status`. In order to use this, you need to make sure you also override `statusBarProvider` to `on` in your `init_options`.
-metals['metals/inputBox']             | Used to provide handling for [`metals/inputBox`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox) **Needed for the `:NewScalaFile` command**
-metals['metals/quickPick']            | Used to provide handling for [`metals/quickPick`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick) **Needed for `:NewScalaFile` command**
-metals['metals/executeClientCommand'] | Used to provide handling for [`metals/exeexecuteClientCommand`](https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand) **Needed for the `:NewScalaFile` command**
 
 ## Statusline integration
 
@@ -307,104 +246,19 @@ set statusline+=%{metals#status()}
 ...
 ```
 
-## Complementary Plugins
-
-I've listed two external plugins in the examples that help the diagnostic and
-completion experience. The Nvim LSP integration exposes a bunch of callbacks
-that allow for easy customization. As far as I know the idea isn't to make an
-extremely polished experience out of the box with Nvim LSP, but rather offer a
-solid core that allows you to define custom callbacks for how you want to handle
-these things. The idea is that this plugin will offer you all the necessary
-Metals specific settings, while also allowing other plugins to offer the thing
-they do best. This follows the [Unix
-philosophy](https://en.wikipedia.org/wiki/Unix_philosophy) of tools doing one
-thing, doing them well, and interfacing well with others.
-
-### Completions
-
-Taken from the docs:
-
-> Nvim provides the _vim.lsp.omnifunc_ 'omnifunc' handler which allows
-_i_CTRL-X_CTRL-O_ to consume LSP completion. Example config (note the use of
-_v:lua_ to call Lua from Vimscript):
-
-```vim
-" Use LSP omni-completion in Scala files.
-autocmd Filetype scala setlocal omnifunc=v:lua.vim.lsp.omnifunc
-```
-
-This will give you completion in Scala files, but you'd need to trigger them
-using `i_CTRL-X_CTRL-O`, which you may not want. This is why I include the
-following plugin:
-
-- [completion-nvim](https://github.com/haorenW1025/completion-nvim)
-
-```vim
-Plug 'haorenW1025/completion-nvim'
-```
-This plugin will give you completion automatically in the floating window as
-your typing. I have a few other settings listed which allow you to use `<Tab>`
-to navigate the popup menu.
-
-### Diagnostics
-
-The diagnostics plugin I include mainly allows for easy settings and
-customization for how your diagnostics are displayed. For example you can delay
-the syntactic diagnostics that Metals provides while typing when you're in
-insert mode. You can choose to display them as virtual text or not. Read through
-the docs to get an idea of all the options.
-
-- [diagnostic-nvim](https://github.com/haorenW1025/diagnostic-nvim)
-
-```vim
-Plug 'haorenW1025/diagnostic-nvim'
-```
-
 ## Importing your build
 
 **You need to do this before any Metals functionality will work**
 
-Since `window/showMessageRequest` is not yet supported in the nvim LSP module,
+Since `window/showMessageRequest` is not yet supported in the Nvim LSP module,
 you need to trigger this manually. As you would normally, open your project and
 then issue a `:BuildImport` command which will send the request to Metals to
 import your build.
 
-## Known limitations
-
-- There is no `window/showMessageRequest` so you'll never get prompted to import
-    your build. Another issue is that if you do a `:Format` request and don't have
-    a .scalafmt.conf file, it will error out. There is an issue for this here:
-    https://github.com/neovim/neovim/issues/11710
-- Multiline `textEdits` aren't being applied correctly. You can track this
-    issue here: https://github.com/neovim/neovim/issues/12195
-- The Quickfix List opens at times in an odd position (to the bottom right of
-    your viewport). You can follow a feature request to discuss this here:
-    https://github.com/neovim/neovim/issues/12241
-- `additionalTextEdits` are not taken into account in `CompletionItem`. In
-    Metals this means things like the `s` getting added in front of a string
-    during a completion to make it an interpolated string won't work as
-    expected. You can follow this issue here:
-    https://github.com/neovim/neovim/issues/12310 **However, if you're using
-    the nvim-completion plugin, this does take `additionalTextEdits` into
-    account for completion items**
-
 ## Troubleshooting
 
-If you're using the built-in LSP support you may have to do a bit of
-troubleshooting. It may not always be easy to tell if the issue is coming from
-missing LSP support or misconfiguration between Metals and Nvim. Here are a
-couple pointers on tracking down the issue.
-
-- Use `:MetalsLogsToggle` which will open the embedded Nvim terminal tailing the
-    `.metals/metals.log` file. Take a look in there for something odd. More than
-    likely if something isn't working, it will have blown up and you'll see a
-    hint here.
-- If you see an error flash in your terminal and you want to see what it was,
-    `:messages` is your friend to find it.
-- Read through the [Known Limitation](#known-limitations) again to make sure
-    it's not something that is documented not working.
-- If you really want to get deep into debugging, create a [JSON-RPC trace
-    file](https://scalameta.org/metals/docs/contributors/getting-started.html#json-rpc-trace)
-    and then you can `tail` the communication between the Nvim LSP client the
-    Metals server.
-- When in doubt, just submit and issue, and we'll dive in together.
+Before submitting an issue, check out the
+[Troubleshooting](https://github.com/scalameta/nvim-metals/wiki/Troubleshooting)
+and [known
+limitations](https://github.com/scalameta/nvim-metals/wiki/Known-limitations)
+section of the wiki.
