@@ -12,8 +12,9 @@ CONTENTS                                                           *nvim-metals*
     2. Commands.............. |metals-commands|
     3. LUA API............... |metals-lua-api|
     4. DECORATION API........ |metals-decoration-api|
-    5. Custom Callbacks...... |metals-custom-callbacks|
-    6. Functions............. |metals-functions|
+    5. DIAGNOSTIC API........ |metals-decoration-api|
+    6. Custom Callbacks...... |metals-custom-callbacks|
+    7. Functions............. |metals-functions|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -159,6 +160,18 @@ protocol related things.
                                                           *show_hover_message()*
 show_hover_message()     Use to expand the decoration to show the full hover
                          message that was returned from the decoration.
+
+================================================================================
+DIAGNOSTIC API                                           *metals-decoration-api*
+
+Functions related to LSP diagnostics received via `textDocument/publishDiagnostics`
+
+open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
+                         for all buffers and opens it.
+                         WARNING: Automatic updates in the quickfix for new
+                         diagnostics are not yet implemented.
+                         After opening the quickfix, in order to refesh diagnostics
+                         the function must be called again.
 
 ================================================================================
 CUSTOM CALLBACKS                                       *metals-custom-callbacks*
