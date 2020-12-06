@@ -22,7 +22,7 @@ function! metals#status() abort
 endfunction
 
 function! metals#errors() abort
-  let errorCount = luaeval('vim.lsp.util.buf_diagnostics_count("Error")')
+  let errorCount = luaeval("vim.lsp.diagnostic.get_count(vim.fn.bufnr('%'), [[Error]])")
   let possibleLspSign = sign_getdefined("LspDiagnosticsErrorSign")
   let sign = get(possibleLspSign, 0, {"text": "E"})
   if (errorCount > 0)
@@ -33,7 +33,7 @@ function! metals#errors() abort
 endfunction
 
 function! metals#warnings() abort
-  let warningCount = luaeval('vim.lsp.util.buf_diagnostics_count("Warning")')
+  let warningCount = luaeval("vim.lsp.diagnostic.get_count(vim.fn.bufnr('%'), [[Warning]])")
   let possibleLspSign = sign_getdefined("LspDiagnosticsWarningSign")
   let sign = get(possibleLspSign, 0, {"text": "W"})
   if (warningCount > 0)

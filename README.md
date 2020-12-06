@@ -28,7 +28,7 @@ wiki](https://github.com/scalameta/nvim-metals/wiki/Try-nvim-metals-without-conf
   - [Settings and Mappings](#settings-and-mappings)
   - [Available Commands](#available-commands)
   - [Custom Functions](#custom-functions)
-  - [Custom Callbacks](#custom-callbacks)
+  - [Custom Handlers](#custom-handlers)
   - [Statusline Integration](#statusline-integration)
   - [Importing Your Build](#importing-your-build)
   - [Troubleshooting](#troubleshooting)
@@ -52,9 +52,9 @@ NVIM v0.5.0-3de9452
 ### Plugins
 
 Apart from this plugin, you'll also want to have the
-[neovim/nvim-lsp](https://github.com/neovim/nvim-lsp) plugin installed. For now,
-this plugin offers automated installation and some default configurations for
-Metals.
+[neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) plugin
+installed. For now, this plugin offers automated installation and some default
+configurations for Metals.
 
 Use whichever plugin manager to install both.
 [vim-plug](https://github.com/junegunn/vim-plug) is probably the most common, so
@@ -63,7 +63,7 @@ I'll use that as an example:
 ```vim
 call plug#begin('~/.vim/plugged')
   " Necessary plugins
-  Plug 'neovim/nvim-lsp'
+  Plug 'neovim/nvim-lspconfig'
   Plug 'scalameta/nvim-metals'
 call plug#end()
 ```
@@ -87,7 +87,7 @@ the installation, set this, and then install again. Hopefully this process will
 be smoother in the future.
 
 ```vim
-let g:metals_server_version = '0.9.4+18-744ffa6f-SNAPSHOT'
+let g:metals_server_version = '0.9.7+18-744ffa6f-SNAPSHOT'
 ```
 
 ```vim
@@ -107,8 +107,8 @@ If it's installed, you should see something like the following:
 ```vim
 {
   metals = {
-    cmd = { "/Users/ckipp/.cache/nvim/nvim_lsp/metals/metals" },
-    install_dir = "/Users/ckipp/.cache/nvim/nvim_lsp/metals",
+    cmd = { "/Users/ckipp/.cache/nvim/lspconfig/metals/metals" },
+    install_dir = "/Users/ckipp/.cache/nvim/lspconfig/metals",
     is_installed = "file"
   }
 }
@@ -118,8 +118,8 @@ Make sure to take a look at the [`setup()`
 function](https://github.com/neovim/nvim-lspconfig#setup-function) which will
 show you how to override certain values or add extra settings. You can see all
 of the default Metals values in the
-[readme](https://github.com/neovim/nvim-lsp#metals) or checkout
-[nvim-lsp/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lspconfig/blob/master/lua/nvim_lsp/metals.lua).
+[readme](https://github.com/neovim/nvim-lspconfig#metals) or checkout
+[nvim-lspconfig/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/metals.lua).
 
 Once installed, you'll need to set up mappings for all of the common LSP
 functionality. I have an example of what this looks like along with some
@@ -130,7 +130,7 @@ If you'd want no other functionality than to use all the defaults you'd just
 have the following:
 
 ```lua
-require'nvim_lsp'.metals.setup{}
+require'lspconfig'.metals.setup{}
 ```
 
 However, this won't leave you with the best experience so it's recommended to
@@ -191,30 +191,30 @@ _NOTE:_ If you are only using nvim-metals
 with projects that only ever have one build file, then there is no need to set
 this.
 
-## Custom Callbacks
+## Custom Handlers
 
-The Nvim LSP module heavily relies on callback for each type of message that it
-receives from the server. These can all be overridden and customized. You can
-either override them globally, or just for Metals. An example of global override
-using one of the custom callbacks nvim-metals provides would look like this:
+The Nvim LSP module heavily relies on handlers (previously called callbacks) for
+each type of message that it receives from the server. These can all be
+overridden and customized. You can either override them globally, or just for
+Metals. An example of global override using one of the custom handlers
+nvim-metals provides would look like this:
 
 ```lua
 local metals = require'metals'
-lsp.callbacks['textDocument/hover'] = metals['textDocument/hover']
+lsp.handlers['textDocument/hover'] = metals['textDocument/hover']
 ```
 
 Example usage for only Metals:
 ```lua
 local metals = require'metals'
-nvim_lsp.metals.setup{
-  callbacks = {
+lspconfig.metals.setup{
+  handlers = {
     ['textDocument/hover'] = metals['textDocument/hover']
   }
 }
 ```
 
-To view all of the custom callbacks, check out `:h metals-custom-callbacks`.
-Currently, nvim-metals has the following callbacks that you can use:
+To view all of the custom handlers, check out `:h metals-custom-handlers`.
 
 ## Statusline integration
 
