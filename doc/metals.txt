@@ -162,9 +162,10 @@ show_hover_message()     Use to expand the decoration to show the full hover
                          message that was returned from the decoration.
 
 ================================================================================
-DIAGNOSTIC API                                           *metals-decoration-api*
+DIAGNOSTIC API                                           *metals-diagnostic-api*
 
-Functions related to LSP diagnostics received via `textDocument/publishDiagnostics`
+Functions related to LSP diagnostics received via
+`textDocument/publishDiagnostics`
 
 open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          for all buffers and opens it.
