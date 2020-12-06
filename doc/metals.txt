@@ -13,7 +13,7 @@ CONTENTS                                                           *nvim-metals*
     3. LUA API............... |metals-lua-api|
     4. DECORATION API........ |metals-decoration-api|
     5. DIAGNOSTIC API........ |metals-decoration-api|
-    6. Custom Callbacks...... |metals-custom-callbacks|
+    6. Custom Handlers....... |metals-custom-handlers|
     7. Functions............. |metals-functions|
 
 ================================================================================
@@ -38,7 +38,7 @@ PREREQUISITES                                             *metals-prerequisites*
 In order to install the latest snapshot of metals, you'll need to set the
 following: >
 
-  let g:metals_server_version = '0.9.0+236-8d0924af-SNAPSHOT'
+  let g:metals_server_version = '0.9.7+236-8d0924af-SNAPSHOT'
 <
 
 Then continue to follow the nvim-lsp instructions to install Metals via
@@ -170,28 +170,28 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          for all buffers and opens it.
                          WARNING: Automatic updates in the quickfix for new
                          diagnostics are not yet implemented.
-                         After opening the quickfix, in order to refesh diagnostics
-                         the function must be called again.
+                         After opening the quickfix, in order to refesh
+                         diagnostics the function must be called again.
 
 ================================================================================
-CUSTOM CALLBACKS                                       *metals-custom-callbacks*
+CUSTOM HANDLERS                                         *metals-custom-handlers*
 
-The following are callbacks that users are able to utilize for Metals LSP
-extensions or to override existing Nvim LSP callbacks to improve the default
+The following are handlers that users are able to utilize for Metals LSP
+extensions or to override existing Nvim LSP handlers to improve the default
 behavior. These can be used either globally or for only Metals.
 
 Example global usage: >
 
   local metals = require'metals'
-  lsp.callbacks['textDocument/hover'] = metals['textDocument/hover']
+  lsp.handlers['textDocument/hover'] = metals['textDocument/hover']
 <
 
 Example usage for only Metals: >
 
-  local nvim_lsp = require'nvim_lsp'
+  local lspconfig = require'lspconfig'
   local metals = require'metals'
-  nvim_lsp.metals.setup{
-     callbacks = {
+  lspconfig.metals.setup{
+     handlers = {
       ["textDocument/hover"] = metals['textDocument/hover']
     }
   }
