@@ -4,6 +4,24 @@ local uv = vim.loop
 
 local M = {}
 
+-- A replacement for the default `root_dir` function for metals. This is useful
+-- if you have a sbt/maven/gradle build that has nested build files. The default
+-- will not recognized this and instead re-initialize when you don't want it to.
+M.find_root_dir = function(patterns, startpath)
+  -- TODO I don't think this flatten in needed
+  -- local patterns = vim.tbl_flatten {patterns}
+  local function matcher(path)
+    for _, pattern in ipairs(patterns) do
+      local target = M.path.join(path, pattern)
+      local parent_target = M.path.join(M.path.dirname(path), pattern)
+      if M.path.exists(target) and not M.path.exists(parent_target) then
+        return path
+      end
+    end
+  end
+  return M.search_ancestors(startpath, matcher)
+end
+
 M.search_ancestors = function(startpath, func)
   validate { func = {func, 'f'} }
   if func(startpath) then return startpath end
