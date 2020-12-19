@@ -1,5 +1,5 @@
 local api = vim.api
-local lsp = require'vim.lsp'
+local lsp = require 'vim.lsp'
 
 local M = {}
 
@@ -10,8 +10,8 @@ local M = {}
 --]]
 M.open_all_diagnostics = function()
   lsp.util.set_qflist(M.get_all_lsp_diagnostics_as_qfitems())
-  api.nvim_command("copen")
-  api.nvim_command("wincmd p")
+  api.nvim_command('copen')
+  api.nvim_command('wincmd p')
 end
 
 -- Collects all LSP buffer diagnostic lists and flattens them into a quick-fix item list
@@ -28,23 +28,23 @@ M.get_all_lsp_diagnostics_as_qfitems = function()
       local item = {
         bufrn = bufnr,
         filename = vim.uri_to_fname(uri),
-        text  = d.message,
-        lnum  = d.range.start.line + 1,
-        col   = d.range.start.character + 1
+        text = d.message,
+        lnum = d.range.start.line + 1,
+        col = d.range.start.character + 1
       }
       if d.severity == 1 then
         item.type = 'E'
-        qfitems[#qfitems+1] = item
+        qfitems[#qfitems + 1] = item
 
       elseif d.severity == 2 then
         item.type = 'W'
-        warnings[#warnings+1] = item
+        warnings[#warnings + 1] = item
       end
     end
   end
 
-  for i=1,#warnings do
-    qfitems[#qfitems+1] = warnings[i]
+  for i = 1, #warnings do
+    qfitems[#qfitems + 1] = warnings[i]
   end
   return qfitems
 end

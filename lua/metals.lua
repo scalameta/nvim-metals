@@ -1,5 +1,5 @@
 local api = vim.api
-local setup = require'metals.setup'
+local setup = require 'metals.setup'
 
 local M = {}
 
@@ -16,52 +16,38 @@ local function execute_command(command, callback)
 end
 
 M.ammonite_end = function()
-  execute_command({
-    command = 'metals.ammonite-end'
-  })
+  execute_command({command = 'metals.ammonite-end'})
 end
 
 M.ammonite_start = function()
-  execute_command({
-    command = 'metals.ammonite-start'
-  })
+  execute_command({command = 'metals.ammonite-start'})
 end
 
 M.build_connect = function()
-  execute_command({
-    command = 'metals.build-connect';
-  })
+  execute_command({command = 'metals.build-connect'})
 end
 
 M.build_import = function()
-   execute_command({
-    command = "metals.build-import";
-  })
+  execute_command({command = 'metals.build-import'})
 end
 
 M.build_restart = function()
-  execute_command({
-    command = 'metals.build-restart';
-  })
+  execute_command({command = 'metals.build-restart'})
 end
 
 M.compile_cascade = function()
-  execute_command({
-    command = 'metals.compile-cascade';
-  })
+  execute_command({command = 'metals.compile-cascade'})
 end
 
 M.doctor_run = function()
-  execute_command({
-    command = 'metals.doctor-run';
-  })
+  execute_command({command = 'metals.doctor-run'})
 end
 
 M.logs_toggle = function()
   local bufs = api.nvim_list_bufs()
-  for _,v in ipairs(bufs) do
+  for _, v in ipairs(bufs) do
     local buftype = api.nvim_buf_get_option(v, 'buftype')
-    if buftype == "terminal" then
+    if buftype == 'terminal' then
       print('Logs are already opened. Try an :ls to see where it is.')
       return
     end
@@ -71,9 +57,7 @@ M.logs_toggle = function()
 end
 
 M.sources_scan = function()
-  execute_command({
-    command = 'metals.sources-scan';
-  })
+  execute_command({command = 'metals.sources-scan'})
 end
 
 --[[
@@ -93,10 +77,7 @@ M.new_scala_file = function(directory_uri_opt, name_opt)
     table.insert(args_string_array, 2, vim.NIL)
   end
 
-  execute_command({
-      command = 'metals.new-scala-file';
-      arguments = args_string_array
-    })
+  execute_command({command = 'metals.new-scala-file', arguments = args_string_array})
 end
 
 -- Notify the server when document has been focused

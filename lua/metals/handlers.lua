@@ -1,38 +1,38 @@
 local api = vim.api
-local decoration = require'metals.decoration'
+local decoration = require 'metals.decoration'
 local lsp = vim.lsp
-local util = require'metals.util'
+local util = require 'metals.util'
 
 local M = {}
 
 local decoration_namespace = api.nvim_create_namespace('metals_decoration');
 
-M["metals/quickPick"] = function(_, _, resp)
+M['metals/quickPick'] = function(_, _, resp)
   local ids = {}
   local labels = {}
   for i, item in pairs(resp.items) do
     table.insert(ids, item.id)
-    table.insert(labels, i .. ' - ' .. item.label )
+    table.insert(labels, i .. ' - ' .. item.label)
   end
 
   local choice = util.input_list(labels)
   if (choice == 0) then
-    print("\nmetals: operation cancelled")
-    return { cancelled = true; }
+    print('\nmetals: operation cancelled')
+    return {cancelled = true}
   else
-    return { itemId = ids[choice] }
+    return {itemId = ids[choice]}
   end
 end
 
 M['metals/inputBox'] = function(_, _, resp)
-    local name = util.input_box(resp.prompt .. ': ')
+  local name = util.input_box(resp.prompt .. ': ')
 
-    if (name == '') then
-      print("\nmetals: operation cancelled")
-      return { cancelled = true; }
-    else
-      return { value = name; }
-    end
+  if (name == '') then
+    print('\nmetals: operation cancelled')
+    return {cancelled = true}
+  else
+    return {value = name}
+  end
 end
 
 M['metals/executeClientCommand'] = function(_, _, cmd_request)
@@ -42,24 +42,21 @@ M['metals/executeClientCommand'] = function(_, _, cmd_request)
 end
 
 M['textDocument/hover'] = function(_, method, result)
-    local opts = {
-      pad_left = 1;
-      pad_right = 1;
-    }
-    lsp.util.focusable_float(method, function()
-        if not (result and result.contents) then
-            return
-        end
-        local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
-        markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
-        if vim.tbl_isempty(markdown_lines) then
-            return
-        end
-        local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
-        lsp.util.close_preview_autocmd({"CursorMoved", "BufHidden", "InsertCharPre"}, winnr)
-        util.wrap_hover(bufnr, winnr)
-        return bufnr, winnr
-    end)
+  local opts = {pad_left = 1, pad_right = 1}
+  lsp.util.focusable_float(method, function()
+    if not (result and result.contents) then
+      return
+    end
+    local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
+    markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
+    if vim.tbl_isempty(markdown_lines) then
+      return
+    end
+    local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
+    lsp.util.close_preview_autocmd({'CursorMoved', 'BufHidden', 'InsertCharPre'}, winnr)
+    util.wrap_hover(bufnr, winnr)
+    return bufnr, winnr
+  end)
 end
 
 -- Callback function to handle `metals/status`
@@ -77,7 +74,7 @@ end
 
 M['metals/publishDecorations'] = function(err, _, decorations)
   if err then
-    print("metals.publishDecorations: Server error")
+    print('metals.publishDecorations: Server error')
   end
   if not decorations then
     return
@@ -86,7 +83,7 @@ M['metals/publishDecorations'] = function(err, _, decorations)
   local uri = decorations.uri
   local bufnr = vim.uri_to_bufnr(uri)
   if not bufnr then
-    print("metals.publishDecorations: Couldn't find buffer for ", uri)
+    print('metals.publishDecorations: Couldn\'t find buffer for ', uri)
     return
   end
 
