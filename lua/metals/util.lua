@@ -1,4 +1,5 @@
 local api = vim.api
+local fn = vim.fn
 local validate = vim.validate
 local uv = vim.loop
 
@@ -167,22 +168,17 @@ end
 M.input_list = function(options)
   return vim.fn.inputlist(options)
 end
----------------------------------------------------------------------
 
--- TODO: See if nvim provides similar debugging function
-M.to_string = function(o)
-  if type(o) == 'table' then
-    local s = '{ '
-    for k, v in pairs(o) do
-      if type(k) ~= 'number' then
-        k = '"' .. k .. '"'
-      end
-      s = s .. '[' .. k .. '] = ' .. M.to_string(v) .. ','
+-- Checks to see if an executable is present for single or list of executables
+-- Note that give a list, if any is not found, this will return false
+-- Also, this is stolen from the nvim/nvim-lspconfig utils.
+M.has_bins = function(...)
+  for i = 1, select("#", ...) do
+    if 0 == fn.executable((select(i, ...))) then
+      return false
     end
-    return s .. '} '
-  else
-    return tostring(o)
   end
+  return true
 end
 
 return M

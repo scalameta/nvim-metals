@@ -1,7 +1,9 @@
 local api = vim.api
 local lsp = vim.lsp
+local fn = vim.fn
 local util = require 'metals.util'
 local handlers = require 'metals.handlers'
+local uv = vim.loop
 
 --[[
   Facilities to help modularize the metals plugin config
@@ -10,17 +12,19 @@ local M = {}
 local lsps = {}
 
 M.initialize_or_attach = function(config)
-  assert(config, 'Make sure you have a config. If you want the defaults, just use {}')
-  -- should we add a check here for a table to ensure there is a config
+  assert(config and type(config) == 'table',
+         'Your config must be a table. If you are just using the default, use {}')
 
-  if (vim.g.metals_server_version) then
-    server_version = vim.g.metals_server_version
-  else
-    server_version = 'latest.release'
+  if util.has_bins('cs') then
+    coursier_exe = 'cs'
+  elseif util.has_bins('coursier') then
+    coursier_exe = 'coursier'
   end
 
+  assert(coursier_exe,
+         'Coursier must be installed to use nvim-metals. You can find installation instruction here: https://get-coursier.io/docs/cli-installation')
+
   config.name = config.name or 'metals'
-  config.cmd = {'metals'}
 
   local bufnr = api.nvim_get_current_buf()
   local bufname = api.nvim_buf_get_name(bufnr)
@@ -37,6 +41,30 @@ M.initialize_or_attach = function(config)
       end
     end
   end
+
+  if (vim.g.metals_server_version) then
+    server_version = vim.g.metals_server_version
+  else
+    server_version = 'latest.release'
+  end
+
+  -- TODO some of the stuff can probably just go into utils
+  local nvim_metals_cache_dir = util.path.join{fn.stdpath("cache"), "nvim-metals"}
+  local metals_bin = util.path.join{nvim_metals_cache_dir, config.name}
+
+  if not uv.fs_stat(nvim_metals_cache_dir) then
+    os.execute('mkdir -p ' .. nvim_metals_cache_dir)
+  end
+
+  local get_cmd = string.format(
+                      '%s bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:%s -r bintray:scalacenter/releases -r sonatype:snapshots -o %s -f',
+                      coursier_exe,
+                      server_version,
+                      metals_bin)
+
+  vim.fn.system(get_cmd)
+
+  config.cmd = {'metals'}
 
   -- TODO change example to use a table
   config.root_patterns = config.root_patterns or
