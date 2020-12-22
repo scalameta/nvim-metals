@@ -4,6 +4,7 @@ local validate = vim.validate
 local uv = vim.loop
 
 local M = {}
+
 -- A replacement for the default `root_dir` function for metals. This is useful
 -- if you have a sbt/maven/gradle build that has nested build files. The default
 -- will not recognized this and instead re-initialize when you don't want it to.
