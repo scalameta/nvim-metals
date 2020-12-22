@@ -5,6 +5,7 @@ local M = {}
 
 M.initialize_or_attach = setup.initialize_or_attach
 
+-- General function used to execute various server commands.
 local function execute_command(command, callback)
   vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, method, resp)
     if callback then

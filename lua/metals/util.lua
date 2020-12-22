@@ -5,9 +5,12 @@ local uv = vim.loop
 
 local M = {}
 
--- A replacement for the default `root_dir` function for metals. This is useful
--- if you have a sbt/maven/gradle build that has nested build files. The default
--- will not recognized this and instead re-initialize when you don't want it to.
+--[[
+A replacement for the default `root_dir` function that nvim-lspconfig
+provides. This is useful if you have a sbt/maven/gradle build that has
+nested build files. The default will not recognized this and instead
+re-initialize when you don't want it to.
+--]]
 M.find_root_dir = function(patterns, startpath)
   -- TODO I don't think this flatten in needed
   -- local patterns = vim.tbl_flatten {patterns}
@@ -35,10 +38,7 @@ M.search_ancestors = function(startpath, func)
   end
 end
 
--- Some path utilities
--- This is taken verbatim from nvim-lsp, but since I don't want to directly
--- require their utils module in here, it lives here for the time being.
--- https://github.com/neovim/nvim-lsp/blob/master/lua/nvim_lsp/util.lua
+-- This is taken verbatim from nvim-lspconfig to help with various path utils
 M.path = (function()
   local function exists(filename)
     local stat = uv.fs_stat(filename)
