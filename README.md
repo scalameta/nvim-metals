@@ -31,13 +31,18 @@ more feature-full and stable Metals + Nvim experience.
 
 ## Prerequisites
 
-Before you get started you need to ensure that you have the nightly/development
-build of Nvim. LSP support hasn't landed in stable yet. You can find
-instructions for how to do this for you OS
-[here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
-re-build often as LSP support is changing daily. The easiest way to ensure
-you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
-then it didn't work. You're looking for `v0.5.x`:
+- Before you get started you need to ensure that you have the nightly/development
+    build of Nvim. LSP support hasn't landed in stable yet. You can find
+    instructions for how to do this for you OS
+    [here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
+    re-build often as LSP support is changing daily. The easiest way to ensure
+    you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
+    then it didn't work. You're looking for `v0.5.x`:
+- Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
+    on your machine. nvim-metals uses Coursier to download and update Metals.
+- Remove `F` from `shortmess`. `set shortmess-=F` _NOTE_: Without doing this,
+    autocommands that deal with filetypes prohibit messages from being shown...
+    and since we heavily rely on this, this _must_ be set.
 
 ```vim
 ❯ nvim --version
@@ -88,6 +93,13 @@ snapshot, you can set it like so:
 
 ```vim
 let g:metals_server_version = '0.9.7+18-744ffa6f-SNAPSHOT'
+```
+
+_NOTE_: If you didn't see a prompt to install metals, make sure you have the
+following set and try again.
+
+```vim
+set shortmess-=F
 ```
 
 Keep in mind that when a new version of Metals comes out or when you change this
