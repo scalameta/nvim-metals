@@ -1,28 +1,8 @@
 ---
 name: ❓ Question
-about: Ask a question about nvim-metals
-labels: "question"
+about: This issue tracker is for issues only, please ask your question [here instead](https://github.com/scalameta/nvim-metals/discussions/new)
+title: This issue tracker is for issues only, please ask your question [here instead](https://github.com/scalameta/nvim-metals/discussions/new)
 ---
 
-**Question**
-
-<!-- Your question -->
-
-**Screenshots**
-
-<!-- If applicable, add screenshots to help explain your problem. -->
-
-**Installation:**
-
-- Operating system: macOS/Windows/Linux
-- Nvim version:
-- Commit of nvim-metals: af357ef
-- Metals version:
-
-**Additional context**
-
-<!-- Add any other context about the question here. -->
-
-**Search terms**
-
-<!-- Help other people discover your question by writing words they might search for. -->
+This issue tracker is for issues only, please ask your question [here
+instead](https://github.com/scalameta/nvim-metals/discussions/new) instead.
