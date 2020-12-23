@@ -117,7 +117,7 @@ M['metals/publishDecorations'] = function(err, _, decorations)
     return
   end
 
-  local decoration_color = vim.g.metals_decoration_color
+  local decoration_color = vim.g.metals_decoration_color or 'Conceal'
 
   api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
   decoration.clear_hover_messages()
