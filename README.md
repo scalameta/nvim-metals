@@ -19,15 +19,13 @@ more feature-full and stable Metals + Nvim experience.
 
 ## Table of Contents
   - [Prerequisites](#prerequisites)
-      - [Plugins](#plugins)
+  - [Installation](#installation)
   - [Getting Started](#getting-started)
   - [Settings and Mappings](#settings-and-mappings)
-  - [Available Commands](#available-commands)
-  - [Custom Functions](#custom-functions)
-  - [Custom Handlers](#custom-handlers)
+  - [Available Commands and Options](#available-commands-and-options)
+  - [Metals Handlers](#metals-handlers)
   - [Statusline Integration](#statusline-integration)
   - [Importing Your Build](#importing-your-build)
-  - [Troubleshooting](#troubleshooting)
 
 ## Prerequisites
 
@@ -167,7 +165,7 @@ nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 This would allow you to do `<leader>bi` to trigger an import, the same way
 `:MetalsBuildImport` does.
 
-### Available Commands and Options
+## Available Commands and Options
 
 To view all of the available commands, check out `:h metals-commands` in the
 help docs. Similarly, to see the available configuration options, check out `h

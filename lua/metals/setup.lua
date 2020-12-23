@@ -16,7 +16,7 @@ local nvim_metals_cache_dir = util.path.join {fn.stdpath('cache'), 'nvim-metals'
 -- TODO in the future, it might be nice to provide an alternative to this so that
 -- a user _could_ just use Metals installed by cs install Metals. I'm still undecided
 -- if that's wise to offer two options, or to just remain in full control like we do here
-local metals_bin = util.path.join {nvim_metals_cache_dir, 'metals'}
+M.metals_bin = util.path.join {nvim_metals_cache_dir, 'metals'}
 
 --[[
 Check to see if coursier is installed. This method favors the native cs. So if
@@ -57,13 +57,13 @@ M.install_or_update = function()
 
   local get_cmd = string.format(
                       '%s bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:%s -r bintray:scalacenter/releases -r sonatype:snapshots -o %s -f', -- luacheck: ignore 631
-                      coursier_exe, server_version, metals_bin)
+                      coursier_exe, server_version, M.metals_bin)
 
   vim.fn.system(get_cmd)
-  if (uv.fs_stat(metals_bin)) then
+  if (uv.fs_stat(M.metals_bin)) then
     print(string.format(
               'Metals %s installed in %s.\n Please restart nvim, and have fun coding Scala!',
-              server_version, metals_bin))
+              server_version, M.metals_bin))
   end
 end
 
@@ -82,7 +82,7 @@ M.initialize_or_attach = function(config)
          '\n\nRecieved: ' .. vim.inspect(config) .. ' as your config.\n' ..
              'Your config must be a table. If you are just using the default, just use {}')
 
-  if not (uv.fs_stat(metals_bin)) then
+  if not (uv.fs_stat(M.metals_bin)) then
     local heading = '\nWelcome to nvim-metals!\n'
 
     local courser_message = (check_for_coursier() and '' or messages.coursier_not_installed)
@@ -109,7 +109,7 @@ M.initialize_or_attach = function(config)
     end
   end
 
-  config.cmd = {metals_bin}
+  config.cmd = {M.metals_bin}
 
   -- This is really the only not standard thing being passed into the config
   -- table, however, we'll still keep it to ensure that it's quite easy for

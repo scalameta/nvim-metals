@@ -141,6 +141,10 @@ MetalsDoctor                 Run Metals Doctor, which will open in your browser.
                                                                  *MetalsInstall*
 MetalsInstall                Install or update Metals.
 
+                                                                    *MetalsInfo*
+MetalsInfo                   Give info about the currently installed version
+                             of Metals that will be used.
+
                                                                *MetalsLogToggle*
 MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
                              |.metals/metals.log| file in your worksapce. If
@@ -211,6 +215,15 @@ initialize_or_attach({config})
                           that is used in the |vim.lsp.start_client()|. You
                           can visit the help docs of vim to see the full
                           signature of the config.
+
+                                                                        *info()*
+info()                    Give info about the currently installed version of
+                          Metals that will be used by nvim-metals.
+
+                                                           *install_or_update()*
+install_or_update()       Install Metals if it doesn't exist or update to the
+                          latest stable version or version set if
+                          |g.metals_server_version| is set.
 
                                                                  *logs_toggle()*
 logs_toggle()             Use to trigger a |tail -f .metals/log| on your current

@@ -1,6 +1,9 @@
 local api = vim.api
+local uv = vim.loop
+
 local decoration = require 'metals.decoration'
 local diagnostic = require 'metals.diagnostic'
+local messages = require 'metals.messages'
 local setup = require 'metals.setup'
 
 local M = {}
@@ -8,6 +11,7 @@ local M = {}
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.initialize_or_attach = setup.initialize_or_attach
+M.install_or_update = setup.install_or_update
 M.show_hover_message = decoration.show_hover_message
 M.open_all_diagnostics = diagnostic.open_all_diagnostics
 
@@ -96,6 +100,15 @@ M.did_focus = function()
       print('metals/didFocusTextDocument: Server Error')
     end
   end)
+end
+
+M.info = function()
+  if not uv.fs_stat(setup.metals_bin) then
+    print(messages.metals_not_installed)
+  else
+    local info = os.capture(setup.metals_bin .. ' --version', true)
+    print(info)
+  end
 end
 
 return M

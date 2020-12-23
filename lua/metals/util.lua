@@ -161,7 +161,6 @@ M.wrap_hover = function(bufnr, winnr)
 end
 
 ---- UI. Probably this should be a separate ui.lua module if this grows.
----- CMD based UI:
 M.input_box = function(prompt)
   return vim.fn.input(prompt)
 end
@@ -170,9 +169,11 @@ M.input_list = function(options)
   return vim.fn.inputlist(options)
 end
 
--- Checks to see if an executable is present for single or list of executables
--- Note that give a list, if any is not found, this will return false
--- Also, this is stolen from the nvim/nvim-lspconfig utils.
+--[[
+ Checks to see if an executable is present for single or list of executables
+ Note that give a list, if any is not found, this will return false Also, this
+ is stolen from the nvim/nvim-lspconfig utils.
+--]]
 M.has_bins = function(...)
   for i = 1, select('#', ...) do
     if 0 == fn.executable((select(i, ...))) then
@@ -180,6 +181,22 @@ M.has_bins = function(...)
     end
   end
   return true
+end
+
+-- Utility to capture output from a command. Just like os.execute but capture the output.
+M.os.capture = function(cmd, raw)
+  local handle = assert(io.popen(cmd, 'r'))
+  local output = assert(handle:read('*a'))
+
+  handle:close()
+
+  if raw then
+    return output
+  end
+
+  output = string.gsub(string.gsub(string.gsub(output, '^%s+', ''), '%s+$', ''), '[\n\r]+', ' ')
+
+  return output
 end
 
 return M
