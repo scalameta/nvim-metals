@@ -1,9 +1,11 @@
 local api = vim.api
 local lsp = vim.lsp
 local fn = vim.fn
-local util = require 'metals.util'
-local handlers = require 'metals.handlers'
 local uv = vim.loop
+
+local handlers = require 'metals.handlers'
+local messages = require 'metals.messages'
+local util = require 'metals.util'
 
 local M = {}
 local lsps = {}
@@ -37,10 +39,11 @@ overwritten by the bootstrap command.
 M.install_or_update = function()
   local coursier_exe = check_for_coursier()
   if not coursier_exe then
-    print('It looks like you don\'t have coursier installed.\n' ..
-              'You can find instructions on how to install it here: https://get-coursier.io/docs/cli-installation')
+    print(messages.coursier_not_installed)
     return true
   end
+
+  local server_version
 
   if (vim.g.metals_server_version) then
     server_version = vim.g.metals_server_version
@@ -53,7 +56,7 @@ M.install_or_update = function()
   end
 
   local get_cmd = string.format(
-                      '%s bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:%s -r bintray:scalacenter/releases -r sonatype:snapshots -o %s -f',
+                      '%s bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:%s -r bintray:scalacenter/releases -r sonatype:snapshots -o %s -f', -- luacheck: ignore 631
                       coursier_exe, server_version, metals_bin)
 
   vim.fn.system(get_cmd)
@@ -82,14 +85,9 @@ M.initialize_or_attach = function(config)
   if not (uv.fs_stat(metals_bin)) then
     local heading = '\nWelcome to nvim-metals!\n'
 
-    local courser_message = (check_for_coursier() and '' or
-                                'Before you get started, you\'ll want to make sure you have coursier installed.\n' ..
-                                'You can find instructions on how to install it here: https://get-coursier.io/docs/cli-installation\n')
+    local courser_message = (check_for_coursier() and '' or messages.coursier_not_installed)
 
-    local install_message = 'You\'ll need to get Metals installed before doing anything else.\n' ..
-                                'You can do this using `:MetalsInstall`'
-
-    print(heading .. courser_message .. install_message)
+    print(heading .. courser_message .. messages.install_message)
     return true
   end
 
