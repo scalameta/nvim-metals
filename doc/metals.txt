@@ -13,10 +13,8 @@ CONTENTS                                                           *nvim-metals*
     3. Options............... |metals-options|
     4. Commands.............. |metals-commands|
     5. Lua API............... |metals-lua-api|
-    6. Decoration API........ |metals-decoration-api|
-    7. Diagnostic API........ |metals-decoration-api|
-    8. Custom Handlers....... |metals-custom-handlers|
-    9. Functions............. |metals-functions|
+    6. Custom Handlers....... |metals-custom-handlers|
+    7. Functions............. |metals-functions|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -219,32 +217,19 @@ logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
                           workspace that will open in the embedded Neovim
                           terminal.
 
-                                                                *sources_scan()*
-sources_scan()            Use to execute a |metals.sources-scan| command.
-
-================================================================================
-DECORATION API                                           *metals-decoration-api*
-
-The following decoration module functions are used for various decoration
-protocol related things.
-  https://scalameta.org/metals/docs/editors/decoration-protocol.html
-
-                                                          *show_hover_message()*
-show_hover_message()     Use to expand the decoration to show the full hover
-                         message that was returned from the decoration.
-
-================================================================================
-DIAGNOSTIC API                                           *metals-diagnostic-api*
-
-Functions related to LSP diagnostics received via
-`textDocument/publishDiagnostics`
-
 open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          for all buffers and opens it.
                          WARNING: Automatic updates in the quickfix for new
                          diagnostics are not yet implemented.
                          After opening the quickfix, in order to refesh
                          diagnostics the function must be called again.
+
+                                                          *show_hover_message()*
+show_hover_message()     Use to expand the decoration to show the full hover
+                         message that was returned from the decoration.
+
+                                                                *sources_scan()*
+sources_scan()            Use to execute a |metals.sources-scan| command.
 
 ================================================================================
 CUSTOM HANDLERS                                         *metals-custom-handlers*

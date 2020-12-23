@@ -1,9 +1,15 @@
 local api = vim.api
+local decoration = require 'metals.decoration'
+local diagnostic = require 'metals.diagnostic'
 local setup = require 'metals.setup'
 
 local M = {}
 
+-- Since we want metals to be the entrypoint for everything, just for ensure that it's
+-- easy to set anything for users, we simply include them in here and then expose them.
 M.initialize_or_attach = setup.initialize_or_attach
+M.show_hover_message = decoration.show_hover_message
+M.open_all_diagnostics = diagnostic.open_all_diagnostics
 
 -- General function used to execute various server commands.
 local function execute_command(command, callback)

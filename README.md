@@ -1,25 +1,21 @@
-![Nvim + Metals](https://i.imgur.com/UvQ18ST.png)
-
+![nvim-metals logo](https://i.imgur.com/7gqEQOi.png)
 # nvim-metals
 
-This is a WIP [Metals](https://scalameta.org/metals/) plugin and guide for Nvim
-users wanting to utilize the [Nvim built-in LSP
-module](https://neovim.io/doc/user/lsp.html). The goal of this plugin is to
-provide the extra functionality that you need for Metals and the rest will serve
-as a guide and example.
+nvim-metals is a plugin built to provide a better experience while using Metals,
+the Scala Language Server, with Neovim's built-in [LSP
+support](https://neovim.io/doc/user/lsp.html). This plugin provides the
+necessary commands you'll need to develop with nvim and Metals. This extension
+also implements many of the custom Metals LSP extensions that will give you a
+much richer experience than just using Metals with the default nvim-lspconfig
+setup, as well as automatically setting all of the correct `init_options`.
 
-_NOTE:_ Keep in mind that the level of support is rapidly changing, there are bugs, and
-there are a lot of missing features. Some of this is changing daily, *so expect
-stuff to break without warning or change*.
+_NOTE:_ Keep in mind that the level of support is rapidly changing, there are
+bugs, missing features, and some of this is is changing daily,
+*so expect stuff to break without warning or change* until this is removed.
 
 If you're first getting starting with Metals, consider using
 [coc-metals](https://github.com/scalameta/coc-metals) if you're looking for a
 more feature-full and stable Metals + Nvim experience.
-
-If you're a `coc-metals` user and want to try this but are worried about
-`coc.nvim` and the built-in LSP conflicting in any way, take a look at how I
-handle this [in the
-wiki](https://github.com/scalameta/nvim-metals/wiki/Try-nvim-metals-without-conflicting-with-coc-metals)
 
 ## Table of Contents
   - [Prerequisites](#prerequisites)
@@ -49,172 +45,129 @@ NVIM v0.5.0-3de9452
 ...
 ```
 
-### Plugins
+## Installation
 
-Apart from this plugin, you'll also want to have the
-[neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) plugin
-installed. For now, this plugin offers automated installation and some default
-configurations for Metals.
+_NOTE_: This plugin works without needing to install
+[neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig). If you have
+it installed for other languages, that's not problem, but make sure you do not
+have Metals installed through nvim-lspconfig while using this plugin. If you
+`nvim/lsp-config` installed you can ensure you aren't using Metals with it by
+doing a `:LspInstallInfo`. This should show you a `{}`. If it doesn't go to the
+path that it shows and remove it.
 
-Use whichever plugin manager to install both.
-[vim-plug](https://github.com/junegunn/vim-plug) is probably the most common, so
-I'll use that as an example:
+Use whichever plugin manager you prefer to install this. Here is an example for
+[vim-plug](https://github.com/junegunn/vim-plug):
 
 ```vim
-call plug#begin('~/.vim/plugged')
-  " Necessary plugins
-  Plug 'neovim/nvim-lspconfig'
-  Plug 'scalameta/nvim-metals'
-call plug#end()
+Plug 'scalameta/nvim-metals'
 ```
-
-_NOTE_: Some of the default LSP functionality is a bit rough around the edges,
-so take a look at some of the complimentary plugins out there. I have some
-listed in the [Example
-Configuration](https://github.com/scalameta/nvim-metals/wiki/Example-Configuration)
-in the wiki.
 
 ## Getting started
 
-First things first, you need to install Metals. This functionality is provided
-by the [nvim-lsp](https://github.com/neovim/nvim-lsp) plugin. It offers
-automated installation of servers and basic configurations so you don't have to
-do it manually.
+nvim-metals is triggered by an auto command to start on and Scala files. The
+following is the most basic setup to get started:
 
-If you'd like to use a Snapshot version of metals, you can set it like below
-before you do the `LspInstall`. If you've already installed, you need to remove
-the installation, set this, and then install again. Hopefully this process will
-be smoother in the future.
+```vim
+if has('nvim-0.5')
+  augroup lsp
+    au!
+    au FileType scala lua require('metals').initialize_or_attach({})
+  augroup end
+endif
+```
+
+Once you open a Scala file, you'll be prompted to install metals. You can do
+this with the following command:
+
+```vim
+:MetalsInstall
+```
+
+This will install the `latest.stable` of Metals, but if you'd like to use a
+snapshot, you can set it like so:
 
 ```vim
 let g:metals_server_version = '0.9.7+18-744ffa6f-SNAPSHOT'
 ```
 
-```vim
-:LspInstall metals
-```
+Keep in mind that when a new version of Metals comes out or when you change this
+value, you'll need to just run `:MetalsInstall` again to update. If you want to
+know what version of Metals you're using, you can use the `:MetalsInfo` command.
 
-There isn't a lot of feedback on whether or not this worked, so after you do
-this, issue the following command to ensure that it's installed. This will also
-show you the directory that it's installed in.
-
-```vim
-:LspInstallInfo
-```
-
-If it's installed, you should see something like the following:
-
-```vim
-{
-  metals = {
-    cmd = { "/Users/ckipp/.cache/nvim/lspconfig/metals/metals" },
-    install_dir = "/Users/ckipp/.cache/nvim/lspconfig/metals",
-    is_installed = "file"
-  }
-}
-```
-
-Make sure to take a look at the [`setup()`
-function](https://github.com/neovim/nvim-lspconfig#setup-function) which will
-show you how to override certain values or add extra settings. You can see all
-of the default Metals values in the
-[readme](https://github.com/neovim/nvim-lspconfig#metals) or checkout
-[nvim-lspconfig/lua/nvim_lsp/metals.lua](https://github.com/neovim/nvim-lspconfig/blob/master/lua/lspconfig/metals.lua).
-
-Once installed, you'll need to set up mappings for all of the common LSP
-functionality. I have an example of what this looks like along with some
-examples of how to use complementary plugins in the [wiki under
-Example-Configuration](https://github.com/scalameta/nvim-metals/wiki/Example-Configuration).
-
-If you'd want no other functionality than to use all the defaults you'd just
-have the following:
+If you'd like a more advanced setup, the `{}` that you pass into
+`initialize_or_attach()` is actually the config object that gets passed to
+`vim.lsp.start_client()`, so you have full access to edit anything to start the
+server. To give an example of this, below is the setup I use in order to
+register [completion-nvim](https://github.com/nvim-lua/completion-nvim) for
+better completions, set the `statusBarProvider` to `'on'` instead of
+`'show-message`, and to update the way `publishDiagnostics` work to include a
+fancier prefix.
 
 ```lua
-require'lspconfig'.metals.setup{}
+metals_config = {}
+metals_config.handlers = {}
+metals_config.init_options = {}
+
+metals_config.on_attach = function()
+  require'completion'.on_attach();
+end
+
+metals_config.init_options.statusBarProvider = 'on'
+
+metals_config.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
+  vim.lsp.diagnostic.on_publish_diagnostics, {
+    virtual_text = {
+      prefix = '',
+    }
+  }
+)
 ```
-
-However, this won't leave you with the best experience so it's recommended to
-look through the example configuration and the possible additional plugins.
-
-**Fair warning, the installation is probably all going to change.**
-In you following the conversation
-[here](https://github.com/neovim/nvim-lspconfig/issues/200), you'll notice a couple
-things.
-
-1. There is an automated way to install, but not uninstall or update
-2. The install feature will probably go away
-
-For now, this is still the best way to install Metals for Nvim.  If the Install
-goes away, there is a decent chance I'll handle the Install / Uninstall / Update
-right in this plugin.
 
 ## Settings and Mappings
 
-In addition to the mappings in the wiki, you can also create custom mappings to
-utilize some of the commands that this plugin offers. For example, let's say we
-wanted to add a custom mapping for `BuildImport`, you could by doing the
-following:
+The nvim LSP implementation comes with a rich Lua API, but you need to set up
+your mappings yourself. For example, here are some mappings to get you started,
+but you should feel free to change them to your liking:
+
+```vim
+nnoremap <silent> gd          <cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap <silent> K           <cmd>lua vim.lsp.buf.hover()<CR>
+nnoremap <silent> gi          <cmd>lua vim.lsp.buf.implementation()<CR>
+nnoremap <silent> gr          <cmd>lua require'telescope.builtin'.lsp_references{}<CR>
+nnoremap <silent> <leader>s   <cmd>lua require'telescope.builtin'.lsp_workspace_symbols{}<CR> 
+nnoremap <silent> gds         <cmd>lua vim.lsp.buf.document_symbol()<CR>
+nnoremap <silent> gws         <cmd>lua vim.lsp.buf.workspace_symbol()<CR>
+nnoremap <silent> <leader>rn  <cmd>lua vim.lsp.buf.rename()<CR>
+nnoremap <silent> <leader>f   <cmd>lua vim.lsp.buf.formatting()<CR>
+nnoremap <silent> <leader>ca  <cmd>lua vim.lsp.buf.code_action()<CR>
+nnoremap <silent> <leader>ws  <cmd>lua require'metals'.show_hover_message()<CR>
+nnoremap <silent> <leader>a   <cmd>lua require'metals'.open_all_diagnostics()<CR>
+```
+
+You can also map any of the functions from the nvim-metals api as well. You can
+see all the options in `:h metals-lua-api`. Here is an example of mapping the
+`build-import` command:
 
 ```vim
 nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 ```
 
 This would allow you to do `<leader>bi` to trigger an import, the same way
-`:BuildImport` does.
+`:MetalsBuildImport` does.
 
-## Available Commands
+### Available Commands and Options
 
-To view all of the available commands, check out `:h metals-commands`.
+To view all of the available commands, check out `:h metals-commands` in the
+help docs. Similarly, to see the available configuration options, check out `h
+metals-options`.
 
-## Custom Functions
+## Metals Handlers
 
-Custom functions are similar to Custom Callbacks in that you use them to
-override a default setup option for Metals.
-
-Currently if you use a build definition structure with multiple nested build
-files, the Nvim LSP client will re-initialize when you go into a module with
-another build file. In order to prevent this, use the `metals.root_pattern()`
-function to override the `root_dir` function like below:
-
-```lua
-local metals = require'metals'
-nvim_lsp.metals.setup{
-  root_dir = metals.root_pattern("build.sbt", "build.sc", ".git");
-}
-```
-
-This `root_pattern()` function is almost identical to the one that is in
-`nvim-lsp`, but it adds in the ability to check to ensure that there isn't
-another build file in the parent directory.
-
-_NOTE:_ If you are only using nvim-metals
-with projects that only ever have one build file, then there is no need to set
-this.
-
-## Custom Handlers
-
-The Nvim LSP module heavily relies on handlers (previously called callbacks) for
-each type of message that it receives from the server. These can all be
-overridden and customized. You can either override them globally, or just for
-Metals. An example of global override using one of the custom handlers
-nvim-metals provides would look like this:
-
-```lua
-local metals = require'metals'
-lsp.handlers['textDocument/hover'] = metals['textDocument/hover']
-```
-
-Example usage for only Metals:
-```lua
-local metals = require'metals'
-lspconfig.metals.setup{
-  handlers = {
-    ['textDocument/hover'] = metals['textDocument/hover']
-  }
-}
-```
-
-To view all of the custom handlers, check out `:h metals-custom-handlers`.
+The nvim LSP integration relies on a series of handlers to handle various LSP
+methods. This is also the way custom LSP extensions can be handled. Metals
+implements a fair amount of these, and you can see all of the custom handlers
+that nvim-metals adds by viewing them in the help docs: `:h
+metals-custom-handlers`.
 
 ## Statusline integration
 
@@ -252,13 +205,5 @@ set statusline+=%{metals#status()}
 
 Since `window/showMessageRequest` is not yet supported in the Nvim LSP module,
 you need to trigger this manually. As you would normally, open your project and
-then issue a `:BuildImport` command which will send the request to Metals to
+then issue a `:MetalsBuildImport` command which will send the request to Metals to
 import your build.
-
-## Troubleshooting
-
-Before submitting an issue, check out the
-[Troubleshooting](https://github.com/scalameta/nvim-metals/wiki/Troubleshooting)
-and [known
-limitations](https://github.com/scalameta/nvim-metals/wiki/Known-limitations)
-section of the wiki.
