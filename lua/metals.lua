@@ -5,6 +5,7 @@ local decoration = require 'metals.decoration'
 local diagnostic = require 'metals.diagnostic'
 local messages = require 'metals.messages'
 local setup = require 'metals.setup'
+local util = require 'metals.util'
 
 local M = {}
 
@@ -102,11 +103,12 @@ M.did_focus = function()
   end)
 end
 
+-- Capture info about installed Metals
 M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
     print(messages.metals_not_installed)
   else
-    local info = os.capture(setup.metals_bin .. ' --version', true)
+    local info = util.os.capture(setup.metals_bin .. ' --version', true)
     print(info)
   end
 end
