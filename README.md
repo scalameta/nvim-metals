@@ -165,6 +165,8 @@ nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 This would allow you to do `<leader>bi` to trigger an import, the same way
 `:MetalsBuildImport` does.
 
+_NOTE_: You can find a full example of a configuration
+[here](https://github.com/scalameta/nvim-metals/discussions/39).
 ## Available Commands and Options
 
 To view all of the available commands, check out `:h metals-commands` in the

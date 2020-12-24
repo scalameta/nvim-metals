@@ -184,7 +184,7 @@ M.has_bins = function(...)
 end
 
 -- Utility to capture output from a command. Just like os.execute but capture the output.
-M.os.capture = function(cmd, raw)
+M.os_capture = function(cmd, raw)
   local handle = assert(io.popen(cmd, 'r'))
   local output = assert(handle:read('*a'))
 
