@@ -8,6 +8,33 @@ local M = {}
 local decoration_namespace = api.nvim_create_namespace('metals_decoration');
 
 --[[
+A simple implementation of `window/showMessageRequest` until this gets added
+upstream. Note that is is very similiar to how we handle `metals/quickPick`
+TODO: Ensure that this coveres various scenarios correctly and then see if we
+can ustream this when we're confident it's working.
+https://github.com/neovim/neovim/issues/11710
+]]
+M['window/showMessageRequest'] = function(_, _, res)
+  local titles = {}
+  local labels = {}
+
+  table.insert(labels, res.message .. ':')
+
+  for i, item in pairs(res.actions) do
+    table.insert(titles, item.title)
+    table.insert(labels, i .. ' - ' .. item.title)
+  end
+
+  local choice = vim.fn.inputlist(labels)
+  if (choice == 0) then
+    print('\nmetals: operation cancelled')
+    return {cancelled = true}
+  else
+    return {title = titles[choice]}
+  end
+end
+
+--[[
 Implementation of the `metals/quickPick` Metals LSP extension.
 https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
 ]]
@@ -19,7 +46,7 @@ M['metals/quickPick'] = function(_, _, resp)
     table.insert(labels, i .. ' - ' .. item.label)
   end
 
-  local choice = util.input_list(labels)
+  local choice = vim.fn.inputlist(labels)
   if (choice == 0) then
     print('\nmetals: operation cancelled')
     return {cancelled = true}
@@ -33,7 +60,7 @@ Implementation of the `metals/inputBox` Metals LSP extension.
 https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
 --]]
 M['metals/inputBox'] = function(_, _, resp)
-  local name = util.input_box(resp.prompt .. ': ')
+  local name = vim.fn.input(resp.prompt .. ': ')
 
   if (name == '') then
     print('\nmetals: operation cancelled')

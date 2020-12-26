@@ -139,6 +139,9 @@ M.initialize_or_attach = function(config)
   config.handlers['metals/publishDecorations'] = config.handlers['metals/publishDecorations'] or
                                                      handlers['metals/publishDecorations']
 
+  config.handlers['window/showMessageRequest'] = config.handlers['window/showMessageRequest'] or
+                                                     handlers['window/showMessageRequest']
+
   config.capabilities = config.capabilities or lsp.protocol.make_client_capabilities()
 
   config.init_options = config.init_options or {}

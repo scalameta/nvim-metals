@@ -210,12 +210,3 @@ the below example or added into an existing statusline integration:
 set statusline+=%{metals#status()}
 ...
 ```
-
-## Importing your build
-
-**You need to do this before any Metals functionality will work**
-
-Since `window/showMessageRequest` is not yet supported in the Nvim LSP module,
-you need to trigger this manually. As you would normally, open your project and
-then issue a `:MetalsBuildImport` command which will send the request to Metals to
-import your build.

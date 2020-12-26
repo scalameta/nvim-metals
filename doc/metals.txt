@@ -251,16 +251,6 @@ The following are extra handlers that nvim-metals implements. More than likely
 you'll never directly use these, but they are more of a reference of the extra
 things that nvim-metals is providing you.
 
-                                                        *['textDocument/hover']*
-['textDocument/hover']({err}, {method}, {result})
-                          Used to override the default ["textDocument/hover"]
-                          callback since the default doesn't wrap lines.
-
-                          Parameters:
-                          {err}    Hover error
-                          {method} textDocument/hover
-                          {result} hover results from the server
-
                                                              *['metals/status']*
 ['metals/status']({err}, {method}, {result})
                           Used to enable handling of |metals/status|
@@ -314,6 +304,29 @@ The spec for this can be found here:
 
 https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand
 
+                                                        *['textDocument/hover']*
+['textDocument/hover']({err}, {method}, {result})
+                          Used to override the default ["textDocument/hover"]
+                          callback since the default doesn't wrap lines.
+
+                          Parameters:
+                          {err}    Hover error
+                          {method} textDocument/hover
+                          {result} hover results from the server
+
+                                                 *['window/showMessageRequest']*
+
+['window/showMessageRequest']({err}, {method}, {result})
+                          Used to request an answer from the user.
+
+                          Note that this is only in here temporarily. Once
+                          this is solidified we should try to just upstream
+                          it.
+
+                          Parameters:
+                          {err}    Message request error
+                          {method} window/showMessageRequest
+                          {result} ShowMessageRequestParams 
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
 

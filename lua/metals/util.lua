@@ -160,15 +160,6 @@ M.wrap_hover = function(bufnr, winnr)
   end
 end
 
----- UI. Probably this should be a separate ui.lua module if this grows.
-M.input_box = function(prompt)
-  return vim.fn.input(prompt)
-end
-
-M.input_list = function(options)
-  return vim.fn.inputlist(options)
-end
-
 --[[
  Checks to see if an executable is present for single or list of executables
  Note that give a list, if any is not found, this will return false Also, this
