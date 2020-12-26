@@ -5,17 +5,19 @@ endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-command! BuildImport lua require'metals'.build_import()
-command! BuildConnect lua require'metals'.build_connect()
-command! BuildRestart lua require'metals'.build_restart()
-command! SourcesScan lua require'metals'.sources_scan()
-command! CompileCascade lua require'metals'.compile_cascade()
 command! Format lua vim.lsp.buf.formatting()
+command! MetalsAmmoniteEnd lua require'metals'.ammonite_end()
+command! MetalsAmmoniteStart lua require'metals'.ammonite_start()
+command! MetalsBuildConnect lua require'metals'.build_connect()
+command! MetalsBuildImport lua require'metals'.build_import()
+command! MetalsBuildRestart lua require'metals'.build_restart()
+command! MetalsCompileCascade lua require'metals'.compile_cascade()
 command! MetalsDoctor lua require'metals'.doctor_run()
+command! MetalsInfo lua require'metals'.info()
+command! MetalsInstall lua require'metals'.install_or_update()
 command! MetalsLogsToggle lua require'metals'.logs_toggle()
-command! NewScalaFile lua require'metals'.new_scala_file()
-command! AmmoniteStart lua require'metals'.ammonite_start()
-command! AmmoniteEnd lua require'metals'.ammonite_end()
+command! MetalsNewScalaFile lua require'metals'.new_scala_file()
+command! MetalsSourcesScan lua require'metals'.sources_scan()
 
 function! metals#status() abort
   return get(g:, 'metals_status', '')

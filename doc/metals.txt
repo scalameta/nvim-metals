@@ -1,5 +1,5 @@
 *metals.txt* nvim-metals
-A plugin for Metals utilizing the Neovim built-in LSP support.
+A nvim plugin for Metals utilizing Neovim's built-in LSP support.
 
 https://scalameta.org/metals/
 
@@ -9,86 +9,160 @@ CONTENTS                                                           *nvim-metals*
 
     0. Introduction ......... |metals-introduction|
     1. Prerequisites......... |metals-prerequisites|
-    2. Commands.............. |metals-commands|
-    3. LUA API............... |metals-lua-api|
-    4. DECORATION API........ |metals-decoration-api|
-    5. DIAGNOSTIC API........ |metals-decoration-api|
+    2. Getting Started....... |metals-getting-started|
+    3. Options............... |metals-options|
+    4. Commands.............. |metals-commands|
+    5. Lua API............... |metals-lua-api|
     6. Custom Handlers....... |metals-custom-handlers|
     7. Functions............. |metals-functions|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
-nvim-metals is a plugin built to provide a better experience while using Metals,
-the Scala Language Server with Neovim's built-in LSP support. This plugin offers
-extras helpers that allow you to import your build, use specific Metals LSP
-extensions, and provide an overall smoother experience than using Metals and
-plain built-in LSP support with Neovim.
+nvim-metals is a plugin built to provide a better experience while using
+Metals, the Scala Language Server, with Neovim's built-in LSP support. This
+plugin provides the necessary commands you'll need to develop with nvim and
+Metals. This extension also implements many of the custom Metals LSP
+extensions that will give you a much richer experience than just using Metals
+with the default nvim-lspconfig setup, as well as automatically setting all of
+the correct `init_options`.
 
 ================================================================================
 PREREQUISITES                                             *metals-prerequisites*
 
-- Nvim v0.5.x The latest the snapshot the better.
-- neovim/nvim-lsp This plugin contains both automated installation for Metals
-  and default setup and configuration. You can find instructions on how to
-  install it here: https://github.com/neovim/nvim-lsp
-- Snapshot version of Metals. You can find the most recent snapshot version on
-  the Metals webiste:
-  https://scalameta.org/metals/docs/editors/vim.html#using-latest-metals-snapshot
+- Nvim v0.5.x The later the snapshot the better unitl v0.5.x stable is
+  released.
+- *DO NOT* use this plugin for Metals and also nvim/nvim-lspconfig for Metals.
+  If you've used this plugin before with Metals, make sure to remove the
+  Metals installation that it installed. If you have that plugin installed,
+  while in a Scala file, `:LspInstallInfo` should just show you a `{}`. If it
+  shows you a path where Metals is installed, you'll need to remove it. If
+  not, both plugins will start an instance of Metals giving you all sorts of
+  problems. NOTE: that keeping the plugin installed for other LSP servers is
+  totally fine, just let nvim-metals handle Metals.
 
-In order to install the latest snapshot of metals, you'll need to set the
+================================================================================
+GETTING STARTED                                         *metals-getting-started*
+
+Once installed, the most basic setup is to have the following >
+
+  if has('nvim-0.5')
+    augroup lsp
+      au!
+      au FileType scala lua require('metals').initialize_or_attach({})
+    augroup end
+  endif
+<
+
+This will give you the the defaults that Metals provides. The empty `{}` that
+is passed into |initialize_or_attach()| is necessary and is actually the
+config object that is directly passed into the |vim.lsp.start_client()|
+method. You can read more about it in |:h vim.lsp.start_client()| to see all
+of the base options. This is is the primary way to edit your `init_option`,
+change or add any cusom `handlers`. For example, it's recommened to set your
+`statusBarProvider` to `on`, and once you have your statusline setup to
+handle the messages, you could turn it on like so: >
+
+  metals_config = {}
+  metals_config.init_options = {}
+
+  metals_config.init_options.statusBarProvider = 'on'
+<
+
+Then instead of passing an empty `{}` to |initialize_or_attach()|,  you'd pass
+in `metals_config`.
+
+Once setup, the first time you open a Scala project you'll be prompted to
+install Metals. You can do this with the following command: |:MetalsInstall|.
+
+In order to install the latest snapshot of metals, you'll need to have set the
 following: >
 
   let g:metals_server_version = '0.9.7+236-8d0924af-SNAPSHOT'
 <
 
-Then continue to follow the nvim-lsp instructions to install Metals via
->
-:LspInstall metals
-<
+If no version is set, it defaults to the latest stable release. If a new
+release comes out or you change your |g:metals_server_version|,  you can
+simply issue another |:MetalsInstall| command which also serves as an update
+command.
+
+================================================================================
+OPTIONS                                                         *metals-options*
+
+The following options are provided by nvim-metals.
+
+                                                       *g:metals_server_version*
+Type: string ~
+Default: 'latest.stable' ~
+
+Targeted server version that you'd like to install. Note that if this is
+changed you need to do a |:MetalsInstall| again to ensure that it is
+installed. If you need to check what version you're currently using, you can
+use the |:MetalsInfo| command.
+
+                                                     *g:metals_decoration_color*
+Type: string ~
+Default: 'Conceal' ~
+
+The hightlight group that will be used to show decorations. For example, this
+will change the way worksheet evaluations are displayed in `*.worksheet.sc`
+file.
 
 ================================================================================
 COMMANDS                                                       *metals-commands*
 
 The following commands are provided by nvim-metals.
 
-                                                                   *AmmoniteEnd*
-AmmoniteEnd               End the Ammonite BSP Server.
-
-                                                                 *AmmoniteStart*
-AmmoniteStart             Start the Ammonite BSP Server.
-
-                                                                   *BuildImport*
-BuildImport                 Trigger an import for the current workspace.
-
-                                                                  *BuildConnect*
-BuildConnect                Manually connect to the build server.
-
-                                                                  *BuildRestart*
-BuildRestart                Manually restart the build server.
-
-                                                                *CompileCascade*
-CompileCascade             Compile the current open file along with all build
-                           targets that depend on it.
-
                                                                         *Format*
-Format                     Format the current buffer utilizing. (Make sure to
-                           have a .scalafmt.conf file.)
+Format                       Format the current buffer utilizing. (Make sure to
+                             have a .scalafmt.conf file.)
+
+                                                             *MetalsAmmoniteEnd*
+MetalsAmmoniteEnd            End the Ammonite BSP Server.
+
+                                                           *MetalsAmmoniteStart*
+MetalsAmmoniteStart          Start the Ammonite BSP Server.
+
+                                                            *MetalsBuildConnect*
+MetalsBuildConnect           Manually connect to the build server.
+
+                                                             *MetalsBuildImport*
+MetalsBuildImport            Trigger an import for the current workspace.
+
+                                                            *MetalsBuildRestart*
+MetalsBuildRestart           Manually restart the build server.
+
+                                                          *MetalsCompileCascade*
+MetalsCompileCascade         Compile the current open file along with all build
+                             targets that depend on it.
 
                                                                   *MetalsDoctor*
-MetalsDoctor               Run Metals Doctor, which will open in your browser.
+MetalsDoctor                 Run Metals Doctor, which will open in your browser.
+
+                                                                 *MetalsInstall*
+MetalsInstall                Install or update Metals.
+
+                                                                    *MetalsInfo*
+MetalsInfo                   Give info about the currently installed version
+                             of Metals that will be used.
 
                                                                *MetalsLogToggle*
-MetalsLogsToggle          Opens the embedded Nvim terminal tailing the
-                          |.metals/metals.log| file in your worksapce. If
-                          triggered again, this won't actual toggle the logs.
-                          This is doen mainly to avoid someone simply |q|ing the
-                          terminal thinking it's closed when the buffer is
-                          actually still there. If this happens, you will be
-                          warned that the terminal buffer still exists and that
-                          you should do an |ls| to find it.
+MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
+                             |.metals/metals.log| file in your worksapce. If
+                             triggered again, this won't actual toggle the logs.
+                             This is doen mainly to avoid someone simply |q|ing
+                             the terminal thinking it's closed when the buffer
+                             is actually still there. If this happens, you will
+                             be warned that the terminal buffer still exists and
+                             that you should do an |ls| to find it.
 
-                                                                   *SourcesScan*
-SourcesScan               Scan all workspaces sources.
+                                                            *MetalsNewScalaFile*
+MetalsNewScalaFile           Create a new Scala file. This will produce a
+                             prompt for the user to choose what type of file
+                             they'd like (case class, trait, object, etc) and
+                             also prompts for a name.
+
+                                                             *MetalsSourcesScan*
+MetalsSourcesScan            Scan all workspaces sources.
 
 ================================================================================
 LUA API                                                         *metals-lua-api*
@@ -122,50 +196,39 @@ compile_cascade()         Use to execute a |metals.compile-cascade| command.
                                                                   *doctor_run()*
 doctor_run()              Use to execute a |metals.doctor-run| command.
 
+                                                        *initialize_or_attach()*
+initialize_or_attach({config})    
+                  
+                          This is the main entrypoint into the plugin, and the
+                          way to set up nvim-metals. This would be usied in
+                          the following way: >
+
+  if has('nvim-0.5')
+    augroup lsp
+      au!
+      au FileType scala lua require('metals').initialize_or_attach({})
+    augroup end
+  endif
+<
+                          Parameters:
+                          {config} This config is meant to mimic the config
+                          that is used in the |vim.lsp.start_client()|. You
+                          can visit the help docs of vim to see the full
+                          signature of the config.
+
+                                                                        *info()*
+info()                    Give info about the currently installed version of
+                          Metals that will be used by nvim-metals.
+
+                                                           *install_or_update()*
+install_or_update()       Install Metals if it doesn't exist or update to the
+                          latest stable version or version set if
+                          |g.metals_server_version| is set.
+
                                                                  *logs_toggle()*
 logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
                           workspace that will open in the embedded Neovim
                           terminal.
-
-                                                                *sources_scan()*
-sources_scan()            Use to execute a |metals.sources-scan| command.
-
-                                                                *root_pattern()*
-root_pattern({target_build_files})
-                          Used to override the default |root_dir| function in
-                          nvim-lsp. The default does not take into accoun the
-                          possiblity of nested build files.
-
-                          Parameters:
-                          {target_build_files} Build files you'd like to be
-                          recognized.
-
-
-You use this be overriding the default |root_dir| like below: >
-
-  local nvim_lsp = require'nvim_lsp'
-  local metals = require'metals'
-  nvim_lsp.metals.setup{
-    root_dir = metals.root_pattern("build.sbt", "build.sc");
-  }
-<
-
-================================================================================
-DECORATION API                                           *metals-decoration-api*
-
-The following decoration module functions are used for various decoration
-protocol related things.
-  https://scalameta.org/metals/docs/editors/decoration-protocol.html
-
-                                                          *show_hover_message()*
-show_hover_message()     Use to expand the decoration to show the full hover
-                         message that was returned from the decoration.
-
-================================================================================
-DIAGNOSTIC API                                           *metals-diagnostic-api*
-
-Functions related to LSP diagnostics received via
-`textDocument/publishDiagnostics`
 
 open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          for all buffers and opens it.
@@ -174,29 +237,19 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          After opening the quickfix, in order to refesh
                          diagnostics the function must be called again.
 
+                                                          *show_hover_message()*
+show_hover_message()     Use to expand the decoration to show the full hover
+                         message that was returned from the decoration.
+
+                                                                *sources_scan()*
+sources_scan()            Use to execute a |metals.sources-scan| command.
+
 ================================================================================
 CUSTOM HANDLERS                                         *metals-custom-handlers*
 
-The following are handlers that users are able to utilize for Metals LSP
-extensions or to override existing Nvim LSP handlers to improve the default
-behavior. These can be used either globally or for only Metals.
-
-Example global usage: >
-
-  local metals = require'metals'
-  lsp.handlers['textDocument/hover'] = metals['textDocument/hover']
-<
-
-Example usage for only Metals: >
-
-  local lspconfig = require'lspconfig'
-  local metals = require'metals'
-  lspconfig.metals.setup{
-     handlers = {
-      ["textDocument/hover"] = metals['textDocument/hover']
-    }
-  }
-<
+The following are extra handlers that nvim-metals implements. More than likely
+you'll never directly use these, but they are more of a reference of the extra
+things that nvim-metals is providing you.
 
                                                         *['textDocument/hover']*
 ['textDocument/hover']({err}, {method}, {result})
@@ -221,23 +274,6 @@ The spec for this can be found here:
 
 https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
 
-If you are using this, you need to also override the default
-|StatusBarProvider| value in |init_options|. You'll also want to ensure that
-information is being displayed by your statusline by using the
-|metals#status()| function.
->
-  local nvim_lsp = require'nvim_lsp'
-  local metals = require'metals'
-  nvim_lsp.metals.setup{
-    init_options = {
-      statusBarProvider = "on";
-    };
-    callbacks = {
-      ["metals/status"] = metals.metals_status;
-    };
-  }
-<
-
                                                            *['metals/inputBox']*
 ['metals/inputBox']({err}, {method}, {result})
                           Used to enable handling of |metals/inputBox|
@@ -251,9 +287,6 @@ The spec for this can be found here:
 
 https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox
 
-If you are using this, make sure to also set |inputBoxProvider| to true in
-your |init_options|
-
                                                           *['metals/quickPick']*
 ['metals/quickPick']({err}, {method}, {result})
                           Used to enable handling of |metals/quickPick|
@@ -266,9 +299,6 @@ your |init_options|
 The spec for this can be found here:
 
 https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick
-
-If you are using this, make sure to also set |quickPickProvider| to true in
-your |init_options|
 
                                                *['metals/executeClientCommand']*
 ['metals/executeClientCommand']({err}, {method}, {result})
@@ -284,8 +314,6 @@ The spec for this can be found here:
 
 https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand
 
-If you are using this, make sure to also set |executeClientCommandProvider| to
-true in your |init_options|
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
 
