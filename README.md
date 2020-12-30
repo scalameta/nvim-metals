@@ -105,18 +105,25 @@ value, you'll need to just run `:MetalsInstall` again to update. If you want to
 know what version of Metals you're using, you can use the `:MetalsInfo` command.
 
 If you'd like a more advanced setup, the `{}` that you pass into
-`initialize_or_attach()` is actually the config object that gets passed to
-`vim.lsp.start_client()`, so you have full access to edit anything to start the
-server. To give an example of this, below is the setup I use in order to
-register [completion-nvim](https://github.com/nvim-lua/completion-nvim) for
+`initialize_or_attach()` is very similar to the config object that gets passed
+to `vim.lsp.start_client()`, so you have full access to edit anything to start
+the server in addition to also being able to set Metals settings. If you're not
+just going to pass in `{}` require a bare config which gives you the basic table
+shape you'll need. To give an example of this, below is an example setup in order
+to register [completion-nvim](https://github.com/nvim-lua/completion-nvim) for
 better completions, set the `statusBarProvider` to `'on'` instead of
-`'show-message`, and to update the way `publishDiagnostics` work to include a
-fancier prefix.
+`'show-message'`, to update the way `publishDiagnostics` work to include a
+fancier prefix, and to set a few available Metals settings.
 
 ```lua
-metals_config = {}
-metals_config.handlers = {}
-metals_config.init_options = {}
+metals_config = require'metals'.bare_config
+metals_config.settings = {
+  showImplicitArguments = true,
+  excludePackages = {
+    "akka.actor.typed.javadsl",
+    "com.github.swagger.akka.javadsl"
+  }
+}
 
 metals_config.on_attach = function()
   require'completion'.on_attach();
