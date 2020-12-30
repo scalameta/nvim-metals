@@ -439,12 +439,12 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          After opening the quickfix, in order to refesh
                          diagnostics the function must be called again.
 
-                                                          *show_hover_message()*
-show_hover_message()     Use to expand the decoration to show the full hover
-                         message that was returned from the decoration.
-
                                                                 *sources_scan()*
 sources_scan()            Use to execute a |metals.sources-scan| command.
+
+                                                             *worksheet_hover()*
+worksheet_hover()        Use to expand the decoration to show the full hover
+                         message that was returned from the decoration.
 
 ================================================================================
 CUSTOM HANDLERS                                         *metals-custom-handlers*

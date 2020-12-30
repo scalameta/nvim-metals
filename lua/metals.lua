@@ -14,7 +14,7 @@ local M = {}
 M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
 M.install_or_update = setup.install_or_update
-M.show_hover_message = decoration.show_hover_message
+M.worksheet_hover = decoration.worksheet_hover
 M.open_all_diagnostics = diagnostic.open_all_diagnostics
 
 -- General function used to execute various server commands.
