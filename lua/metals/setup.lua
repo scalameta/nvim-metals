@@ -3,7 +3,7 @@ local lsp = vim.lsp
 local fn = vim.fn
 local uv = vim.loop
 
-local handlers = require 'metals.handlers'
+local default_handlers = require 'metals.handlers'
 local messages = require 'metals.messages'
 local util = require 'metals.util'
 
@@ -67,6 +67,30 @@ M.install_or_update = function()
   end
 end
 
+-- A bare config to use to be passed into initialize_or_attach.
+-- This is meant only to be used when a user is editing anything in the config
+-- just to ensure they don' thave to do a couple manual initialization of tables
+M.bare_config = {handlers = {}, init_options = {}, settings = {}}
+
+local metals_init_options = {
+  statusBarProvider = 'show-message',
+  inputBoxProvider = true,
+  quickPickProvider = true,
+  executeClientCommandProvider = true,
+  decorationProvider = true,
+  didFocusProvider = true,
+  isHttpEnabled = true,
+  compilerOptions = {snippetAutoIndent = false}
+}
+
+-- Currently available settings.
+local metals_settings = {
+  'ammoniteJvmProperties', 'bloopSbtAlreadyInstalled', 'bloopVersion', 'excludedPackages',
+  'gradleScript', 'javaHome', 'mavenScript', 'millScript', 'remoteLanguageServer', 'sbtScript',
+  'scalafixConfigPath', 'scalafmtConfigPath', 'showImplicitArguments',
+  'showImplicitConversionsAndClasses', 'showInferredType'
+}
+
 --[[
 The main entrypoint into the plugin. This is meant to be used in the following way:
 
@@ -119,45 +143,31 @@ M.initialize_or_attach = function(config)
                              {'build.sbt', 'build.sc', 'build.gradle', 'pom.xml', '.git'}
 
   config.root_dir = util.find_root_dir(config.root_patterns, bufname)
+  config.handlers = util.check_exists_and_merge(default_handlers, config.handlers)
+  config.capabilities = util.check_exists_and_merge(lsp.protocol.make_client_capabilities(),
+                                                    config.capabilities)
 
-  config.handlers = config.handlers or {}
+  if not config.init_options then
+    config.init_options = metals_init_options
+  else
+    config.init_options = vim.tbl_deep_extend('force', metals_init_options, config.init_options)
+  end
 
-  config.handlers['metals/quickPick'] = config.handlers['metals/quickPick'] or
-                                            handlers['metals/quickPick']
+  local settings = {metals = {}}
 
-  config.handlers['metals/inputBox'] = config.handlers['metals/inputBox'] or
-                                           handlers['metals/inputBox']
+  if config.settings then
+    for k, _ in pairs(config.settings) do
+      assert(vim.tbl_contains(metals_settings, k),
+             '"' .. k .. '"' .. ' is not a valid setting. The following are valid settings: ' ..
+                 table.concat(metals_settings, ', '))
+    end
+  end
 
-  config.handlers['metals/executeClientCommand'] =
-      config.handlers['metals/executeClientCommand'] or handlers['metals/executeClientCommand']
+  settings.metals = config.settings or {}
 
-  config.handlers['textDocument/hover'] = config.handlers['textDocument/hover'] or
-                                              handlers['textDocument/hover']
-
-  config.handlers['metals/status'] = config.handlers['metals/status'] or handlers['metals/status']
-
-  config.handlers['metals/publishDecorations'] = config.handlers['metals/publishDecorations'] or
-                                                     handlers['metals/publishDecorations']
-
-  config.handlers['window/showMessageRequest'] = config.handlers['window/showMessageRequest'] or
-                                                     handlers['window/showMessageRequest']
-
-  config.capabilities = config.capabilities or lsp.protocol.make_client_capabilities()
-
-  config.init_options = config.init_options or {}
-
-  -- TODO make this configurable (default probably to show-message)
-  config.init_options.statusBarProvider = config.init_options.statusBarProvider or 'show-message'
-  config.init_options.inputBoxProvider = config.init_options.inputBoxProvider or true
-  config.init_options.quickPickProvider = config.init_options.quickPickProvider or true
-  config.init_options.executeClientCommandProvider =
-      config.init_options.executeClientCommandProvider or true
-  config.init_options.decorationProvider = config.init_options.decorationProvider or true
-  config.init_options.didFocusProvider = config.init_options.didFocusProvider or true
-  config.init_options.isHttpEnabled = config.init_options.isHttpEnabled or true
-  config.init_options.compilerOptions = config.init_options.compilerOptions or {}
-  config.init_options.compilerOptions.snippetAutoIndent =
-      config.init_options.compilerOptions.snippetAutoIndent or false
+  config.on_init = function(client, _)
+    return client.notify('workspace/didChangeConfiguration', {settings = settings})
+  end
 
   if not config.on_attach then
     config.on_attach = M.auto_commands

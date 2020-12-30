@@ -190,4 +190,17 @@ M.os_capture = function(cmd, raw)
   return output
 end
 
+-- Checks to see if a user given table is defined. If so, merge it with a default.
+-- If not, just return the default table. This function favors the userTable on merge.
+-- @param defaultTable The default table to return or merge
+-- @param userTable The user defined table to check if exists and then merge
+-- @return a new table that is either the default or merged with the user one.
+M.check_exists_and_merge = function(defaultTable, userTable)
+  if not userTable then
+    return defaultTable
+  else
+    return vim.tbl_extend('force', defaultTable, userTable)
+  end
+end
+
 return M

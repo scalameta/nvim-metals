@@ -11,6 +11,7 @@ local M = {}
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
 -- easy to set anything for users, we simply include them in here and then expose them.
+M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
 M.install_or_update = setup.install_or_update
 M.show_hover_message = decoration.show_hover_message

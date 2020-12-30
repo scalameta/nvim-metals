@@ -10,11 +10,12 @@ CONTENTS                                                           *nvim-metals*
     0. Introduction ......... |metals-introduction|
     1. Prerequisites......... |metals-prerequisites|
     2. Getting Started....... |metals-getting-started|
-    3. Options............... |metals-options|
-    4. Commands.............. |metals-commands|
-    5. Lua API............... |metals-lua-api|
-    6. Custom Handlers....... |metals-custom-handlers|
-    7. Functions............. |metals-functions|
+    3. Settings.............. |metals-settings|
+    4. Options............... |metals-options|
+    5. Commands.............. |metals-commands|
+    6. Lua API............... |metals-lua-api|
+    7. Custom Handlers....... |metals-custom-handlers|
+    8. Functions............. |metals-functions|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -54,17 +55,16 @@ Once installed, the most basic setup is to have the following >
 <
 
 This will give you the the defaults that Metals provides. The empty `{}` that
-is passed into |initialize_or_attach()| is necessary and is actually the
-config object that is directly passed into the |vim.lsp.start_client()|
-method. You can read more about it in |:h vim.lsp.start_client()| to see all
-of the base options. This is is the primary way to edit your `init_option`,
-change or add any cusom `handlers`. For example, it's recommened to set your
-`statusBarProvider` to `on`, and once you have your statusline setup to
-handle the messages, you could turn it on like so: >
+is passed into |initialize_or_attach()| is necessary and is very similiar to
+the config object that is directly passed into the |vim.lsp.start_client()|
+method. The only differences is the addition of settings and root_patterns.
+You can read more about it in |:h vim.lsp.start_client()| to see all of the
+base options. This is is the primary way to edit your `init_option`, change or
+add any cusom `handlers`, and set any configurartion settings. For example,
+it's recommened to set your `statusBarProvider` to `on`, and once you have
+your statusline setup to handle the messages, you could turn it on like so: >
 
-  metals_config = {}
-  metals_config.init_options = {}
-
+  metals_config = require'metals'.bare_config
   metals_config.init_options.statusBarProvider = 'on'
 <
 
@@ -84,6 +84,191 @@ If no version is set, it defaults to the latest stable release. If a new
 release comes out or you change your |g:metals_server_version|,  you can
 simply issue another |:MetalsInstall| command which also serves as an update
 command.
+
+================================================================================
+SETTINGS                                                       *metals-settings*
+
+The following settings are able to be passed along with the config table to
+|initialize_or_attatch()|. The keys are check to ensure that you don't pass in
+a setting that is not a valid Metals setting. You can set these like the
+example below shows: >
+
+  metals_config = require'metals'.bare_config
+  metals_config.settings = {
+    showImplicitArguments = true,
+    excludePackages = {
+      "akka.actor.typed.javadsl",
+      "com.github.swagger.akka.javadsl"
+    }
+  }
+<
+The following are all of the currently available settings. Note that this
+isn't necessarilly all of the settings that Metals has, but all of the
+settings that can currently be used with nvim-metals. Ones that will have no
+affect are simply skipped for now.
+
+NOTE: keep in mind that for now, when settings are set, they are only sent
+once to the server with a `workspace/didChangeConfiguration` right after
+initialization. If you change your settings, you'll need to restart nvim for
+them to take affect.
+
+ammoniteJvmProperties                                    *ammoniteJvmProperties*
+
+Type: table as list ~
+Default: {} ~
+
+Optional list of JVM properties to pass along to the Ammonite server. Each
+property needs to be a separate item. >
+  {"-Xmx1G", "-Xms100M"}
+<
+
+bloopSbtAlreadyInstalled                              *bloopSbtAlreadyInstalled*
+
+Type: boolean ~
+Default: false ~
+
+If true, Metals will not generate `metals.sbt` files under the assumption that
+sbt-bloop is already manually installed in the sbt build. Build import will
+fail with a 'not valid command bloopInstall' error in case Bloop is not
+manually installed in the build when using this option.
+
+bloopVersion                                                      *bloopVersion*
+
+Type: string ~
+Default: Whichever is included in your version of Metals ~
+
+This version will be used for the Bloop build tool plugin, for any supported
+build tool, while importing in Metals as well as for running the embedded
+server. More than likely you'll never need to use this.
+
+excludedPackages                                              *excludedPackages*
+
+Type: table as list ~
+Default: {} ~
+
+Packages that will be excluded from completions, imports, and symbol searches.
+
+Note that this is in addition to some default packages that are already
+excluded internally in Metals. The default excluded packages are listed below:
+>
+  META-INF
+  images
+  toolbarButtonGraphics
+  jdk
+  sun
+  oracle
+  java.awt.desktop
+  org.jcp
+  org.omg
+  org.graalvm
+  com.oracle
+  com.sun
+  com.apple
+  apple
+<
+
+If there is a need to remove one of the defaults, you are able to do so by
+including the package in your list and prepending `--` to it. >
+  ["--sun"]
+<
+
+gradeleScript                                                     *gradleScript*
+
+Type: string ~
+Default: '' ~
+
+Optional absolute path to a gradle executable to use for running gradle
+bloopInstall. By default, Metals uses gradlew with 5.3.1 gradle version.
+Update this setting if your gradle script requires more customizations like
+using environment variables.
+
+mavenScript                                                        *mavenScript*
+
+Type: string ~
+Default: '' ~
+
+Optional absolute path to a maven executable to use for generating bloop
+config. By default, Metals uses mvnw maven wrapper with 3.6.1 maven version.
+Update this setting if your maven script requires more customizations
+
+millScript                                                          *millScript*
+
+Type: string ~
+Default: '' ~
+
+Optional absolute path to a mill executable to use for running mill
+mill.contrib.Bloop/install. By default, Metals uses mill wrapper script with
+0.5.0 mill version. Update this setting if your mill script requires more
+customizations like using environment variables.
+javaHome                                                              *javaHome*
+
+Type: string ~
+Default: falls back to JAVA_HOME ~
+
+The Java Home directory used for indexing JDK sources and locating the java
+binary.
+
+remoteLanguageServer                                      *remoteLanguageServer*
+
+Type: string ~
+Default: '' ~
+
+A URL pointing to an endpoint that implements a remote language server.
+
+See https://scalameta.org/metals/docs/contributors/remote-language-server.html
+for documentation on remote language servers.
+
+sbtScript                                                            *sbtScript*
+
+Type: string ~
+Default: '' ~
+
+Optional absolute path to an sbt executable to use for running sbt
+bloopInstall. By default, Metals uses java -jar sbt-launch.jar with an
+embedded launcher while respecting .jvmopts and .sbtopts. Update this setting
+if your sbt script requires more customizations like using environment
+variables.
+
+scalafixConfigPath                                          *scalafixConfigPath*
+
+Type: string ~
+Default: '' ~
+
+Optional custom path to the .scalafix.conf file. Should be an absolute path
+and use forward slashes / for file separators (even on Windows).
+
+scalafmtConfigPath                                          *scalafmtConfigPath*
+
+Type: string ~
+Default: '' ~
+
+Optional custom path to the .scalafmt.conf file. Should be an absolute path
+and use forward slashes / for file separators (even on Windows).
+
+
+showImplicitArguments                                    *showImplicitArguments*
+
+Type: boolean ~
+Default: false ~
+
+When this option is enabled, each method that has implicit arguments has them
+displayed as extra info in the hover.
+
+showImplicitConversionsAndClasses            *showImplicitConversionsAndClasses*
+
+Type: boolean ~
+Default: false ~
+
+When this option is enabled, each place where an implicit method or class is
+used has it displayed as extra info in the hover.
+
+showInferredType                                              *showInferredType*
+
+Type: boolean ~
+Default: false ~
+
+When this option is enabled, each method that can have inferred types has them
+displayed as extra info in the hover.
 
 ================================================================================
 OPTIONS                                                         *metals-options*
@@ -181,6 +366,11 @@ ammonite_end()            Use to execute a |metals.ammonite-end| command.
                                                               *ammonite_start()*
 ammonite_start()          Use to execute a |metals.ammonite-start| command.
 
+                                                                   *bare_config*
+bare_config
+                          An empty config table with empty tables also set for
+                          settings, handlers, and init_options.
+
                                                                *build_connect()*
 build_connect()           Use to execute a |metals.build-connect| command.
 
@@ -215,6 +405,18 @@ initialize_or_attach({config})
                           that is used in the |vim.lsp.start_client()|. You
                           can visit the help docs of vim to see the full
                           signature of the config.
+
+                          There is also two extra keys top this config table.
+                          The first is `root_patterns`, which is a short way
+                          to change the `root_dir` of the config. The default
+                          `root_patterns` are >
+                             {'build.sbt', 'build.sc', 'build.gradle',
+                             'pom.xml', '.git'}
+<
+
+                          The second key that is unique to this config is the
+                          `settings` key. You can find more information about
+                          how to set these in |metals-settings|.
 
                                                                         *info()*
 info()                    Give info about the currently installed version of
