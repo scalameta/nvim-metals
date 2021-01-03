@@ -31,7 +31,8 @@ the correct `init_options`.
 PREREQUISITES                                             *metals-prerequisites*
 
 - Nvim v0.5.x The later the snapshot the better unitl v0.5.x stable is
-  released.
+  released. _NOTE_: Make sure the version you're using includes commit
+  #fa25694.
 - *DO NOT* use this plugin for Metals and also nvim/nvim-lspconfig for Metals.
   If you've used this plugin before with Metals, make sure to remove the
   Metals installation that it installed. If you have that plugin installed,
@@ -516,19 +517,6 @@ https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcom
                           {method} textDocument/hover
                           {result} hover results from the server
 
-                                                 *['window/showMessageRequest']*
-
-['window/showMessageRequest']({err}, {method}, {result})
-                          Used to request an answer from the user.
-
-                          Note that this is only in here temporarily. Once
-                          this is solidified we should try to just upstream
-                          it.
-
-                          Parameters:
-                          {err}    Message request error
-                          {method} window/showMessageRequest
-                          {result} ShowMessageRequestParams 
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
 
