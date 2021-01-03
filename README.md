@@ -35,7 +35,8 @@ more feature-full and stable Metals + Nvim experience.
     [here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
     re-build often as LSP support is changing daily. The easiest way to ensure
     you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
-    then it didn't work. You're looking for `v0.5.x`:
+    then it didn't work. You're looking for `v0.5.x`. _NOTE_: Make sure the
+    version you're using includes commit #fa25694.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. nvim-metals uses Coursier to download and update Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F` _NOTE_: Without doing this,
