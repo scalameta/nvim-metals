@@ -7,6 +7,26 @@ local M = {}
 
 local decoration_namespace = api.nvim_create_namespace('metals_decoration');
 
+M['window/showMessageRequest'] = function(_, _, params)
+
+  local actions = params.actions
+  print(params.message)
+  local option_strings = {params.message, "\nRequest Actions:"}
+  for i, action in ipairs(actions) do
+    local title = action.title:gsub('\r\n', '\\r\\n')
+    title = title:gsub('\n', '\\n')
+    table.insert(option_strings, string.format("%d. %s", i, title))
+  end
+
+  -- window/showMessageRequest can return either MessageActionItem[] or null.
+  local choice = vim.fn.inputlist(option_strings)
+  if choice < 1 or choice > #actions then
+      return vim.NIL
+  else
+    return actions[choice]
+  end
+end
+
 --[[
 Implementation of the `metals/quickPick` Metals LSP extension.
 https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
