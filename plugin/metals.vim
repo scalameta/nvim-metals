@@ -2,9 +2,6 @@ if exists('g:nvim_metals_loaded')
   finish
 endif
 
-let s:save_cpo = &cpo
-set cpo&vim
-
 command! Format lua vim.lsp.buf.formatting()
 command! MetalsAmmoniteEnd lua require'metals'.ammonite_end()
 command! MetalsAmmoniteStart lua require'metals'.ammonite_start()
@@ -45,11 +42,4 @@ function! metals#warnings() abort
   endif
 endfunction
 
-let &cpo = s:save_cpo
-unlet s:save_cpo
-
 let g:nvim_metals_loaded = 1
-
-if ! exists('g:metals_decoration_color')
-    let g:metals_decoration_color = 'Conceal'
-endif
