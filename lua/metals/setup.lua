@@ -43,13 +43,7 @@ M.install_or_update = function()
     return true
   end
 
-  local server_version
-
-  if (vim.g.metals_server_version) then
-    server_version = vim.g.metals_server_version
-  else
-    server_version = 'latest.release'
-  end
+  local server_version = vim.g.metals_server_version or 'latest.release'
 
   if not uv.fs_stat(nvim_metals_cache_dir) then
     os.execute('mkdir -p ' .. nvim_metals_cache_dir)
