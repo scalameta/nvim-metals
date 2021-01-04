@@ -36,8 +36,16 @@ M.ammonite_start = function()
   execute_command({command = 'metals.ammonite-start'})
 end
 
+M.bsp_switch = function()
+  execute_command({command = 'metals.bsp-switch'})
+end
+
 M.build_connect = function()
   execute_command({command = 'metals.build-connect'})
+end
+
+M.build_disconnect = function()
+  execute_command({command = 'metals.build-disconnect'})
 end
 
 M.build_import = function()
@@ -48,12 +56,34 @@ M.build_restart = function()
   execute_command({command = 'metals.build-restart'})
 end
 
+M.compile_cancel = function()
+  execute_command({command = 'metals.compile-cancel'})
+end
+
 M.compile_cascade = function()
   execute_command({command = 'metals.compile-cascade'})
 end
 
+M.compile_clean = function()
+  execute_command({command = 'metals.compile-clean'})
+end
+
 M.doctor_run = function()
   execute_command({command = 'metals.doctor-run'})
+end
+
+M.generate_bsp_config = function()
+  execute_command({command = 'metals.generate-bsp-config'})
+end
+
+-- Capture info about installed Metals
+M.info = function()
+  if not uv.fs_stat(setup.metals_bin) then
+    print(messages.metals_not_installed)
+  else
+    local info = util.os_capture(setup.metals_bin .. ' --version', true)
+    print(info)
+  end
 end
 
 M.logs_toggle = function()
@@ -67,10 +97,6 @@ M.logs_toggle = function()
   end
   -- Only open them if a terminal isn't already open
   api.nvim_command [[vsp term://tail -f .metals/metals.log]]
-end
-
-M.sources_scan = function()
-  execute_command({command = 'metals.sources-scan'})
 end
 
 --[[
@@ -93,6 +119,10 @@ M.new_scala_file = function(directory_uri_opt, name_opt)
   execute_command({command = 'metals.new-scala-file', arguments = args_string_array})
 end
 
+M.sources_scan = function()
+  execute_command({command = 'metals.sources-scan'})
+end
+
 -- Notify the server when document has been focused
 -- This needs to be called in the appropriate autocommand, i.e. FocusGained
 M.did_focus = function()
@@ -102,16 +132,6 @@ M.did_focus = function()
       print('metals/didFocusTextDocument: Server Error')
     end
   end)
-end
-
--- Capture info about installed Metals
-M.info = function()
-  if not uv.fs_stat(setup.metals_bin) then
-    print(messages.metals_not_installed)
-  else
-    local info = util.os_capture(setup.metals_bin .. ' --version', true)
-    print(info)
-  end
 end
 
 return M

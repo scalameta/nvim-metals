@@ -305,8 +305,20 @@ MetalsAmmoniteEnd            End the Ammonite BSP Server.
                                                            *MetalsAmmoniteStart*
 MetalsAmmoniteStart          Start the Ammonite BSP Server.
 
+                                                               *MetalsBspSwitch*
+MetalsBspSwitch              Prompts the user to select a new build server to
+                             connect to. This command does nothing in case there
+                             are less than two installed build servers on the
+                             computer. In case the user has multiple BSP servers
+                             installed then Metals will prompt the user to
+                             select which server to use.
+
                                                             *MetalsBuildConnect*
 MetalsBuildConnect           Manually connect to the build server.
+
+                                                         *MetalsBuildDisconnect*
+MetalsBuildDisconnect        Manually disconnect to the build server without
+                             reconnecting.
 
                                                              *MetalsBuildImport*
 MetalsBuildImport            Trigger an import for the current workspace.
@@ -314,12 +326,31 @@ MetalsBuildImport            Trigger an import for the current workspace.
                                                             *MetalsBuildRestart*
 MetalsBuildRestart           Manually restart the build server.
 
+                                                           *MetalsCompileCancel*
+MetalsCompileCancel          Cancel any ongoing compilation.
+
+                                                            *MetalsCompileClean*
+MetalsCompileClean           Recompile all build targets in this workspace. By
+                             default, Metals compiles the files incrementally.
+                             In case of any compile artifacts corruption this
+                             command might be run to make sure everything is
+                             recompiled correctly.
+
                                                           *MetalsCompileCascade*
 MetalsCompileCascade         Compile the current open file along with all build
                              targets that depend on it.
 
                                                                   *MetalsDoctor*
 MetalsDoctor                 Run Metals Doctor, which will open in your browser.
+
+                                                       *MetalsGenerateBspConfig*
+MetalsGenerateBspConfig      Checks to see if your build tool can serve as a BSP
+                             server. If so, generate the necessary BSP config to
+                             connect to the server. If there is more than one
+                             build tool for a workspace, you can then choose the
+                             desired one and that one will be used to generate
+                             the config. After the config is generated, Metals
+                             will attempt to auto-connect to it.
 
                                                                  *MetalsInstall*
 MetalsInstall                Install or update Metals.
