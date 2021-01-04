@@ -32,7 +32,7 @@ PREREQUISITES                                             *metals-prerequisites*
 
 - Nvim v0.5.x The later the snapshot the better unitl v0.5.x stable is
   released. _NOTE_: Make sure the version you're using includes commit
-  #fa25694.
+  #6e660d4.
 - *DO NOT* use this plugin for Metals and also nvim/nvim-lspconfig for Metals.
   If you've used this plugin before with Metals, make sure to remove the
   Metals installation that it installed. If you have that plugin installed,
