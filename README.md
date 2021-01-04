@@ -186,8 +186,8 @@ _NOTE_: You can find a full example of a configuration
 ## Available Commands and Options
 
 To view all of the available commands, check out `:h metals-commands` in the
-help docs. Similarly, to see the available configuration options, check out `h
-metals-options`, and for settings, `metals-settings`.
+help docs. Similarly, to see the available configuration options, check out `:h
+metals-options`, and for settings, `:h metals-settings`.
 
 ## Metals Handlers
 
