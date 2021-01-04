@@ -1,13 +1,14 @@
 ![nvim-metals logo](https://i.imgur.com/7gqEQOi.png)
 # nvim-metals
 
-nvim-metals is a plugin built to provide a better experience while using Metals,
-the Scala Language Server, with Neovim's built-in [LSP
+nvim-metals is a Lua plugin built to provide a better experience while using
+Metals, the Scala Language Server, with Neovim's built-in [LSP
 support](https://neovim.io/doc/user/lsp.html). This plugin provides the
 necessary commands you'll need to develop with nvim and Metals. This extension
 also implements many of the custom Metals LSP extensions that will give you a
-much richer experience than just using Metals with the default nvim-lspconfig
-setup, as well as automatically setting all of the correct `init_options`.
+much richer experience than just using Metals with the default
+[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) setup, as well as
+automatically setting all of the correct `init_options`.
 
 _NOTE:_ Keep in mind that the level of support is rapidly changing, there are
 bugs, missing features, and some of this is is changing daily,
@@ -31,12 +32,13 @@ more feature-full and stable Metals + Nvim experience.
 
 - Before you get started you need to ensure that you have the nightly/development
     build of Nvim. LSP support hasn't landed in stable yet. You can find
-    instructions for how to do this for you OS
+    instructions for how to do this for your OS
     [here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
     re-build often as LSP support is changing daily. The easiest way to ensure
     you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
     then it didn't work. You're looking for `v0.5.x`. _NOTE_: Make sure the
-    version you're using includes commit #6e660d4.
+    version you're using includes commit #6e660d4 to ensure
+    `window/showMessageRequest`s work.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. nvim-metals uses Coursier to download and update Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F` _NOTE_: Without doing this,
@@ -53,11 +55,10 @@ NVIM v0.5.0-3de9452
 
 _NOTE_: This plugin works without needing to install
 [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig). If you have
-it installed for other languages, that's not problem, but make sure you do not
-have Metals installed through nvim-lspconfig while using this plugin. If you
-`nvim/lsp-config` installed you can ensure you aren't using Metals with it by
-doing a `:LspInstallInfo`. This should show you a `{}`. If it doesn't go to the
-path that it shows and remove it.
+it installed for other languages, that's not a problem, but make sure you do not
+have Metals configured through `nvim-lspconfig` while using this plugin. If you
+have `nvim/lsp-config` registered with `nvim-lspconfig`, you'll want to remove
+it.
 
 Use whichever plugin manager you prefer to install this. Here is an example for
 [vim-plug](https://github.com/junegunn/vim-plug):
@@ -170,16 +171,23 @@ see all the options in `:h metals-lua-api`. Here is an example of mapping the
 nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 ```
 
+Or in Lua
+
+```lua
+vim.api.nvim_set_key('n', '<leader>bi', '<cmd>lua require'metals'.build_import()<CR>', {noremap = true})
+```
+
 This would allow you to do `<leader>bi` to trigger an import, the same way
 `:MetalsBuildImport` does.
 
 _NOTE_: You can find a full example of a configuration
 [here](https://github.com/scalameta/nvim-metals/discussions/39).
+
 ## Available Commands and Options
 
 To view all of the available commands, check out `:h metals-commands` in the
 help docs. Similarly, to see the available configuration options, check out `h
-metals-options`.
+metals-options`, and for settings, `metals-settings`.
 
 ## Metals Handlers
 

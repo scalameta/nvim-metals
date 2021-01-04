@@ -19,7 +19,7 @@ CONTENTS                                                           *nvim-metals*
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
-nvim-metals is a plugin built to provide a better experience while using
+nvim-metals is a Lua plugin built to provide a better experience while using
 Metals, the Scala Language Server, with Neovim's built-in LSP support. This
 plugin provides the necessary commands you'll need to develop with nvim and
 Metals. This extension also implements many of the custom Metals LSP
@@ -33,14 +33,11 @@ PREREQUISITES                                             *metals-prerequisites*
 - Nvim v0.5.x The later the snapshot the better unitl v0.5.x stable is
   released. _NOTE_: Make sure the version you're using includes commit
   #6e660d4.
-- *DO NOT* use this plugin for Metals and also nvim/nvim-lspconfig for Metals.
-  If you've used this plugin before with Metals, make sure to remove the
-  Metals installation that it installed. If you have that plugin installed,
-  while in a Scala file, `:LspInstallInfo` should just show you a `{}`. If it
-  shows you a path where Metals is installed, you'll need to remove it. If
-  not, both plugins will start an instance of Metals giving you all sorts of
-  problems. NOTE: that keeping the plugin installed for other LSP servers is
-  totally fine, just let nvim-metals handle Metals.
+- *DO NOT* use this plugin for Metals and also `nvim/nvim-lspconfig` for
+  Metals.  If you've used `nvim-nvim-lspconfig` before with Metals, make sure
+  to remove metals setup for it as it and this plugin will conflict.  NOTE:
+  that keeping the plugin installed for other LSP servers is totally fine,
+  just let nvim-metals handle Metals.
 
 ================================================================================
 GETTING STARTED                                         *metals-getting-started*
