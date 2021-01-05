@@ -375,6 +375,17 @@ MetalsNewScalaFile           Create a new Scala file. This will produce a
                              they'd like (case class, trait, object, etc) and
                              also prompts for a name.
 
+                                                          *MetalsQuickWorksheet*
+MetalsQuickWorksheet         Creats a worksheet in the current director that
+                             you're in with the name of the worksheet being the
+                             parent dir.
+
+                             Example: If you're in
+                             `src/main/scala/example/Main.scala` and you
+                             execute this command the file you'll have created
+                             will be
+                             `src/main/scala/example/example.worksheet.sc`.
+
                                                              *MetalsSourcesScan*
 MetalsSourcesScan            Scan all workspaces sources.
 

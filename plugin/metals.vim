@@ -20,6 +20,7 @@ command! MetalsInfo lua require'metals'.info()
 command! MetalsInstall lua require'metals'.install_or_update()
 command! MetalsLogsToggle lua require'metals'.logs_toggle()
 command! MetalsNewScalaFile lua require'metals'.new_scala_file()
+command! MetalsQuickWorksheet lua require'metals'.new_scala_file('file://' .. vim.fn.expand("%:p:h"), vim.fn.expand("%:p:h:t"), 'worksheet')
 command! MetalsSourcesScan lua require'metals'.sources_scan()
 
 function! metals#status() abort
