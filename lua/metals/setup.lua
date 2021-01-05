@@ -12,17 +12,17 @@ local lsps = {}
 
 -- Location of any files or executables that nvim-metals will create on your system
 local nvim_metals_cache_dir = util.path.join {fn.stdpath('cache'), 'nvim-metals'}
+
 -- Ultimately what will be passed to the config.cmd to initialize the LSP connection
 -- TODO in the future, it might be nice to provide an alternative to this so that
 -- a user _could_ just use Metals installed by cs install Metals. I'm still undecided
 -- if that's wise to offer two options, or to just remain in full control like we do here
 M.metals_bin = util.path.join {nvim_metals_cache_dir, 'metals'}
 
---[[
-Check to see if coursier is installed. This method favors the native cs. So if
-cs is installed, that will be returned, if not, then coursier will be returned.
---]]
-local check_for_coursier = function()
+-- Check to see if coursier is installed. This method favors the native cs. So if
+-- cs is installed, that will be returned, if not, then coursier will be returned.
+-- @return either 'cs', 'coursier', or nil
+M.check_for_coursier = function()
   if util.has_bins('cs') then
     return 'cs'
   elseif util.has_bins('coursier') then
@@ -37,7 +37,7 @@ have set no matter what. If there is an exesiting Metals there, it is simply
 overwritten by the bootstrap command.
 --]]
 M.install_or_update = function()
-  local coursier_exe = check_for_coursier()
+  local coursier_exe = M.check_for_coursier()
   if not coursier_exe then
     print(messages.coursier_not_installed)
     return true
@@ -91,7 +91,7 @@ The main entrypoint into the plugin. This is meant to be used in the following w
 if has('nvim-0.5')
   augroup lsp
     au!
-    au FileType scala lua require('metals').initialize_or_attach(metals_config)
+    au FileType scala,sbt lua require('metals').initialize_or_attach(metals_config)
   augroup end
 endif
 --]]
@@ -103,7 +103,7 @@ M.initialize_or_attach = function(config)
   if not (uv.fs_stat(M.metals_bin)) then
     local heading = '\nWelcome to nvim-metals!\n'
 
-    local courser_message = (check_for_coursier() and '' or messages.coursier_not_installed)
+    local courser_message = (M.check_for_coursier() and '' or messages.coursier_not_installed)
 
     print(heading .. courser_message .. messages.install_message)
     return true
