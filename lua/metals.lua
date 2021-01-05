@@ -18,8 +18,10 @@ M.worksheet_hover = decoration.worksheet_hover
 M.open_all_diagnostics = diagnostic.open_all_diagnostics
 
 -- General function used to execute various server commands.
-local function execute_command(command, callback)
-  vim.lsp.buf_request(0, 'workspace/executeCommand', command, function(err, method, resp)
+-- @param command_params (optional, table) Paramets to send to the server (arguments and command).
+-- @param callback (function) callback function for the request response.
+local function execute_command(command_params, callback)
+  vim.lsp.buf_request(0, 'workspace/executeCommand', command_params, function(err, method, resp)
     if callback then
       callback(err, method, resp)
     elseif err then
@@ -66,6 +68,28 @@ end
 
 M.compile_clean = function()
   execute_command({command = 'metals.compile-clean'})
+end
+
+M.copy_worksheet_output = function()
+  local uri = vim.uri_from_bufnr(0)
+  if not (string.match(uri, 'worksheet.sc$')) then
+    print('You must be in a worksheet to use this command.')
+  elseif vim.bo['modified'] then
+    print('Please save your worksheet before using this command.')
+  else
+    local copy_response = function(err, method, resp)
+      if err then
+        print(string.format('LSP[Metals][Error] - server error with [%s]. Check logs for details.',
+                            method))
+      elseif resp.value then
+        vim.fn.setreg('+', resp.value)
+        print('Copied worksheet output to your +register')
+        -- no final else needed since if there is no err and there is no val, Metals will
+        -- return a warning with logMessage, so we can skip it here.
+      end
+    end
+    execute_command({command = 'metals.copy-worksheet-output', arguments = uri}, copy_response)
+  end
 end
 
 M.doctor_run = function()
@@ -138,7 +162,7 @@ M.did_focus = function()
   local focused_uri = vim.uri_from_bufnr(0)
   vim.lsp.buf_notify(0, 'metals/didFocusTextDocument', focused_uri, function(err, _, _)
     if err then
-      print('metals/didFocusTextDocument: Server Error')
+      print('LSP[Metals][Error] - server error with `metals/didFocusTextDocument`')
     end
   end)
 end

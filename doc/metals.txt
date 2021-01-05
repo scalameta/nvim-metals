@@ -340,6 +340,10 @@ MetalsCompileClean           Recompile all build targets in this workspace. By
 MetalsCompileCascade         Compile the current open file along with all build
                              targets that depend on it.
 
+                                                     *MetalsCopyWorksheetOutput*
+MetalsCopyWorksheetOutput    Copy the contents of a worksheet to your local
+                             buffer.
+
                                                                   *MetalsDoctor*
 MetalsDoctor                 Run Metals Doctor, which will open in your browser.
 
@@ -400,6 +404,9 @@ following. >
   nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
 <
 
+Note: Most of these that are just executing a command have commands that you
+can find above in |metals-commands| with more details.
+
                                                                 *ammonite_end()*
 ammonite_end()            Use to execute a |metals.ammonite-end| command.
 
@@ -434,6 +441,10 @@ compile_cascade()         Use to execute a |metals.compile-cascade| command.
 
                                                                *compile_clean()*
 compile_clean()           Use to execute a |metals.compile-clean| command.
+
+                                                       *copy_worksheet_output()*
+copy_worksheet_output()   Use to execute a |metals.copy-worksheet-output|
+                          command.
 
                                                                   *doctor_run()*
 doctor_run()              Use to execute a |metals.doctor-run| command.

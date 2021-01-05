@@ -26,7 +26,6 @@ more feature-full and stable Metals + Nvim experience.
   - [Available Commands and Options](#available-commands-and-options)
   - [Metals Handlers](#metals-handlers)
   - [Statusline Integration](#statusline-integration)
-  - [Importing Your Build](#importing-your-build)
 
 ## Prerequisites
 
