@@ -411,8 +411,14 @@ bare_config
                           An empty config table with empty tables also set for
                           settings, handlers, and init_options.
 
+                                                                  *bsp_switch()*
+bsp_switch()              Use to execute a |metals.bsp-switch| command.
+
                                                                *build_connect()*
 build_connect()           Use to execute a |metals.build-connect| command.
+
+                                                            *build_disconnect()*
+build_disconnect()        Use to execute a |metals.build-disconnect| command.
 
                                                                 *build_import()*
 build_import()            Use to execute a |metals.build-import| command.
@@ -420,11 +426,24 @@ build_import()            Use to execute a |metals.build-import| command.
                                                                *build_restart()*
 build_restart()           Use to execute a |metals.build-restart| command.
 
+                                                              *compile_cancel()*
+compile_cancel()          Use to execute a |metals.compile-cancel| command.
+
                                                              *compile_cascade()*
 compile_cascade()         Use to execute a |metals.compile-cascade| command.
 
+                                                               *compile_clean()*
+compile_clean()           Use to execute a |metals.compile-clean| command.
+
                                                                   *doctor_run()*
 doctor_run()              Use to execute a |metals.doctor-run| command.
+
+                                                         *generate_bsp_config()*
+generate_bsp_config()    Use to execute a |metals.generate-bsp-config| command.
+
+                                                                        *info()*
+info()                    Give info about the currently installed version of
+                          Metals that will be used by nvim-metals.
 
                                                         *initialize_or_attach()*
 initialize_or_attach({config})    
@@ -441,9 +460,9 @@ initialize_or_attach({config})
   endif
 <
                           Parameters:
-                          {config} This config is meant to mimic the config
-                          that is used in the |vim.lsp.start_client()|. You
-                          can visit the help docs of vim to see the full
+                          {config} (table) This config is meant to mimic the
+                          config that is used in the |vim.lsp.start_client()|.
+                          You can visit the help docs of vim to see the full
                           signature of the config.
 
                           There is also two extra keys top this config table.
@@ -458,10 +477,6 @@ initialize_or_attach({config})
                           `settings` key. You can find more information about
                           how to set these in |metals-settings|.
 
-                                                                        *info()*
-info()                    Give info about the currently installed version of
-                          Metals that will be used by nvim-metals.
-
                                                            *install_or_update()*
 install_or_update()       Install Metals if it doesn't exist or update to the
                           latest stable version or version set if
@@ -471,6 +486,24 @@ install_or_update()       Install Metals if it doesn't exist or update to the
 logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
                           workspace that will open in the embedded Neovim
                           terminal.
+
+                                                              *new_scala_file()*
+new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
+
+                         Use to execute a |metals.new-scala-file| command. All
+                         of the params are optional. If they are not provided
+                         you will be prompted for them.
+
+                         Parameters:
+                         {directory_uri_opt} (string) directory that you'd
+                         like the new file to be created in.
+
+                         {name_opt} (string) name you'd like to be give to the
+                         file.
+
+                         {file_type_option} (string) the type of Scala file
+                         that you'd like to be created.
+
 
 open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          for all buffers and opens it.
