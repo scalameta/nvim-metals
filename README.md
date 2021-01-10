@@ -63,7 +63,8 @@ use 'scalameta/nvim-metals'
 
 ## Getting started
 
-To get started with `nvim-metals`, please read `:help nvim-metals`.
+To get started with `nvim-metals`, please read [`:help
+nvim-metals`](https://github.com/scalameta/nvim-metals/blob/master/doc/metals.txt).
 
 ## Settings, Commands, and Options
 
