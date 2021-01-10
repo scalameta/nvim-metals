@@ -152,6 +152,10 @@ M.new_scala_file = function(directory_uri_opt, name_opt, file_type_opt)
   execute_command({command = 'metals.new-scala-file', arguments = args_string_array})
 end
 
+M.new_scala_project = function()
+  execute_command({command = 'metals.new-scala-project'})
+end
+
 M.sources_scan = function()
   execute_command({command = 'metals.sources-scan'})
 end
