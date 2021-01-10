@@ -38,6 +38,11 @@ PREREQUISITES                                             *metals-prerequisites*
   to remove metals setup for it as it and this plugin will conflict.  NOTE:
   that keeping the plugin installed for other LSP servers is totally fine,
   just let nvim-metals handle Metals.
+- https://get-coursier.io/ - Metals uses coursier to manage the installation
+  and updatign of Metals.
+- Make sure you have your mappings for various LSP functionality configure.
+  Neovim provides functions for things like goto-definition, find references,
+  etc, but they need to be mapped.
 
 ================================================================================
 GETTING STARTED                                         *metals-getting-started*
@@ -56,7 +61,7 @@ This will give you the the defaults that Metals provides. The empty `{}` that
 is passed into |initialize_or_attach()| is necessary and is very similiar to
 the config object that is directly passed into the |vim.lsp.start_client()|
 method. The only differences is the addition of settings and root_patterns.
-You can read more about it in |:h vim.lsp.start_client()| to see all of the
+You can read more about it in |vim.lsp.start_client()| to see all of the
 base options. This is is the primary way to edit your `init_option`, change or
 add any cusom `handlers`, and set any configurartion settings. For example,
 it's recommened to set your `statusBarProvider` to `on`, and once you have
@@ -70,7 +75,7 @@ Then instead of passing an empty `{}` to |initialize_or_attach()|,  you'd pass
 in `metals_config`.
 
 Once setup, the first time you open a Scala project you'll be prompted to
-install Metals. You can do this with the following command: |:MetalsInstall|.
+install Metals. You can do this with the following command: |MetalsInstall|.
 
 In order to install the latest snapshot of metals, you'll need to have set the
 following: >
@@ -79,16 +84,19 @@ following: >
 <
 
 If no version is set, it defaults to the latest stable release. If a new
-release comes out or you change your |g:metals_server_version|,  you can
-simply issue another |:MetalsInstall| command which also serves as an update
+release comes out or you change your |g:metals_server_version|, you can
+simply issue another |MetalsInstall| command which also serves as an update
 command.
 
+If you believe that you have everything configured correctly, but do not see
+the message about installing Metals, ensure that you have removed `F` from
+`shortmess`. The you should be able to execute a |MetalsInfo| to see the
+installed Metals version.
 ================================================================================
 SETTINGS                                                       *metals-settings*
 
 The following settings are able to be passed along with the config table to
-|initialize_or_attatch()|. The keys are check to ensure that you don't pass in
-a setting that is not a valid Metals setting. You can set these like the
+|initialize_or_attatch()|. The keys are check to ensure that you don't pass in a setting that is not a valid Metals setting. You can set these like the
 example below shows: >
 
   metals_config = require'metals'.bare_config
@@ -602,6 +610,9 @@ https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcom
 
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
+
+nvim-metals provides a few functions that can be used in your statusline in
+order to show Errors, Warnings, and Metals status.
 
                                                                *metals#status()*
 metals#status()           Able to be used in your statusline to show status
