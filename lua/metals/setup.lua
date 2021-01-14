@@ -181,13 +181,15 @@ M.initialize_or_attach = function(config)
   lsp.buf_attach_client(bufnr, client_id)
 end
 
---[[
-auto commands necessary for `metals/didFocusTextDocument`
-https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
---]]
+-- auto commands necessary for `metals/didFocusTextDocument`.
+-- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
+-- auto commands also necessary for document highlight to work.
 M.auto_commands = function()
   api.nvim_command [[augroup NvimMetals]]
+  api.nvim_command [[autocmd!]]
   api.nvim_command [[autocmd BufEnter <buffer> lua require'metals'.did_focus()]]
+  api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
+  api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]]
   api.nvim_command [[augroup end]]
 end
 

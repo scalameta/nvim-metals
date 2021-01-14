@@ -52,9 +52,16 @@ Once installed, the most basic setup is to have the following >
   if has('nvim-0.5')
     augroup lsp
       au!
-      au FileType scala lua require('metals').initialize_or_attach({})
+      au FileType scala,sbt lua require('metals').initialize_or_attach({})
     augroup end
   endif
+<
+
+Or simply as a |vim.cmd| if using a pure Lua setup. >
+  cmd [[augroup lsp]]
+  cmd [[autocmd!]]
+  cmd [[autocmd FileType scala,sbt lua require("metals").initialize_or_attach(metals_config)]]
+  cmd [[augroup end]]
 <
 
 This will give you the the defaults that Metals provides. The empty `{}` that
@@ -96,7 +103,8 @@ installed Metals version.
 SETTINGS                                                       *metals-settings*
 
 The following settings are able to be passed along with the config table to
-|initialize_or_attatch()|. The keys are check to ensure that you don't pass in a setting that is not a valid Metals setting. You can set these like the
+|initialize_or_attatch()|. The keys are checked to ensure that you don't pass
+in a setting that is not a valid Metals setting. You can set these like the
 example below shows: >
 
   metals_config = require'metals'.bare_config
@@ -480,7 +488,7 @@ initialize_or_attach({config})
   if has('nvim-0.5')
     augroup lsp
       au!
-      au FileType scala lua require('metals').initialize_or_attach({})
+      au FileType scala,sbt lua require('metals').initialize_or_attach({})
     augroup end
   endif
 <
@@ -501,6 +509,30 @@ initialize_or_attach({config})
                           The second key that is unique to this config is the
                           `settings` key. You can find more information about
                           how to set these in |metals-settings|.
+
+                          NOTE: This function also includes some autocommands
+                          that are given to the `on_attach()` of the config.
+                          Those autocommands are below: >
+
+  api.nvim_command [[augroup NvimMetals]]
+  api.nvim_command [[autocmd!]]
+  api.nvim_command [[autocmd BufEnter <buffer> lua require'metals'.did_focus()]]
+  api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
+  api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]]
+  api.nvim_command [[augroup end]]
+<
+                          Notice that this adds in an autocmd for
+                          |vim.lsp.buf.document_highligh()| which is normally
+                          not enabled by default. There is also no default
+                          highlight group for this, so in order for you to
+                          actually see the highlights, you should include the
+                          following in your config, linked to the highlight of
+                          your choosing. >
+
+  vim.cmd [[hi! link LspReferenceText CursorColumn]]
+  vim.cmd [[hi! link LspReferenceRead CursorColumn]]
+  vim.cmd [[hi! link LspReferenceWrite CursorColumn]]
+<
 
                                                            *install_or_update()*
 install_or_update()       Install Metals if it doesn't exist or update to the
