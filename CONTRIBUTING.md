@@ -64,6 +64,20 @@ also use this as it gets rid of any need to discuss formatting. You can install
 it via luarocks: `luarocks install --server=https://luarocks.org/dev
 luaformatter`.
 
+## Logging
+
+A helpful part of seeing what's going on when working on stuff is the various
+logging files. Starting at the most basic, you can look in the
+`.metals/metals.log` file to see basic logs given from Metals. The
+`:MetalsLogsToggle` actually just looks at this file. If you want to further
+look at the communication between Metals and Neovim, you can create trace files
+as outlined [here on the Metals
+site](https://scalameta.org/metals/docs/contributors/getting-started.html#json-rpc-trace).
+
+The deepest layer of logs that you can take a look at is from Neovim by setting
+`vim.lsp.set_log_level("trace")`. Then you can view them in
+`$XDG_CACHE_HOME/nvim/lsp.log`.
+
 ## LSP
 
 More than likely, whatever you are looking to implement will have something to
