@@ -136,7 +136,7 @@ M.initialize_or_attach = function(config)
   config.root_patterns = config.root_patterns or
                              {'build.sbt', 'build.sc', 'build.gradle', 'pom.xml', '.git'}
 
-  config.root_dir = util.find_root_dir(config.root_patterns, bufname)
+  config.root_dir = util.find_root_dir(config.root_patterns, bufname) or fn.expand('%:p:h')
   config.handlers = util.check_exists_and_merge(default_handlers, config.handlers)
   config.capabilities = util.check_exists_and_merge(lsp.protocol.make_client_capabilities(),
                                                     config.capabilities)
