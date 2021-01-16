@@ -4,6 +4,7 @@ local fn = vim.fn
 local uv = vim.loop
 
 local default_handlers = require 'metals.handlers'
+local log = require 'metals.log'
 local messages = require 'metals.messages'
 local util = require 'metals.util'
 
@@ -30,15 +31,14 @@ M.check_for_coursier = function()
   end
 end
 
---[[
-There is absolutely no difference with installing or updating, so if a user
-executes `:MetalsInstall` it will just install the latest or install what they
-have set no matter what. If there is an exesiting Metals there, it is simply
-overwritten by the bootstrap command.
---]]
+-- There is absolutely no difference with installing or updating, so if a user
+-- executes `:MetalsInstall` it will just install the latest or install what they
+-- have set no matter what. If there is an exesiting Metals there, it is simply
+-- overwritten by the bootstrap command.
 M.install_or_update = function()
   local coursier_exe = M.check_for_coursier()
   if not coursier_exe then
+    log.error(messages.coursier_not_installed)
     print(messages.coursier_not_installed)
     return true
   end
@@ -49,16 +49,44 @@ M.install_or_update = function()
     os.execute('mkdir -p ' .. nvim_metals_cache_dir)
   end
 
-  local get_cmd = string.format(
-                      '%s bootstrap --java-opt -Xss4m --java-opt -Xms100m org.scalameta:metals_2.12:%s -r bintray:scalacenter/releases -r sonatype:snapshots -o %s -f', -- luacheck: ignore 631
-                      coursier_exe, server_version, M.metals_bin)
+  api.nvim_set_var('metals_status', 'Installing Metals...')
+  local stdin = uv.new_pipe(false)
+  local stdout = uv.new_pipe(false)
+  local stderr = uv.new_pipe(false)
 
-  vim.fn.system(get_cmd)
-  if (uv.fs_stat(M.metals_bin)) then
-    print(string.format(
-              'Metals %s installed in %s.\n Please restart nvim, and have fun coding Scala!',
-              server_version, M.metals_bin))
-  end
+  local logOutAndError = vim.schedule_wrap(function(err, data)
+    if err then
+      log.error(err)
+      print('Something went wrong with the Metals install. Please check the logs.')
+    elseif data then
+      if data:find('Resolution error') then
+        log.error(data)
+        Coursier_handle:close()
+        print('Unable to pull something down during the Metals install. Please check the logs.')
+      else
+        log.info(data)
+        api.nvim_set_var('metals_status', data)
+      end
+    end
+  end)
+
+  local args = {
+    'bootstrap', '--java-opt', '-Xss4m', '--java-opt', '-Xms100m',
+    string.format('org.scalameta:metals_2.12:%s', server_version), '-r',
+    'bintray:scalacenter/releases', '-r', 'sonatype:snapshots', '-o', M.metals_bin, '-f'
+  }
+
+  Coursier_handle = uv.spawn(M.check_for_coursier(), {args = args, stdio = {stdin, stdout, stderr}},
+                             vim.schedule_wrap(function(code)
+    Coursier_handle:close()
+    if (code == 0) then
+      api.nvim_set_var('metals_status', '')
+      print('Metals installed! Please restart nvim, and have fun coding Scala!')
+    end
+  end))
+
+  uv.read_start(stdout, logOutAndError)
+  uv.read_start(stderr, logOutAndError)
 end
 
 -- A bare config to use to be passed into initialize_or_attach.
@@ -85,16 +113,14 @@ local metals_settings = {
   'showImplicitConversionsAndClasses', 'showInferredType'
 }
 
---[[
-The main entrypoint into the plugin. This is meant to be used in the following way:
-
-if has('nvim-0.5')
-  augroup lsp
-    au!
-    au FileType scala,sbt lua require('metals').initialize_or_attach(metals_config)
-  augroup end
-endif
---]]
+-- The main entrypoint into the plugin. This is meant to be used in the following way:
+--
+-- if has('nvim-0.5')
+--   augroup lsp
+--     au!
+--     au FileType scala,sbt lua require('metals').initialize_or_attach(metals_config)
+--   augroup end
+-- endif
 M.initialize_or_attach = function(config)
   assert(config and type(config) == 'table',
          '\n\nRecieved: ' .. vim.inspect(config) .. ' as your config.\n' ..
@@ -103,9 +129,14 @@ M.initialize_or_attach = function(config)
   if not (uv.fs_stat(M.metals_bin)) then
     local heading = '\nWelcome to nvim-metals!\n'
 
-    local courser_message = (M.check_for_coursier() and '' or messages.coursier_not_installed)
+    local coursier_msg = (M.check_for_coursier() and '' or messages.coursier_not_installed)
 
-    print(heading .. courser_message .. messages.install_message)
+    if coursier_msg ~= '' then
+      log.error(coursier_msg)
+    end
+
+    log.warn('No metals found.' .. messages.install_message)
+    print(heading .. coursier_msg .. messages.install_message)
     return true
   end
 
