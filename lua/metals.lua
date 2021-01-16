@@ -5,6 +5,7 @@ local decoration = require 'metals.decoration'
 local diagnostic = require 'metals.diagnostic'
 local messages = require 'metals.messages'
 local setup = require 'metals.setup'
+local ui = require 'metals.ui'
 local util = require 'metals.util'
 
 local M = {}
@@ -100,13 +101,24 @@ M.generate_bsp_config = function()
   execute_command({command = 'metals.generate-bsp-config'})
 end
 
--- Capture info about installed Metals
+-- Capture info about the currently installed Metals and display it in a floating window.
 M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
     print(messages.metals_not_installed)
   else
     local info = util.os_capture(setup.metals_bin .. ' --version', true)
-    print(info)
+
+    local win_info = ui.percentage_range_window(0.75, 0.4)
+    local bufnr, win_id = win_info.bufnr, win_info.win_id
+
+    local lines = {}
+    for s in info:gmatch('[^\r\n]+') do
+      table.insert(lines, s)
+    end
+    table.insert(lines, 2, '#####################')
+    lines = vim.lsp.util._trim_and_pad(lines, {pad_left = 2, pad_top = 1})
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
+    vim.lsp.util.close_preview_autocmd({'BufHidden', 'BufLeave'}, win_id)
   end
 end
 
