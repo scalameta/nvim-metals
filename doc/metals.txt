@@ -412,6 +412,12 @@ MetalsQuickWorksheet         Creats a worksheet in the current director that
                              will be
                              `src/main/scala/example/example.worksheet.sc`.
 
+                                                             *MetalsResetChoice*
+MetalsResetChoice            ResetChoicePopup command allows you to reset a
+                             decision you made about different settings.
+                             E.g. If you choose to import workspace with sbt you
+                             can decide to reset and change it again.
+
                                                              *MetalsSourcesScan*
 MetalsSourcesScan            Scan all workspaces sources.
 
@@ -571,6 +577,9 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          diagnostics are not yet implemented.
                          After opening the quickfix, in order to refesh
                          diagnostics the function must be called again.
+
+                                                                *reset_choice()*
+reset_choice()            Use to execute a |metals.reset-choice| command.
 
                                                                 *sources_scan()*
 sources_scan()            Use to execute a |metals.sources-scan| command.

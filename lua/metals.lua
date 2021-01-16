@@ -160,6 +160,10 @@ M.sources_scan = function()
   execute_command({command = 'metals.sources-scan'})
 end
 
+M.reset_choice = function()
+  execute_command({command = 'metals.reset-choice'})
+end
+
 -- Notify the server when document has been focused
 -- This needs to be called in the appropriate autocommand, i.e. FocusGained
 M.did_focus = function()

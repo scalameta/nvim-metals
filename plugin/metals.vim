@@ -23,6 +23,7 @@ command! MetalsLogsToggle lua require'metals'.logs_toggle()
 command! MetalsNewScalaFile lua require'metals'.new_scala_file()
 command! MetalsNewScalaProject lua require'metals'.new_scala_project()
 command! MetalsQuickWorksheet lua require'metals'.new_scala_file('file://' .. vim.fn.expand("%:p:h"), vim.fn.expand("%:p:h:t"), 'worksheet')
+command! MetalsResetChoice lua require'metals'.reset_choice()
 command! MetalsSourcesScan lua require'metals'.sources_scan()
 
 function! metals#status() abort
