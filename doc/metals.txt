@@ -377,7 +377,8 @@ MetalsInstall                Install or update Metals.
 
                                                                     *MetalsInfo*
 MetalsInfo                   Give info about the currently installed version
-                             of Metals that will be used.
+                             of Metals that will be used, and display it in a
+                             floating window.
 
                                                                *MetalsLogToggle*
 MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
