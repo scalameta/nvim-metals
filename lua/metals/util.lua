@@ -174,22 +174,6 @@ M.has_bins = function(...)
   return true
 end
 
--- Utility to capture output from a command. Just like os.execute but capture the output.
-M.os_capture = function(cmd, raw)
-  local handle = assert(io.popen(cmd, 'r'))
-  local output = assert(handle:read('*a'))
-
-  handle:close()
-
-  if raw then
-    return output
-  end
-
-  output = string.gsub(string.gsub(string.gsub(output, '^%s+', ''), '%s+$', ''), '[\n\r]+', ' ')
-
-  return output
-end
-
 -- Checks to see if a user given table is defined. If so, merge it with a default.
 -- If not, just return the default table. This function favors the userTable on merge.
 -- @param defaultTable The default table to return or merge

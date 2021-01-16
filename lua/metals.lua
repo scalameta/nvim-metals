@@ -1,4 +1,5 @@
 local api = vim.api
+local fn = vim.fn
 local uv = vim.loop
 
 local decoration = require 'metals.decoration'
@@ -6,7 +7,6 @@ local diagnostic = require 'metals.diagnostic'
 local messages = require 'metals.messages'
 local setup = require 'metals.setup'
 local ui = require 'metals.ui'
-local util = require 'metals.util'
 
 local M = {}
 
@@ -83,7 +83,7 @@ M.copy_worksheet_output = function()
         print(string.format('LSP[Metals][Error] - server error with [%s]. Check logs for details.',
                             method))
       elseif resp.value then
-        vim.fn.setreg('+', resp.value)
+        fn.setreg('+', resp.value)
         print('Copied worksheet output to your +register')
         -- no final else needed since if there is no err and there is no val, Metals will
         -- return a warning with logMessage, so we can skip it here.
@@ -106,7 +106,7 @@ M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
     print(messages.metals_not_installed)
   else
-    local info = util.os_capture(setup.metals_bin .. ' --version', true)
+    local info = fn.system(setup.metals_bin .. ' --version')
 
     local win_info = ui.percentage_range_window(0.75, 0.4)
     local bufnr, win_id = win_info.bufnr, win_info.win_id
