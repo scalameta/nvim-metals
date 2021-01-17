@@ -12,7 +12,7 @@ much richer experience than just using Metals with the default
 automatically setting all of the correct `init_options`.
 
 _NOTE:_ Keep in mind that the level of support is rapidly changing, so expect
-stuff to break without warning or change until this is removed.
+stuff to change without warning.
 
 <p align="center">
     <a href="https://gitter.im/scalameta/metals-vim">
@@ -63,8 +63,9 @@ use 'scalameta/nvim-metals'
 
 ## Getting started
 
-To get started with `nvim-metals`, please read [`:help
+To get started with `nvim-metals`, _please read_ [`:help
 nvim-metals`](https://github.com/scalameta/nvim-metals/blob/master/doc/metals.txt).
+This will give you a thorough overview of the setup and settings.
 
 ## Settings, Commands, and Options
 

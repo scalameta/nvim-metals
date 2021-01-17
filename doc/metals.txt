@@ -67,12 +67,22 @@ Or simply as a |vim.cmd| if using a pure Lua setup. >
 This will give you the the defaults that Metals provides. The empty `{}` that
 is passed into |initialize_or_attach()| is necessary and is very similiar to
 the config object that is directly passed into the |vim.lsp.start_client()|
-method. The only differences is the addition of settings and root_patterns.
-You can read more about it in |vim.lsp.start_client()| to see all of the
-base options. This is is the primary way to edit your `init_option`, change or
-add any cusom `handlers`, and set any configurartion settings. For example,
-it's recommened to set your `statusBarProvider` to `on`, and once you have
-your statusline setup to handle the messages, you could turn it on like so: >
+method. The only differences is the addition of root_patterns that can be used
+to determine your root dir, and also a slightly different shaped settings. You
+can see examples of how to use settings in the |metals-settings| section.
+You can read more about the other config parameters in
+|vim.lsp.start_client()| . This is is the primary way to edit your
+`init_options`, change or add any cusom `handlers`, and set any configurartion
+settings.
+
+NOTE: It's higly recommened to set your `statusBarProvider` to `on`. This
+enables `metals/status` and also other helpful messages that are shown to you.
+However, to enable this you _must_ have the metals status shown in your status
+bar somehow. This can be by using the provided |metals#status()| function, or
+by just accessing it with Lua via `vim.g['metals_status']`. Everything will
+still work without this, but the status messages and feedback that you will
+get will be much less. You can enable the `statusBarProvider` like shown
+below: >
 
   metals_config = require'metals'.bare_config
   metals_config.init_options.statusBarProvider = 'on'
@@ -125,6 +135,23 @@ NOTE: keep in mind that for now, when settings are set, they are only sent
 once to the server with a `workspace/didChangeConfiguration` right after
 initialization. If you change your settings, you'll need to restart nvim for
 them to take affect.
+
+All properties:
+  * |ammoniteJvmProperties|
+  * |bloopSbtAlreadyInstalled|
+  * |bloopVersion|
+  * |excludedPackages|
+  * |gradleScript|
+  * |mavenScript|
+  * |millScript|
+  * |javaHome|
+  * |remoteLanguageServer|
+  * |sbtScript|
+  * |scalafixConfigPath|
+  * |scalafmtConfigPath|
+  * |showImplicitArguments|
+  * |showImplicitConversionsAndClasses|
+  * |showInferredType|
 
 ammoniteJvmProperties                                    *ammoniteJvmProperties*
 
