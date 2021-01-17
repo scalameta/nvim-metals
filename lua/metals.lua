@@ -107,16 +107,16 @@ end
 -- Capture info about the currently installed Metals and display it in a floating window.
 M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
-    log.warn("Attempted to call MetalsInfo but Metals is not installed")
+    log.warn('Attempted to call MetalsInfo but Metals is not installed')
     print(messages.metals_not_installed)
   else
-    local info = fn.system(setup.metals_bin .. ' --version')
+    local metals_info = fn.system(setup.metals_bin .. ' --version')
 
     local win_info = ui.percentage_range_window(0.75, 0.4)
     local bufnr, win_id = win_info.bufnr, win_info.win_id
 
     local lines = {}
-    for s in info:gmatch('[^\r\n]+') do
+    for s in metals_info:gmatch('[^\r\n]+') do
       table.insert(lines, s)
     end
     table.insert(lines, 2, '#####################')
