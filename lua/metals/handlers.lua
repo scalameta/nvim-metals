@@ -1,6 +1,8 @@
 local api = vim.api
-local decoration = require 'metals.decoration'
 local lsp = vim.lsp
+
+local decoration = require 'metals.decoration'
+local log = require 'metals.log'
 local ui = require 'metals.ui'
 local util = require 'metals.util'
 
@@ -88,6 +90,7 @@ end
 -- - https://scalameta.org/metals/docs/integrations/decoration-protocol.html
 M['metals/publishDecorations'] = function(err, _, decorations)
   if err then
+    log.error(err.message)
     print('metals.publishDecorations: Server error')
   end
   if not decorations then

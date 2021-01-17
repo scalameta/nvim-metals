@@ -4,6 +4,7 @@ local uv = vim.loop
 
 local decoration = require 'metals.decoration'
 local diagnostic = require 'metals.diagnostic'
+local log = require 'metals.log'
 local messages = require 'metals.messages'
 local setup = require 'metals.setup'
 local ui = require 'metals.ui'
@@ -26,6 +27,7 @@ local function execute_command(command_params, callback)
     if callback then
       callback(err, method, resp)
     elseif err then
+      log.error(err.message)
       print('Could not execute command: ' .. err.message)
     end
   end)
@@ -80,6 +82,7 @@ M.copy_worksheet_output = function()
   else
     local copy_response = function(err, method, resp)
       if err then
+        log.error(err.message)
         print(string.format('LSP[Metals][Error] - server error with [%s]. Check logs for details.',
                             method))
       elseif resp.value then
@@ -104,6 +107,7 @@ end
 -- Capture info about the currently installed Metals and display it in a floating window.
 M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
+    log.warn("Attempted to call MetalsInfo but Metals is not installed")
     print(messages.metals_not_installed)
   else
     local info = fn.system(setup.metals_bin .. ' --version')
@@ -182,6 +186,7 @@ M.did_focus = function()
   local focused_uri = vim.uri_from_bufnr(0)
   vim.lsp.buf_notify(0, 'metals/didFocusTextDocument', focused_uri, function(err, _, _)
     if err then
+      log.error(err.message)
       print('LSP[Metals][Error] - server error with `metals/didFocusTextDocument`')
     end
   end)
