@@ -5,28 +5,7 @@ local uv = vim.loop
 
 local M = {}
 
---[[
-A replacement for the default `root_dir` function that nvim-lspconfig
-provides. This is useful if you have a sbt/maven/gradle build that has
-nested build files. The default will not recognized this and instead
-re-initialize when you don't want it to.
---]]
-M.find_root_dir = function(patterns, startpath)
-  -- TODO I don't think this flatten in needed
-  -- local patterns = vim.tbl_flatten {patterns}
-  local function matcher(path)
-    for _, pattern in ipairs(patterns) do
-      local target = M.path.join(path, pattern)
-      local parent_target = M.path.join(M.path.dirname(path), pattern)
-      if M.path.exists(target) and not M.path.exists(parent_target) then
-        return path
-      end
-    end
-  end
-  return M.search_ancestors(startpath, matcher)
-end
-
-M.search_ancestors = function(startpath, func)
+local search_ancestors = function(startpath, func)
   validate {func = {func, 'f'}}
   if func(startpath) then
     return startpath
@@ -36,6 +15,23 @@ M.search_ancestors = function(startpath, func)
       return path
     end
   end
+end
+
+-- A replacement for the default `root_dir` function that nvim-lspconfig
+-- provides. This is useful if you have a sbt/maven/gradle build that has
+-- nested build files. The default will not recognized this and instead
+-- re-initialize when you don't want it to.
+M.find_root_dir = function(patterns, startpath)
+  local function matcher(path)
+    for _, pattern in ipairs(patterns) do
+      local target = M.path.join(path, pattern)
+      local parent_target = M.path.join(M.path.dirname(path), pattern)
+      if M.path.exists(target) and not M.path.exists(parent_target) then
+        return path
+      end
+    end
+  end
+  return search_ancestors(startpath, matcher)
 end
 
 -- This is taken verbatim from nvim-lspconfig to help with various path utils
@@ -150,16 +146,6 @@ M.path = (function()
   }
 end)()
 
-M.wrap_hover = function(bufnr, winnr)
-  local hover_len = #api.nvim_buf_get_lines(bufnr, 0, -1, false)[1]
-  local win_width = api.nvim_win_get_width(0)
-  if hover_len > win_width then
-    api.nvim_win_set_width(winnr, math.min(hover_len, win_width))
-    api.nvim_win_set_height(winnr, math.ceil(hover_len / win_width))
-    vim.wo[winnr].wrap = true -- luacheck: ignore 122
-  end
-end
-
 --[[
  Checks to see if an executable is present for single or list of executables
  Note that give a list, if any is not found, this will return false Also, this
@@ -184,6 +170,14 @@ M.check_exists_and_merge = function(defaultTable, userTable)
     return defaultTable
   else
     return vim.tbl_extend('force', defaultTable, userTable)
+  end
+end
+
+M.metals_status = function(text)
+  if text then
+    api.nvim_set_var('metals_status', text)
+  else
+    api.nvim_set_var('metals_status', '')
   end
 end
 

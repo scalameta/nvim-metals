@@ -45,11 +45,11 @@ M.install_or_update = function()
 
   local server_version = vim.g.metals_server_version or 'latest.release'
 
-  if not uv.fs_stat(nvim_metals_cache_dir) then
+  if not util.path.is_dir(nvim_metals_cache_dir) then
     os.execute('mkdir -p ' .. nvim_metals_cache_dir)
   end
 
-  api.nvim_set_var('metals_status', 'Installing Metals...')
+  util.metals_status('Installing Metals...')
   local stdin = uv.new_pipe(false)
   local stdout = uv.new_pipe(false)
   local stderr = uv.new_pipe(false)
@@ -65,7 +65,7 @@ M.install_or_update = function()
         print('Unable to pull something down during the Metals install. Please check the logs.')
       else
         log.info(data)
-        api.nvim_set_var('metals_status', data)
+        util.metals_status(data)
       end
     end
   end)
@@ -80,7 +80,7 @@ M.install_or_update = function()
                              vim.schedule_wrap(function(code)
     Coursier_handle:close()
     if (code == 0) then
-      api.nvim_set_var('metals_status', '')
+      util.metals_status()
       print('Metals installed! Please restart nvim, and have fun coding Scala!')
     end
   end))
@@ -126,7 +126,7 @@ M.initialize_or_attach = function(config)
          '\n\nRecieved: ' .. vim.inspect(config) .. ' as your config.\n' ..
              'Your config must be a table. If you are just using the default, just use {}')
 
-  if not (uv.fs_stat(M.metals_bin)) then
+  if not (util.path.is_file(M.metals_bin)) then
     local heading = '\nWelcome to nvim-metals!\n'
 
     local coursier_msg = (M.check_for_coursier() and '' or messages.coursier_not_installed)
