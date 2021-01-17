@@ -8,10 +8,8 @@ local M = {}
 
 local decoration_namespace = api.nvim_create_namespace('metals_decoration');
 
---[[
-Implementation of the `metals/quickPick` Metals LSP extension.
-https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
-]]
+-- Implementation of the `metals/quickPick` Metals LSP extension.
+-- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
 M['metals/quickPick'] = function(_, _, resp)
   local ids = {}
   local labels = {}
@@ -29,10 +27,8 @@ M['metals/quickPick'] = function(_, _, resp)
   end
 end
 
---[[
-Implementation of the `metals/inputBox` Metals LSP extension.
-https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
---]]
+-- Implementation of the `metals/inputBox` Metals LSP extension.
+-- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
 M['metals/inputBox'] = function(_, _, resp)
   local name = vim.fn.input(resp.prompt .. ': ')
 
@@ -44,10 +40,8 @@ M['metals/inputBox'] = function(_, _, resp)
   end
 end
 
---[[
-Implementation of the `metals/executeClientCommand` Metals LSP extension.
-https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
-]]
+-- Implementation of the `metals/executeClientCommand` Metals LSP extension.
+-- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
 M['metals/executeClientCommand'] = function(_, _, cmd_request)
   if cmd_request.command == 'metals-goto-location' then
     lsp.util.jump_to_location(cmd_request.arguments[1])
@@ -90,10 +84,8 @@ M['metals/status'] = function(_, _, params)
   end
 end
 
---[[
-Function needed to implement the Decoration Protocol from Metals.
-https://scalameta.org/metals/docs/integrations/decoration-protocol.html
-]]
+-- Function needed to implement the Decoration Protocol from Metals.
+-- - https://scalameta.org/metals/docs/integrations/decoration-protocol.html
 M['metals/publishDecorations'] = function(err, _, decorations)
   if err then
     print('metals.publishDecorations: Server error')
