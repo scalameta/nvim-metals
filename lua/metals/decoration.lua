@@ -1,6 +1,6 @@
 local api = vim.api
 local lsp = require 'vim.lsp'
-local util = require 'metals.util'
+local ui = require 'metals.ui'
 
 local M = {}
 
@@ -33,7 +33,7 @@ M.worksheet_hover = function()
                            .fancy_floating_markdown(hover_message, {pad_left = 1, pad_right = 1})
 
   lsp.util.close_preview_autocmd({'CursorMoved', 'BufHidden', 'InsertCharPre'}, winnr)
-  util.wrap_hover(bufnr, winnr)
+  ui.wrap_hover(bufnr, winnr)
 end
 
 M.clear_hover_messages = function()

@@ -1,6 +1,7 @@
 local api = vim.api
 local decoration = require 'metals.decoration'
 local lsp = vim.lsp
+local ui = require 'metals.ui'
 local util = require 'metals.util'
 
 local M = {}
@@ -53,12 +54,11 @@ M['metals/executeClientCommand'] = function(_, _, cmd_request)
   end
 end
 
---[[
-An alternative to the hover provided by nvim LSP. Why? The default implementation doesn't
-wrap at all, and in Scala when you have methods with long signatures, this gets very annyoing.
-In the future, the hope is that this will just be handled upstream better and we can just
-remove this method here.
-]]
+-- An alternative to the hover provided by nvim LSP. Why? The default
+-- implementation doesn't wrap at all, and in Scala when you have methods with
+-- long signatures, this gets very annyoing.  In the future, the hope is that
+-- this will just be handled upstream better and we can just remove this method
+-- here.
 M['textDocument/hover'] = function(_, method, result)
   local opts = {pad_left = 1, pad_right = 1}
   lsp.util.focusable_float(method, function()
@@ -72,23 +72,21 @@ M['textDocument/hover'] = function(_, method, result)
     end
     local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
     lsp.util.close_preview_autocmd({'CursorMoved', 'BufHidden', 'InsertCharPre'}, winnr)
-    util.wrap_hover(bufnr, winnr)
+    ui.wrap_hover(bufnr, winnr)
     return bufnr, winnr
   end)
 end
 
---[[
-Callback function to handle `metals/status`
-This simply sets a global variable `metals_status` which can be easily
-picked up and used in a statusline.
-Command and Tooltip are not covered from the spec.
-https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
---]]
+-- Callback function to handle `metals/status`
+-- This simply sets a global variable `metals_status` which can be easily
+-- picked up and used in a statusline.
+-- Command and Tooltip are not covered from the spec.
+-- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
 M['metals/status'] = function(_, _, params)
   if params.hide then
-    api.nvim_set_var('metals_status', '')
+    util.metals_status()
   else
-    api.nvim_set_var('metals_status', params.text)
+    util.metals_status(params.text)
   end
 end
 

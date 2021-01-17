@@ -1,5 +1,8 @@
--- The following is extracted and modified from nvim-lspconfig... which itelelf
--- is extranted and modifed by plenary.nvim.
+local api = vim.api
+local fn = vim.fn
+
+-- {{{ The following is extracted and modified from nvim-lspconfig...
+-- which itself is extranted and modifed by plenary.nvim.
 --
 -- Thanks TJ
 --
@@ -91,14 +94,26 @@ function M.percentage_range_window(col_range, row_range, options)
   win_opts.col = math.floor(vim.o.columns * col_start_percentage)
   win_opts.width = math.floor(vim.o.columns * width_percentage)
 
-  local bufnr = options.bufnr or vim.fn.nvim_create_buf(false, true)
-  local win_id = vim.fn.nvim_open_win(bufnr, true, win_opts)
-  vim.api.nvim_win_set_buf(win_id, bufnr)
+  local bufnr = options.bufnr or fn.nvim_create_buf(false, true)
+  local win_id = fn.nvim_open_win(bufnr, true, win_opts)
+  api.nvim_win_set_buf(win_id, bufnr)
 
   vim.cmd('setlocal nocursorcolumn')
-  vim.fn.nvim_win_set_option(win_id, 'winblend', options.winblend)
+  fn.nvim_win_set_option(win_id, 'winblend', options.winblend)
 
   return {bufnr = bufnr, win_id = win_id}
+end
+
+-- }}} End stuff taken from lspconfig
+
+M.wrap_hover = function(bufnr, winnr)
+  local hover_len = #api.nvim_buf_get_lines(bufnr, 0, -1, false)[1]
+  local win_width = api.nvim_win_get_width(0)
+  if hover_len > win_width then
+    api.nvim_win_set_width(winnr, math.min(hover_len, win_width))
+    api.nvim_win_set_height(winnr, math.ceil(hover_len / win_width))
+    vim.wo[winnr].wrap = true -- luacheck: ignore 122
+  end
 end
 
 return M
