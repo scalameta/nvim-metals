@@ -11,14 +11,11 @@ local util = require 'metals.util'
 local M = {}
 local lsps = {}
 
--- Location of any files or executables that nvim-metals will create on your system
-local nvim_metals_cache_dir = util.path.join {fn.stdpath('cache'), 'nvim-metals'}
-
 -- Ultimately what will be passed to the config.cmd to initialize the LSP connection
 -- TODO in the future, it might be nice to provide an alternative to this so that
 -- a user _could_ just use Metals installed by cs install Metals. I'm still undecided
 -- if that's wise to offer two options, or to just remain in full control like we do here
-M.metals_bin = util.path.join {nvim_metals_cache_dir, 'metals'}
+M.metals_bin = util.path.join(util.nvim_metals_cache_dir, 'metals')
 
 -- Check to see if coursier is installed. This method favors the native cs. So if
 -- cs is installed, that will be returned, if not, then coursier will be returned.
@@ -45,8 +42,8 @@ M.install_or_update = function()
 
   local server_version = vim.g.metals_server_version or 'latest.release'
 
-  if not util.path.is_dir(nvim_metals_cache_dir) then
-    os.execute('mkdir -p ' .. nvim_metals_cache_dir)
+  if not util.path.is_dir(util.nvim_metals_cache_dir) then
+    os.execute('mkdir -p ' .. util.nvim_metals_cache_dir)
   end
 
   util.metals_status('Installing Metals...')

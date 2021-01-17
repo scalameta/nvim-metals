@@ -179,4 +179,8 @@ M.metals_status = function(text)
   end
 end
 
+
+-- Location of any files or executables that nvim-metals will create on your system
+M.nvim_metals_cache_dir = M.path.join(fn.stdpath('cache'), 'nvim-metals')
+
 return M

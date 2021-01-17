@@ -9,9 +9,6 @@ local util = require 'metals.util'
 -- under the terms of the MIT license. See LICENSE for details.
 -- User configuration section
 local default_config = {
-  -- Name of the plugin. Prepended to log messages
-  plugin = 'nvim-metals',
-
   -- Should print the output to neovim while running
   use_console = false,
 
@@ -43,12 +40,13 @@ local default_config = {
 -- {{{ NO NEED TO CHANGE
 local log = {}
 
+-- Location of the nvim-metals specific log file
+log.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, 'nvim-metals.log')
+
 local unpack = unpack or table.unpack
 
 log.new = function(config, standalone)
   config = vim.tbl_deep_extend('force', default_config, config)
-
-  local outfile = util.path.join(vim.fn.stdpath('cache'), config.plugin, config.plugin .. '.log')
 
   local obj
   if standalone then
@@ -118,7 +116,7 @@ log.new = function(config, standalone)
 
     -- Output to log file
     if config.use_file then
-      local fp = io.open(outfile, 'a')
+      local fp = io.open(log.nvim_metals_log, 'a')
       local str = string.format('[%-6s%s] %s: %s\n', nameupper, os.date(), lineinfo, msg)
       fp:write(str)
       fp:close()
