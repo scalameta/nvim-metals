@@ -59,8 +59,8 @@ Once installed, the most basic setup is to have the following >
 
 Or simply as a |vim.cmd| if using a pure Lua setup. >
   cmd [[augroup lsp]]
-  cmd [[autocmd!]]
-  cmd [[autocmd FileType scala,sbt lua require("metals").initialize_or_attach(metals_config)]]
+  cmd [[au!]]
+  cmd [[au FileType scala,sbt lua require("metals").initialize_or_attach(metals_config)]]
   cmd [[augroup end]]
 <
 
@@ -108,7 +108,8 @@ command.
 If you believe that you have everything configured correctly, but do not see
 the message about installing Metals, ensure that you have removed `F` from
 `shortmess`. The you should be able to execute a |MetalsInfo| to see the
-installed Metals version.
+installed Metals version, the location of the install, and also the location
+of the `nvim-metals.log` file.
 ================================================================================
 SETTINGS                                                       *metals-settings*
 
@@ -323,7 +324,7 @@ Default: 'latest.stable' ~
 Targeted server version that you'd like to install. Note that if this is
 changed you need to do a |:MetalsInstall| again to ensure that it is
 installed. If you need to check what version you're currently using, you can
-use the |:MetalsInfo| command.
+use the |MetalsInfo| command.
 
                                                      *g:metals_decoration_color*
 Type: string ~
@@ -405,7 +406,10 @@ MetalsInstall                Install or update Metals.
                                                                     *MetalsInfo*
 MetalsInfo                   Give info about the currently installed version
                              of Metals that will be used, and display it in a
-                             floating window.
+                             floating window. This will also contain the
+                             location of Metals that was installed with
+                             |MetalsInstall| and also the location of the
+                             `nvim-metals.log` file.
 
                                                                *MetalsLogToggle*
 MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
@@ -510,7 +514,9 @@ generate_bsp_config()    Use to execute a |metals.generate-bsp-config| command.
 
                                                                         *info()*
 info()                    Give info about the currently installed version of
-                          Metals that will be used by nvim-metals.
+                          Metals that will be used by nvim-metals, the
+                          location of the installed Metals, and the location
+                          of the `nvim-metals.log` file.
 
                                                         *initialize_or_attach()*
 initialize_or_attach({config})    

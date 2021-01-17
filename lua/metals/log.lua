@@ -1,3 +1,5 @@
+local util = require 'metals.util'
+
 -- log.lua
 --
 -- Inspired by rxi/log.lua
@@ -5,12 +7,8 @@
 --
 -- This library is free software; you can redistribute it and/or modify it
 -- under the terms of the MIT license. See LICENSE for details.
-
 -- User configuration section
 local default_config = {
-  -- Name of the plugin. Prepended to log messages
-  plugin = 'nvim-metals',
-
   -- Should print the output to neovim while running
   use_console = false,
 
@@ -21,31 +19,34 @@ local default_config = {
   use_file = true,
 
   -- Any messages above this level will be logged.
-  level = "trace",
+  level = 'trace',
 
+  -- LuaFormatter off
   -- Level configuration
   modes = {
-    { name = "trace", hl = "Comment", },
-    { name = "debug", hl = "Comment", },
-    { name = "info",  hl = "None", },
-    { name = "warn",  hl = "WarningMsg", },
-    { name = "error", hl = "ErrorMsg", },
-    { name = "fatal", hl = "ErrorMsg", },
+    {name = 'trace', hl = 'Comment'},
+    {name = 'debug', hl = 'Comment'},
+    {name = 'info', hl = 'None'},
+    {name = 'warn', hl = 'WarningMsg'},
+    {name = 'error', hl = 'ErrorMsg'},
+    {name = 'fatal', hl = 'ErrorMsg'}
   },
+  -- LuaFormatter on
 
   -- Can limit the number of decimals displayed for floats
-  float_precision = 0.01,
+  float_precision = 0.01
 }
 
 -- {{{ NO NEED TO CHANGE
 local log = {}
 
+-- Location of the nvim-metals specific log file
+log.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, 'nvim-metals.log')
+
 local unpack = unpack or table.unpack
 
 log.new = function(config, standalone)
-  config = vim.tbl_deep_extend("force", default_config, config)
-
-  local outfile = string.format('%s/%s.log', vim.api.nvim_call_function('stdpath', {'data'}), config.plugin)
+  config = vim.tbl_deep_extend('force', default_config, config)
 
   local obj
   if standalone then
@@ -70,9 +71,9 @@ log.new = function(config, standalone)
     for i = 1, select('#', ...) do
       local x = select(i, ...)
 
-      if type(x) == "number" and config.float_precision then
+      if type(x) == 'number' and config.float_precision then
         x = tostring(round(x, config.float_precision))
-      elseif type(x) == "table" then
+      elseif type(x) == 'table' then
         x = vim.inspect(x)
       else
         x = tostring(x)
@@ -80,9 +81,8 @@ log.new = function(config, standalone)
 
       t[#t + 1] = x
     end
-    return table.concat(t, " ")
+    return table.concat(t, ' ')
   end
-
 
   local log_at_level = function(level, level_config, message_maker, ...)
     -- Return early if we're below the config.level
@@ -92,38 +92,32 @@ log.new = function(config, standalone)
     local nameupper = level_config.name:upper()
 
     local msg = message_maker(...)
-    local info = debug.getinfo(2, "Sl")
-    local lineinfo = info.short_src .. ":" .. info.currentline
+    local info = debug.getinfo(2, 'Sl')
+    local lineinfo = info.short_src .. ':' .. info.currentline
 
     -- Output to console
     if config.use_console then
-      local console_string = string.format(
-      "[%-6s%s] %s: %s",
-      nameupper,
-      os.date("%H:%M:%S"),
-      lineinfo,
-      msg
-      )
+      local console_string = string.format('[%-6s%s] %s: %s', nameupper, os.date('%H:%M:%S'),
+                                           lineinfo, msg)
 
       if config.highlights and level_config.hl then
-        vim.cmd(string.format("echohl %s", level_config.hl))
+        vim.cmd(string.format('echohl %s', level_config.hl))
       end
 
-      local split_console = vim.split(console_string, "\n")
+      local split_console = vim.split(console_string, '\n')
       for _, v in ipairs(split_console) do
         vim.cmd(string.format([[echom "[%s] %s"]], config.plugin, vim.fn.escape(v, '"')))
       end
 
       if config.highlights and level_config.hl then
-        vim.cmd("echohl NONE")
+        vim.cmd('echohl NONE')
       end
     end
 
     -- Output to log file
     if config.use_file then
-      local fp = io.open(outfile, "a")
-      local str = string.format("[%-6s%s] %s: %s\n",
-      nameupper, os.date(), lineinfo, msg)
+      local fp = io.open(log.nvim_metals_log, 'a')
+      local str = string.format('[%-6s%s] %s: %s\n', nameupper, os.date(), lineinfo, msg)
       fp:write(str)
       fp:close()
     end
@@ -134,7 +128,7 @@ log.new = function(config, standalone)
       return log_at_level(i, x, make_string, ...)
     end
 
-    obj[("fmt_%s" ):format(x.name)] = function()
+    obj[('fmt_%s'):format(x.name)] = function()
       return log_at_level(i, x, function(...)
         local passed = {...}
         local fmt = table.remove(passed, 1)
