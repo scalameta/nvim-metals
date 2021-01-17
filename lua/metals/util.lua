@@ -146,11 +146,9 @@ M.path = (function()
   }
 end)()
 
---[[
- Checks to see if an executable is present for single or list of executables
- Note that give a list, if any is not found, this will return false Also, this
- is stolen from the nvim/nvim-lspconfig utils.
---]]
+-- Checks to see if an executable is present for single or list of executables
+-- Note that give a list, if any is not found, this will return false Also, this
+-- is stolen from the nvim/nvim-lspconfig utils.
 M.has_bins = function(...)
   for i = 1, select('#', ...) do
     if 0 == fn.executable((select(i, ...))) then
