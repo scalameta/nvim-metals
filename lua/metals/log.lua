@@ -1,3 +1,5 @@
+local util = require 'metals.util'
+
 -- log.lua
 --
 -- Inspired by rxi/log.lua
@@ -46,9 +48,7 @@ local unpack = unpack or table.unpack
 log.new = function(config, standalone)
   config = vim.tbl_deep_extend('force', default_config, config)
 
-  -- TODO use path utils for this
-  local outfile = string.format('%s/%s/%s.log', vim.fn.stdpath('cache'), config.plugin,
-                                config.plugin)
+  local outfile = util.path.join(vim.fn.stdpath('cache'), config.plugin, config.plugin .. '.log')
 
   local obj
   if standalone then
