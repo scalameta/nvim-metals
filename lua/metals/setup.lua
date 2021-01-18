@@ -35,8 +35,7 @@ end
 M.install_or_update = function()
   local coursier_exe = M.check_for_coursier()
   if not coursier_exe then
-    log.error(messages.coursier_not_installed)
-    print(messages.coursier_not_installed)
+    log.error_and_show(messages.coursier_installed)
     return true
   end
 
@@ -53,13 +52,15 @@ M.install_or_update = function()
 
   local logOutAndError = vim.schedule_wrap(function(err, data)
     if err then
+      log.error_and_show('Something went wrong with the Metals install. Please check the logs.')
       log.error(err)
-      print('Something went wrong with the Metals install. Please check the logs.')
     elseif data then
       if data:find('Resolution error') then
-        log.error(data)
         Coursier_handle:close()
-        print('Unable to pull something down during the Metals install. Please check the logs.')
+        log.error_and_show(
+            'Unable to pull something down during the Metals install. Please check the logs.')
+        log.error(data)
+        util.metals_status()
       else
         log.info(data)
         util.metals_status(data)
@@ -77,8 +78,8 @@ M.install_or_update = function()
                              vim.schedule_wrap(function(code)
     Coursier_handle:close()
     if (code == 0) then
-      util.metals_status()
-      print('Metals installed! Please restart nvim, and have fun coding Scala!')
+      util.metals_status('Metals installed!')
+      log.info_and_show('Metals installed! Please restart nvim, and have fun coding Scala!')
     end
   end))
 
@@ -110,21 +111,24 @@ local metals_settings = {
   'showImplicitConversionsAndClasses', 'showInferredType'
 }
 
--- The main entrypoint into the plugin. This is meant to be used in the following way:
---
--- if has('nvim-0.5')
---   augroup lsp
---     au!
---     au FileType scala,sbt lua require('metals').initialize_or_attach(metals_config)
---   augroup end
--- endif
+-- The main entrypoint into the plugin.
+-- @param config (table) this config is very similiar to the config that is directly
+--   passed into the `lsp.start_client(config)` with a couple exceptions.
+--   1. This config doesn't make you preface the settings with `metals`. Instead
+--      we just allow the user to pass in the setting and we preface the entire
+--      thing.
+--   2. This config has `root_patters` which are used to help determine the root_path.
 M.initialize_or_attach = function(config)
-  assert(config and type(config) == 'table',
-         '\n\nRecieved: ' .. vim.inspect(config) .. ' as your config.\n' ..
-             'Your config must be a table. If you are just using the default, just use {}')
+
+  if (not config or type(config) ~= 'table') then
+    log.error_and_show('Recieved: ' .. vim.inspect(config) .. ' as your config.\n' ..
+                           'Your config must be a table.\n' ..
+                           'If you are just using the default, just use {}')
+    return
+  end
 
   if not (util.path.is_file(M.metals_bin)) then
-    local heading = '\nWelcome to nvim-metals!\n'
+    local heading = 'Welcome to nvim-metals!\n'
 
     local coursier_msg = (M.check_for_coursier() and '' or messages.coursier_not_installed)
 
@@ -132,8 +136,7 @@ M.initialize_or_attach = function(config)
       log.error(coursier_msg)
     end
 
-    log.warn('No metals found.' .. messages.install_message)
-    print(heading .. coursier_msg .. messages.install_message)
+    log.warn_and_show(heading .. coursier_msg .. messages.install_message)
     return true
   end
 
@@ -179,9 +182,13 @@ M.initialize_or_attach = function(config)
 
   if config.settings then
     for k, _ in pairs(config.settings) do
-      assert(vim.tbl_contains(metals_settings, k),
-             '"' .. k .. '"' .. ' is not a valid setting. The following are valid settings: ' ..
-                 table.concat(metals_settings, ', '))
+      if not vim.tbl_contains(metals_settings, k) then
+        local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
+        local valid_settings = string.format('The following are valid settings %s',
+                                             table.concat(metals_settings, ', '))
+        local err = heading .. '\n' .. valid_settings
+        log.warn_and_show(err)
+      end
     end
   end
 
