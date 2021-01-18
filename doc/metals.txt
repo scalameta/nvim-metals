@@ -137,7 +137,7 @@ once to the server with a `workspace/didChangeConfiguration` right after
 initialization. If you change your settings, you'll need to restart nvim for
 them to take affect.
 
-All properties:
+All available settings:
   * |ammoniteJvmProperties|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
@@ -538,17 +538,19 @@ initialize_or_attach({config})
                           You can visit the help docs of vim to see the full
                           signature of the config.
 
-                          There is also two extra keys top this config table.
-                          The first is `root_patterns`, which is a short way
-                          to change the `root_dir` of the config. The default
-                          `root_patterns` are >
+                          There are a couple small differences with this
+                          config table.  The first is `root_patterns`, which
+                          is a short way to change the `root_dir` of the
+                          config. The default `root_patterns` are >
                              {'build.sbt', 'build.sc', 'build.gradle',
                              'pom.xml', '.git'}
 <
 
-                          The second key that is unique to this config is the
-                          `settings` key. You can find more information about
-                          how to set these in |metals-settings|.
+                          The second small difference is the `settings` key.
+                          Since this is only the config for `nvim-metals` you
+                          don't need to preface your settings object with the
+                          `metals` keyword. You can find more information
+                          about how to set these in |metals-settings|.
 
                           NOTE: This function also includes some autocommands
                           that are given to the `on_attach()` of the config.

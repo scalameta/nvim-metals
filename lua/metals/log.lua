@@ -2,147 +2,85 @@ local util = require 'metals.util'
 
 -- log.lua
 --
--- Inspired by rxi/log.lua
--- Modified by tjdevries and can be found at github.com/tjdevries/vlog.nvim
+-- Inspired by github.com/tjdevries/vlog.nvim, which was inspired by rxi/log.lua,
+-- and then modified to better fit the needs of nvim-metals.
 --
--- This library is free software; you can redistribute it and/or modify it
--- under the terms of the MIT license. See LICENSE for details.
--- User configuration section
-local default_config = {
-  -- Should print the output to neovim while running
-  use_console = false,
+-- So this modules will produce the following:
+--  log.info
+--  log.warn
+--  log.error
+--
+--  But also the following which I use to both log and to show the user.
+--  log.info_and_show
+--  log.warn_and_show
+--  log.error_and_show
+--
+local M = {}
 
-  -- Should highlighting be used in console (using echohl)
-  highlights = true,
+local modes = {info = 'None', warn = 'WarningMsg', error = 'ErrorMsg'}
 
-  -- Should write to a file
-  use_file = true,
+-- Logging utility to take x number of things to log that can be
+-- strings, tables, or numbers. This will flatten them all and retrn
+-- a string representation of it.
+-- @param (string, number, table) as many as you wish
+-- @return (string)
+local make_string = function(...)
+  local output = {}
+  for i = 1, select('#', ...) do
+    local thing_to_log = select(i, ...)
 
-  -- Any messages above this level will be logged.
-  level = 'trace',
+    if type(thing_to_log) == 'number' then
+      thing_to_log = tostring(thing_to_log)
+    elseif type(thing_to_log) == 'table' then
+      thing_to_log = vim.inspect(thing_to_log)
+    else
+      thing_to_log = tostring(thing_to_log)
+    end
 
-  -- LuaFormatter off
-  -- Level configuration
-  modes = {
-    {name = 'trace', hl = 'Comment'},
-    {name = 'debug', hl = 'Comment'},
-    {name = 'info', hl = 'None'},
-    {name = 'warn', hl = 'WarningMsg'},
-    {name = 'error', hl = 'ErrorMsg'},
-    {name = 'fatal', hl = 'ErrorMsg'}
-  },
-  -- LuaFormatter on
-
-  -- Can limit the number of decimals displayed for floats
-  float_precision = 0.01
-}
-
--- {{{ NO NEED TO CHANGE
-local log = {}
+    output[#output + 1] = thing_to_log
+  end
+  return table.concat(output, ' ')
+end
 
 -- Location of the nvim-metals specific log file
-log.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, 'nvim-metals.log')
+M.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, 'nvim-metals.log')
 
-local unpack = unpack or table.unpack
+local generate_log_functions = function()
+  local log_at_level = function(level, show_user, ...)
+    local nameupper = level:upper()
 
-log.new = function(config, standalone)
-  config = vim.tbl_deep_extend('force', default_config, config)
-
-  local obj
-  if standalone then
-    obj = log
-  else
-    obj = {}
-  end
-
-  local levels = {}
-  for i, v in ipairs(config.modes) do
-    levels[v.name] = i
-  end
-
-  local round = function(x, increment)
-    increment = increment or 1
-    x = x / increment
-    return (x > 0 and math.floor(x + .5) or math.ceil(x - .5)) * increment
-  end
-
-  local make_string = function(...)
-    local t = {}
-    for i = 1, select('#', ...) do
-      local x = select(i, ...)
-
-      if type(x) == 'number' and config.float_precision then
-        x = tostring(round(x, config.float_precision))
-      elseif type(x) == 'table' then
-        x = vim.inspect(x)
-      else
-        x = tostring(x)
-      end
-
-      t[#t + 1] = x
-    end
-    return table.concat(t, ' ')
-  end
-
-  local log_at_level = function(level, level_config, message_maker, ...)
-    -- Return early if we're below the config.level
-    if level < levels[config.level] then
-      return
-    end
-    local nameupper = level_config.name:upper()
-
-    local msg = message_maker(...)
+    local msg = make_string(...)
     local info = debug.getinfo(2, 'Sl')
     local lineinfo = info.short_src .. ':' .. info.currentline
 
-    -- Output to console
-    if config.use_console then
-      local console_string = string.format('[%-6s%s] %s: %s', nameupper, os.date('%H:%M:%S'),
-                                           lineinfo, msg)
+    if show_user then
+      vim.cmd(string.format('echohl %s', modes[level]))
 
-      if config.highlights and level_config.hl then
-        vim.cmd(string.format('echohl %s', level_config.hl))
-      end
-
-      local split_console = vim.split(console_string, '\n')
+      local split_console = vim.split(msg, '\n')
       for _, v in ipairs(split_console) do
-        vim.cmd(string.format([[echom "[%s] %s"]], config.plugin, vim.fn.escape(v, '"')))
+        vim.cmd(string.format([[echom "[%s] %s"]], 'nvim-metals', vim.fn.escape(v, '"')))
       end
 
-      if config.highlights and level_config.hl then
-        vim.cmd('echohl NONE')
-      end
+      vim.cmd('echohl NONE')
     end
 
-    -- Output to log file
-    if config.use_file then
-      local fp = io.open(log.nvim_metals_log, 'a')
-      local str = string.format('[%-6s%s] %s: %s\n', nameupper, os.date(), lineinfo, msg)
-      fp:write(str)
-      fp:close()
-    end
+    local fp = io.open(M.nvim_metals_log, 'a')
+    local str = string.format('[%-6s%s] %s: %s\n', nameupper, os.date(), lineinfo, msg)
+    fp:write(str)
+    fp:close()
   end
 
-  for i, x in ipairs(config.modes) do
-    obj[x.name] = function(...)
-      return log_at_level(i, x, make_string, ...)
+  for key, _ in pairs(modes) do
+    M[key] = function(...)
+      return log_at_level(key, false, ...)
     end
 
-    obj[('fmt_%s'):format(x.name)] = function()
-      return log_at_level(i, x, function(...)
-        local passed = {...}
-        local fmt = table.remove(passed, 1)
-        local inspected = {}
-        for _, v in ipairs(passed) do
-          table.insert(inspected, vim.inspect(v))
-        end
-        return string.format(fmt, unpack(inspected))
-      end)
+    M[('%s_and_show'):format(key)] = function(...)
+      return log_at_level(key, true, ...)
     end
   end
 end
 
-log.new(default_config, true)
--- }}}
+generate_log_functions()
 
-return log
+return M

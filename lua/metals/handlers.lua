@@ -22,7 +22,6 @@ M['metals/quickPick'] = function(_, _, resp)
 
   local choice = vim.fn.inputlist(labels)
   if (choice == 0) then
-    print('\nmetals: operation cancelled')
     return {cancelled = true}
   else
     return {itemId = ids[choice]}
@@ -35,7 +34,6 @@ M['metals/inputBox'] = function(_, _, resp)
   local name = vim.fn.input(resp.prompt .. ': ')
 
   if (name == '') then
-    print('\nmetals: operation cancelled')
     return {cancelled = true}
   else
     return {value = name}
@@ -90,8 +88,8 @@ end
 -- - https://scalameta.org/metals/docs/integrations/decoration-protocol.html
 M['metals/publishDecorations'] = function(err, _, decorations)
   if err then
+    log.error_and_show('Server error while publishing decorations. Please see logs for details.')
     log.error(err.message)
-    print('metals.publishDecorations: Server error')
   end
   if not decorations then
     return
@@ -100,7 +98,8 @@ M['metals/publishDecorations'] = function(err, _, decorations)
   local uri = decorations.uri
   local bufnr = vim.uri_to_bufnr(uri)
   if not bufnr then
-    print('metals.publishDecorations: Couldn\'t find buffer for ', uri)
+    log.warn_and_show(string.format('Couldn\'t find buffer for %s while publishing decorations.',
+                                    uri))
     return
   end
 

@@ -27,8 +27,7 @@ local function execute_command(command_params, callback)
     if callback then
       callback(err, method, resp)
     elseif err then
-      log.error(err.message)
-      print('Could not execute command: ' .. err.message)
+      log.error_and_show(string.format('Could not execute command: %s', err.message))
     end
   end)
 end
@@ -76,18 +75,17 @@ end
 M.copy_worksheet_output = function()
   local uri = vim.uri_from_bufnr(0)
   if not (string.match(uri, 'worksheet.sc$')) then
-    print('You must be in a worksheet to use this command.')
+    log.warn_and_show('You must be in a worksheet to use this command.')
   elseif vim.bo['modified'] then
-    print('Please save your worksheet before using this command.')
+    log.warn_and_show('Please save your worksheet before using this command.')
   else
     local copy_response = function(err, method, resp)
       if err then
-        log.error(err.message)
-        print(string.format('LSP[Metals][Error] - server error with [%s]. Check logs for details.',
-                            method))
+        log.error_and_show(string.format('Server error with [%s]. Check logs for details.', method))
+        log.error(err)
       elseif resp.value then
         fn.setreg('+', resp.value)
-        print('Copied worksheet output to your +register')
+        log.info_and_show('Copied worksheet output to your +register')
         -- no final else needed since if there is no err and there is no val, Metals will
         -- return a warning with logMessage, so we can skip it here.
       end
@@ -107,8 +105,7 @@ end
 -- Capture info about the currently installed Metals and display it in a floating window.
 M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
-    log.warn('Attempted to call MetalsInfo but Metals is not installed')
-    print(messages.metals_not_installed)
+    log.warn_and_show(messages.metals_not_installed)
   else
     local metals_info = fn.system(setup.metals_bin .. ' --version')
 
@@ -135,7 +132,7 @@ M.logs_toggle = function()
   for _, v in ipairs(bufs) do
     local buftype = api.nvim_buf_get_option(v, 'buftype')
     if buftype == 'terminal' then
-      print('Logs are already opened. Try an :ls to see where it is.')
+      log.info_and_show('Logs are already opened. Try an :ls to see where it is.')
       return
     end
   end
@@ -190,8 +187,9 @@ M.did_focus = function()
   local focused_uri = vim.uri_from_bufnr(0)
   vim.lsp.buf_notify(0, 'metals/didFocusTextDocument', focused_uri, function(err, _, _)
     if err then
+      log.error_and_show(
+          'Server error with `metals/didFocusTextDocument`. Please check your logs for details.')
       log.error(err.message)
-      print('LSP[Metals][Error] - server error with `metals/didFocusTextDocument`')
     end
   end)
 end
