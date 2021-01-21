@@ -129,15 +129,26 @@ end
 
 M.logs_toggle = function()
   local bufs = api.nvim_list_bufs()
-  for _, v in ipairs(bufs) do
-    local buftype = api.nvim_buf_get_option(v, 'buftype')
-    if buftype == 'terminal' then
-      log.info_and_show('Logs are already opened. Try an :ls to see where it is.')
+
+  for _, buf in ipairs(bufs) do
+    local buftype = api.nvim_buf_get_option(buf, 'buftype')
+    local _, purpose = pcall(api.nvim_buf_get_var, buf, 'metals_buf_purpose')
+
+    if buftype == 'terminal' and purpose == 'logs' then
+      local first_window_id = vim.fn.win_findbuf(buf)[1]
+      if first_window_id then
+        vim.fn.win_gotoid(first_window_id)
+      else
+        api.nvim_command(string.format('vsp | :b %i', buf))
+      end
+
       return
     end
   end
+
   -- Only open them if a terminal isn't already open
   api.nvim_command [[vsp term://tail -f .metals/metals.log]]
+  vim.b['metals_buf_purpose'] = 'logs'
 end
 
 -- Implements the new-scala-file feature.

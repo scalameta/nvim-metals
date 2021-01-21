@@ -2,10 +2,8 @@
 
 max_line_length = 100 
 globals = {
-  "Coursier_handle"
-}
-read_globals = {
-  "vim",
+  "Coursier_handle",
+  "vim"
 }
 exclude_files = {
   "lua/metals/log.lua"
