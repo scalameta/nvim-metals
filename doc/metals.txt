@@ -414,12 +414,9 @@ MetalsInfo                   Give info about the currently installed version
                                                                *MetalsLogToggle*
 MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
                              |.metals/metals.log| file in your worksapce. If
-                             triggered again, this won't actual toggle the logs.
-                             This is doen mainly to avoid someone simply |q|ing
-                             the terminal thinking it's closed when the buffer
-                             is actually still there. If this happens, you will
-                             be warned that the terminal buffer still exists and
-                             that you should do an |ls| to find it.
+                             triggered again, this will either bring you to
+                             the window that has the logs open, or open the
+                             buffer in a split in your current window.
 
                                                             *MetalsNewScalaFile*
 MetalsNewScalaFile           Create a new Scala file. This will produce a
