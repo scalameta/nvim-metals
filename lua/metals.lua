@@ -102,27 +102,31 @@ M.generate_bsp_config = function()
   execute_command({command = 'metals.generate-bsp-config'})
 end
 
--- Capture info about the currently installed Metals and display it in a floating window.
+-- Capture info about the currently installed Metals and display it in a
+-- floating window.
 M.info = function()
   if not uv.fs_stat(setup.metals_bin) then
     log.warn_and_show(messages.metals_not_installed)
   else
     local metals_info = fn.system(setup.metals_bin .. ' --version')
 
-    local win_info = ui.percentage_range_window(0.75, 0.5)
-    local bufnr, win_id = win_info.bufnr, win_info.win_id
-
     local output = {}
     for s in metals_info:gmatch('[^\r\n]+') do
       table.insert(output, s)
     end
-    table.insert(output, 2, '#####################')
-    table.insert(output, '#####################')
-    table.insert(output, string.format('nvim-metals log file: %s', log.nvim_metals_log))
-    table.insert(output, '#####################')
-    table.insert(output, string.format('metals install location: %s', setup.metals_bin))
+
+    table.insert(output, "")
+    table.insert(output, '## Useful locations')
+    table.insert(output, string.format('  - nvim-metals log file: %s', log.nvim_metals_log))
+    table.insert(output, string.format('  - metals install location: %s', setup.metals_bin))
+    table.insert(output, "")
+    table.insert(output, "## Helpful links")
+    table.insert(output, "  - https://gitter.im/scalameta/metals-vim")
+    table.insert(output, "  - https://github.com/scalameta/nvim-metals")
+    table.insert(output, "  - https://github.com/scalameta/metals")
+
     output = vim.lsp.util._trim_and_pad(output, {pad_left = 2, pad_top = 1})
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, output)
+    local win_id = ui.make_float_with_borders(output, 'nvim-metals')
     vim.lsp.util.close_preview_autocmd({'BufHidden', 'BufLeave'}, win_id)
   end
 end

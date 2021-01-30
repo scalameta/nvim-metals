@@ -409,7 +409,7 @@ MetalsInfo                   Give info about the currently installed version
                              floating window. This will also contain the
                              location of Metals that was installed with
                              |MetalsInstall| and also the location of the
-                             `nvim-metals.log` file.
+                             `nvim-metals.log` file and some helpful links.
 
                                                                *MetalsLogToggle*
 MetalsLogsToggle             Opens the embedded Nvim terminal tailing the

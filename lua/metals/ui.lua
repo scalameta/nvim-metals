@@ -1,110 +1,123 @@
 local api = vim.api
-local fn = vim.fn
-
--- {{{ The following is extracted and modified from nvim-lspconfig...
--- which itself is extranted and modifed by plenary.nvim.
---
--- Thanks TJ
---
-local function apply_defaults(original, defaults)
-  if original == nil then
-    original = {}
-  end
-
-  original = vim.deepcopy(original)
-
-  for k, v in pairs(defaults) do
-    if original[k] == nil then
-      original[k] = v
-    end
-  end
-
-  return original
-end
 
 local M = {}
 
-M.default_options = {winblend = 10, percentage = 0.9}
+local state = {is_open = false, current = nil, enclosing_window = nil}
 
-function M.default_opts(options)
-  options = apply_defaults(options, M.default_options)
+--- @param line string
+local function pad(line)
+  return ' ' .. line .. ' '
+end
 
-  local width = math.floor(vim.o.columns * options.percentage)
-  local height = math.floor(vim.o.lines * options.percentage)
+--- @param item string
+--- @param width number
+--- @param char string
+--- @return string
+local function insert_float_title(item, width, char)
+  item = pad(item)
+  local remainder = width - item:len()
+  item = item .. string.rep(char, remainder - 2)
+  return item
+end
 
-  local top = math.floor(((vim.o.lines - height) / 2) - 1)
-  local left = math.floor((vim.o.columns - width) / 2)
+--- @param item string
+--- @param position string 'mid' | 'bottom' | 'top'
+local function add_border(item, position)
+  if position == 'top' then
+    return '╭' .. item .. '╮'
+  elseif position == 'mid' then
+    return '│' .. item .. '│'
+  elseif position == 'bottom' then
+    return '╰' .. item .. '╯'
+  end
+end
 
-  local opts = {
-    relative = 'editor',
-    row = top,
-    col = left,
+--- @param buf number
+--- @param title string
+local function highlight_title(buf, title)
+  if not title then
+    return
+  end
+  local start_col = 4
+  api.nvim_buf_add_highlight(buf, -1, -- Namespace ID
+  'Title', -- Highlight group
+  0, -- line number
+  start_col, -- start
+  start_col + title:len() -- end
+  )
+end
+
+---Get basic configuration to give to nvim_open_win()
+---@param width number
+---@param height number
+---@return table
+local function get_window_config(width, height)
+  local win_width = api.nvim_win_get_width(state.enclosing_window)
+  local row = math.floor((vim.o.lines * 0.5 - vim.o.cmdheight - 1) / 2)
+  local col = math.floor((win_width - width) / 2)
+  return {
+    relative = 'win',
     width = width,
     height = height,
-    style = 'minimal'
+    col = col,
+    row = row,
+    style = 'minimal',
+    focusable = false
   }
-
-  return opts
 end
 
---- Create window that takes up certain percentags of the current screen.
----
---- Works regardless of current buffers, tabs, splits, etc.
--- @param col_range number | Table:
---                  If number, then center the window taking up this percentage of the screen.
---                  If table, first index should be start, second_index should be end
--- @param row_range number | Table:
---                  If number, then center the window taking up this percentage of the screen.
---                  If table, first index should be start, second_index should be end
-function M.percentage_range_window(col_range, row_range, options)
-  options = apply_defaults(options, M.default_options)
+---Create a float relevant to the size of the content given and with borders.
+---Big thanks to https://github.com/akinsho/dependency-assist.nvim where I stole
+---a lot of the ideas and code from.
+---@param contents table
+---@param title string What you'd like displayed in the border.
+---@return number win_id
+M.make_float_with_borders = function(contents, title)
+  local lines = {}
 
-  local win_opts = M.default_opts(options)
-  win_opts.relative = 'editor'
+  -- For now I know this will be short since I pretty much fully control what
+  -- I put it in, but it might be that we want to check win_width() here if
+  -- we have issues with the window beign too wide.
+  local longest_line = 0
 
-  local height_percentage, row_start_percentage
-  if type(row_range) == 'number' then
-    assert(row_range <= 1)
-    assert(row_range > 0)
-    height_percentage = row_range
-    row_start_percentage = (1 - height_percentage) / 2
-  elseif type(row_range) == 'table' then
-    height_percentage = row_range[2] - row_range[1]
-    row_start_percentage = row_range[1]
-  else
-    error(string.format('Invalid type for \'row_range\': %p', row_range))
+  for _, line in ipairs(contents) do
+    if line:len() > longest_line then
+      longest_line = line:len()
+    end
   end
 
-  win_opts.height = math.ceil(vim.o.lines * height_percentage)
-  win_opts.row = math.ceil(vim.o.lines * row_start_percentage)
+  local win_width = longest_line + 2
 
-  local width_percentage, col_start_percentage
-  if type(col_range) == 'number' then
-    assert(col_range <= 1)
-    assert(col_range > 0)
-    width_percentage = col_range
-    col_start_percentage = (1 - width_percentage) / 2
-  elseif type(col_range) == 'table' then
-    width_percentage = col_range[2] - col_range[1]
-    col_start_percentage = col_range[1]
-  else
-    error(string.format('Invalid type for \'col_range\': %p', col_range))
+  local buf = api.nvim_create_buf(false, true)
+
+  local title_line = insert_float_title(title, win_width, '─')
+  local top = add_border(title_line, 'top')
+
+  table.insert(lines, top)
+
+  for _, line in ipairs(contents) do
+    -- trim trailing whitespace and trailing empty lines
+    local trimmed = string.gsub(line, '[ \t]+%f[\r\n%z]', '')
+    local needed_padding = longest_line - #trimmed
+    local extra_padding = string.rep(' ', needed_padding)
+    local needs_border = trimmed .. extra_padding
+
+    table.insert(lines, add_border(needs_border, 'mid'))
   end
 
-  win_opts.col = math.floor(vim.o.columns * col_start_percentage)
-  win_opts.width = math.floor(vim.o.columns * width_percentage)
+  local bot_line = string.rep('─', longest_line)
+  local bot = add_border(bot_line, 'bottom')
 
-  local bufnr = options.bufnr or fn.nvim_create_buf(false, true)
-  local win_id = fn.nvim_open_win(bufnr, true, win_opts)
-  api.nvim_win_set_buf(win_id, bufnr)
-
-  vim.cmd('setlocal nocursorcolumn')
-  fn.nvim_win_set_option(win_id, 'winblend', options.winblend)
-
-  return {bufnr = bufnr, win_id = win_id}
+  table.insert(lines, bot)
+  api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+  highlight_title(buf, title)
+  local height = #lines
+  local config = get_window_config(win_width, height)
+  local win_id = api.nvim_open_win(buf, false, config)
+  vim.fn.win_gotoid(win_id)
+  vim.bo[buf].ft = 'markdown'
+  return win_id
 end
-
--- }}} End stuff taken from lspconfig
 
 M.wrap_hover = function(bufnr, winnr)
   local hover_len = #api.nvim_buf_get_lines(bufnr, 0, -1, false)[1]
