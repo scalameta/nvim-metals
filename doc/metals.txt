@@ -389,7 +389,8 @@ MetalsCopyWorksheetOutput    Copy the contents of a worksheet to your local
                              buffer.
 
                                                                   *MetalsDoctor*
-MetalsDoctor                 Run Metals Doctor, which will open in your browser.
+MetalsDoctor                 Run Metals Doctor, which will open a floating
+                             window to show you the status of Metals.
 
                                                        *MetalsGenerateBspConfig*
 MetalsGenerateBspConfig      Checks to see if your build tool can serve as a BSP

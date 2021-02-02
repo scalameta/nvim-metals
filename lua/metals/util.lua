@@ -179,8 +179,32 @@ M.metals_status = function(text)
   end
 end
 
-
 -- Location of any files or executables that nvim-metals will create on your system
 M.nvim_metals_cache_dir = M.path.join(fn.stdpath('cache'), 'nvim-metals')
+
+--- Strip the leading and trailing spaces of a string
+--- @param s string the string you want to trim.
+M.full_trim = function(s)
+  return (s:gsub('^%s*(.-)%s*$', '%1'))
+end
+
+--- Strip trailing whites and trailing empty lines
+--- @param s string the string you want to trim.
+M.trim_end = function(s)
+    return string.gsub(s, '[ \t]+%f[\r\n%z]', '')
+end
+
+M.split_on = function(s, delimiter)
+  local result = {}
+  local from = 1
+  local delim_from, delim_to = string.find(s, delimiter, from)
+  while delim_from do
+    table.insert(result, string.sub(s, from, delim_from - 1))
+    from = delim_to + 1
+    delim_from, delim_to = string.find(s, delimiter, from)
+  end
+  table.insert(result, string.sub(s, from))
+  return result
+end
 
 return M

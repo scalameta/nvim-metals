@@ -93,14 +93,14 @@ end
 M.bare_config = {handlers = {}, init_options = {}, settings = {}}
 
 local metals_init_options = {
-  statusBarProvider = 'show-message',
-  inputBoxProvider = true,
-  quickPickProvider = true,
-  executeClientCommandProvider = true,
+  compilerOptions = {snippetAutoIndent = false},
   decorationProvider = true,
   didFocusProvider = true,
-  isHttpEnabled = true,
-  compilerOptions = {snippetAutoIndent = false}
+  doctorProvider = 'json',
+  executeClientCommandProvider = true,
+  inputBoxProvider = true,
+  quickPickProvider = true,
+  statusBarProvider = 'show-message'
 }
 
 -- Currently available settings.
