@@ -115,15 +115,22 @@ M.info = function()
       table.insert(output, s)
     end
 
-    table.insert(output, "")
+    if setup.settings then
+      table.insert(output, '')
+      table.insert(output, '## Current settings')
+      for s in vim.inspect(setup.settings):gmatch('[^\r\n]+') do
+        table.insert(output, s)
+      end
+    end
+    table.insert(output, '')
     table.insert(output, '## Useful locations')
     table.insert(output, string.format('  - nvim-metals log file: %s', log.nvim_metals_log))
     table.insert(output, string.format('  - metals install location: %s', setup.metals_bin))
-    table.insert(output, "")
-    table.insert(output, "## Helpful links")
-    table.insert(output, "  - https://gitter.im/scalameta/metals-vim")
-    table.insert(output, "  - https://github.com/scalameta/nvim-metals")
-    table.insert(output, "  - https://github.com/scalameta/metals")
+    table.insert(output, '')
+    table.insert(output, '## Helpful links')
+    table.insert(output, '  - https://gitter.im/scalameta/metals-vim')
+    table.insert(output, '  - https://github.com/scalameta/nvim-metals')
+    table.insert(output, '  - https://github.com/scalameta/metals')
 
     output = vim.lsp.util._trim_and_pad(output, {pad_left = 2, pad_top = 1})
     local win_id = ui.make_float_with_borders(output, 'nvim-metals')
