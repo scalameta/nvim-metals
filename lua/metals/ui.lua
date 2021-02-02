@@ -1,8 +1,7 @@
 local api = vim.api
+local util = require('metals.util')
 
 local M = {}
-
-local state = {is_open = false, current = nil, enclosing_window = nil}
 
 --- @param line string
 local function pad(line)
@@ -51,8 +50,8 @@ end
 ---@param width number
 ---@param height number
 ---@return table
-local function get_window_config(width, height)
-  local win_width = api.nvim_win_get_width(state.enclosing_window)
+local function get_window_config(width, height, win_id)
+  local win_width = api.nvim_win_get_width(win_id)
   local row = math.floor((vim.o.lines * 0.5 - vim.o.cmdheight - 1) / 2)
   local col = math.floor((win_width - width) / 2)
   return {
@@ -66,6 +65,39 @@ local function get_window_config(width, height)
   }
 end
 
+--- Given a bunch of lines to be displayed in a float, ensure that it doesn't
+--- exceed a given width. If the line does, break it by sentence.
+--- @param lines table
+--- @param max_length number
+--- @return table {output = table, longest = number}
+local function enforce_width(lines, max_length)
+  local output = {}
+  local longest = 0
+
+  for _, line in ipairs(lines) do
+    if line:len() > max_length then
+      local splits = util.split_on(line, '%.')
+      for _, split_line in ipairs(splits) do
+        local trimmed_line = util.full_trim(split_line)
+        if trimmed_line ~= '' then
+          local full_line = trimmed_line .. '.'
+          table.insert(output, full_line)
+          if trimmed_line:len() > longest then
+            longest = full_line:len()
+          end
+        end
+      end
+    elseif line:len() > longest then
+      longest = line:len()
+      table.insert(output, line)
+    else
+      table.insert(output, line)
+    end
+  end
+
+  return {output = output, longest = longest}
+end
+
 ---Create a float relevant to the size of the content given and with borders.
 ---Big thanks to https://github.com/akinsho/dependency-assist.nvim where I stole
 ---a lot of the ideas and code from.
@@ -73,32 +105,35 @@ end
 ---@param title string What you'd like displayed in the border.
 ---@return number win_id
 M.make_float_with_borders = function(contents, title)
-  local lines = {}
+  -- The very max that we'll have the entire float
+  local max_width = api.nvim_win_get_width(0) - 10
 
-  -- For now I know this will be short since I pretty much fully control what
-  -- I put it in, but it might be that we want to check win_width() here if
-  -- we have issues with the window beign too wide.
-  local longest_line = 0
-
-  for _, line in ipairs(contents) do
-    if line:len() > longest_line then
-      longest_line = line:len()
-    end
-  end
-
-  local win_width = longest_line + 2
+  local enforced_output = enforce_width(contents, max_width)
+  local longest_line = enforced_output.longest
+  local float_width = longest_line + 2
 
   local buf = api.nvim_create_buf(false, true)
 
-  local title_line = insert_float_title(title, win_width, '─')
+  local title_line = insert_float_title(title, float_width, '─')
   local top = add_border(title_line, 'top')
 
+  local lines = {}
   table.insert(lines, top)
 
-  for _, line in ipairs(contents) do
-    -- trim trailing whitespace and trailing empty lines
-    local trimmed = string.gsub(line, '[ \t]+%f[\r\n%z]', '')
+  for _, line in ipairs(enforced_output.output) do
+
+    local trimmed = util.trim_end(line)
     local needed_padding = longest_line - #trimmed
+
+    -- This sort of sucks, but it's the easiest thing to do right now since I
+    -- know these two will be the only two that the Metals Doctor will send.
+    -- In the future if that changes we may need to change this.
+    if trimmed:find('⚠️') then
+      needed_padding = needed_padding + 5
+    elseif trimmed:find('✅') then
+      needed_padding = needed_padding + 1
+    end
+
     local extra_padding = string.rep(' ', needed_padding)
     local needs_border = trimmed .. extra_padding
 
@@ -112,7 +147,7 @@ M.make_float_with_borders = function(contents, title)
   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
   highlight_title(buf, title)
   local height = #lines
-  local config = get_window_config(win_width, height)
+  local config = get_window_config(float_width, height, 0)
   local win_id = api.nvim_open_win(buf, false, config)
   vim.fn.win_gotoid(win_id)
   vim.bo[buf].ft = 'markdown'

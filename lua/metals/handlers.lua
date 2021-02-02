@@ -1,7 +1,9 @@
 local api = vim.api
+local fn = vim.fn
 local lsp = vim.lsp
 
 local decoration = require 'metals.decoration'
+local doctor = require 'metals.doctor'
 local log = require 'metals.log'
 local ui = require 'metals.ui'
 local util = require 'metals.util'
@@ -42,9 +44,18 @@ end
 
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
-M['metals/executeClientCommand'] = function(_, _, cmd_request)
-  if cmd_request.command == 'metals-goto-location' then
-    lsp.util.jump_to_location(cmd_request.arguments[1])
+M['metals/executeClientCommand'] = function(_, _, resp)
+  if resp.command == 'metals-goto-location' then
+    lsp.util.jump_to_location(resp.arguments[1])
+  elseif resp.command == 'metals-doctor-run' then
+    local args = fn.json_decode(resp.arguments[1])
+    doctor.create(args)
+  elseif resp.command == 'metals-doctor-reload' then
+    if doctor.is_open() then
+      doctor.close()
+      local args = fn.json_decode(resp.arguments[1])
+      doctor.create(args)
+    end
   end
 end
 
