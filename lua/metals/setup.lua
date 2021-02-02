@@ -11,15 +11,15 @@ local util = require 'metals.util'
 local M = {}
 local lsps = {}
 
--- Ultimately what will be passed to the config.cmd to initialize the LSP connection
--- TODO in the future, it might be nice to provide an alternative to this so that
--- a user _could_ just use Metals installed by cs install Metals. I'm still undecided
--- if that's wise to offer two options, or to just remain in full control like we do here
+--- Ultimately what will be passed to the config.cmd to initialize the LSP connection
+--- TODO in the future, it might be nice to provide an alternative to this so that
+--- a user _could_ just use Metals installed by cs install Metals. I'm still undecided
+--- if that's wise to offer two options, or to just remain in full control like we do here
 M.metals_bin = util.path.join(util.nvim_metals_cache_dir, 'metals')
 
--- Check to see if coursier is installed. This method favors the native cs. So if
--- cs is installed, that will be returned, if not, then coursier will be returned.
--- @return either 'cs', 'coursier', or nil
+--- Check to see if coursier is installed. This method favors the native cs. So if
+--- cs is installed, that will be returned, if not, then coursier will be returned.
+--- @return string 'cs', 'coursier', or nil
 M.check_for_coursier = function()
   if util.has_bins('cs') then
     return 'cs'
@@ -28,10 +28,10 @@ M.check_for_coursier = function()
   end
 end
 
--- There is absolutely no difference with installing or updating, so if a user
--- executes `:MetalsInstall` it will just install the latest or install what they
--- have set no matter what. If there is an exesiting Metals there, it is simply
--- overwritten by the bootstrap command.
+--- There is absolutely no difference with installing or updating, so if a user
+--- executes `:MetalsInstall` it will just install the latest or install what they
+--- have set no matter what. If there is an exesiting Metals there, it is simply
+--- overwritten by the bootstrap command.
 M.install_or_update = function()
   local coursier_exe = M.check_for_coursier()
   if not coursier_exe then
@@ -103,21 +103,34 @@ local metals_init_options = {
   statusBarProvider = 'show-message'
 }
 
+-- LuaFormatter off
 -- Currently available settings.
 local metals_settings = {
-  'ammoniteJvmProperties', 'bloopSbtAlreadyInstalled', 'bloopVersion', 'excludedPackages',
-  'gradleScript', 'javaHome', 'mavenScript', 'millScript', 'remoteLanguageServer', 'sbtScript',
-  'scalafixConfigPath', 'scalafmtConfigPath', 'showImplicitArguments',
-  'showImplicitConversionsAndClasses', 'showInferredType'
+  'ammoniteJvmProperties',
+  'bloopSbtAlreadyInstalled',
+  'bloopVersion',
+  'excludedPackages',
+  'gradleScript',
+  'javaHome',
+  'mavenScript',
+  'millScript',
+  'remoteLanguageServer',
+  'sbtScript',
+  'scalafixConfigPath',
+  'scalafmtConfigPath',
+  'showImplicitArguments',
+  'showImplicitConversionsAndClasses',
+  'showInferredType'
 }
+-- LuaFormatter on
 
--- The main entrypoint into the plugin.
--- @param config (table) this config is very similiar to the config that is directly
---   passed into the `lsp.start_client(config)` with a couple exceptions.
---   1. This config doesn't make you preface the settings with `metals`. Instead
---      we just allow the user to pass in the setting and we preface the entire
---      thing.
---   2. This config has `root_patters` which are used to help determine the root_path.
+--- The main entrypoint into the plugin.
+--- @param config table this config is very similiar to the config that is directly
+---   passed into the `lsp.start_client(config)` with a couple exceptions.
+---   1. This config doesn't make you preface the settings with `metals`. Instead
+---      we just allow the user to pass in the setting and we preface the entire
+---      thing.
+---   2. This config has `root_patters` which are used to help determine the root_path.
 M.initialize_or_attach = function(config)
 
   if (not config or type(config) ~= 'table') then
@@ -192,7 +205,15 @@ M.initialize_or_attach = function(config)
     end
   end
 
+  -- This shouldn't really be needed as it doesn't do anything in core,
+  -- however, I'm adding this in now for
+  -- https://github.com/glepnir/lspsaga.nvim/issues/57 so if any users are using
+  -- lspsaga it will still work as expected for the lsp_finder()
+  config.filetypes = {'sbt', 'scala'}
+
   settings.metals = config.settings or {}
+  -- Just so we can access these in the info command
+  M.settings = settings.metals
 
   config.on_init = function(client, _)
     return client.notify('workspace/didChangeConfiguration', {settings = settings})
@@ -216,9 +237,9 @@ M.initialize_or_attach = function(config)
   lsp.buf_attach_client(bufnr, client_id)
 end
 
--- auto commands necessary for `metals/didFocusTextDocument`.
--- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
--- auto commands also necessary for document highlight to work.
+--- auto commands necessary for `metals/didFocusTextDocument`.
+--- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
+--- auto commands also necessary for document highlight to work.
 M.auto_commands = function()
   api.nvim_command [[augroup NvimMetals]]
   api.nvim_command [[autocmd!]]
