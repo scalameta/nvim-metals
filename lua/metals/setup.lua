@@ -110,6 +110,7 @@ local metals_settings = {
   'bloopSbtAlreadyInstalled',
   'bloopVersion',
   'excludedPackages',
+  'fallbackScalaVersion',
   'gradleScript',
   'javaHome',
   'mavenScript',
