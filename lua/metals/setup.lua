@@ -11,12 +11,22 @@ local util = require 'metals.util'
 local M = {}
 local lsps = {}
 
---- Ultimately what will be passed to the config.cmd to initialize the LSP connection
---- TODO in the future, it might be nice to provide an alternative to this so that
---- a user _could_ just use Metals installed by cs install Metals. I'm still undecided
---- if that's wise to offer two options, or to just remain in full control like we do here
-M.metals_bin = util.path.join(util.nvim_metals_cache_dir, 'metals')
+local metals_name = 'metals'
 
+--- Ultimately what will be passed to the config.cmd to initialize the LSP -
+--- connection. If a user is using g:metals_use_global_executable then we - just
+--- default to `metals`, if not we take control and construct the location - in
+--- the cache dir.
+--- @return string executable
+M.metals_bin = function()
+  if vim.g.metals_use_global_executable then
+    return metals_name
+  else
+    return util.path.join(util.nvim_metals_cache_dir, metals_name)
+  end
+end
+
+--
 --- Check to see if coursier is installed. This method favors the native cs. So if
 --- cs is installed, that will be returned, if not, then coursier will be returned.
 --- @return string 'cs', 'coursier', or nil
@@ -32,7 +42,14 @@ end
 --- executes `:MetalsInstall` it will just install the latest or install what they
 --- have set no matter what. If there is an exesiting Metals there, it is simply
 --- overwritten by the bootstrap command.
+--- NOTE: that if a user has g:metals_use_global_executable set, this will just
+--- throw an error at them since they can't use this in that case.
 M.install_or_update = function()
+  if vim.g.metals_use_global_executable then
+    log.error_and_show(messages.use_global_set_so_cant_update)
+    return true
+  end
+
   local coursier_exe = M.check_for_coursier()
   if not coursier_exe then
     log.error_and_show(messages.coursier_installed)
@@ -71,7 +88,7 @@ M.install_or_update = function()
   local args = {
     'bootstrap', '--java-opt', '-Xss4m', '--java-opt', '-Xms100m',
     string.format('org.scalameta:metals_2.12:%s', server_version), '-r',
-    'bintray:scalacenter/releases', '-r', 'sonatype:snapshots', '-o', M.metals_bin, '-f'
+    'bintray:scalacenter/releases', '-r', 'sonatype:snapshots', '-o', M.metals_bin(), '-f'
   }
 
   Coursier_handle = uv.spawn(M.check_for_coursier(), {args = args, stdio = {stdin, stdout, stderr}},
@@ -141,7 +158,10 @@ M.initialize_or_attach = function(config)
     return
   end
 
-  if not (util.path.is_file(M.metals_bin)) then
+  if not util.has_bins(M.metals_bin()) and vim.g.metals_use_global_executable then
+    log.error_and_show(messages.use_global_set_but_cant_find)
+    return true
+  elseif not util.has_bins(M.metals_bin()) then
     local heading = 'Welcome to nvim-metals!\n'
 
     local coursier_msg = (M.check_for_coursier() and '' or messages.coursier_not_installed)
@@ -154,7 +174,7 @@ M.initialize_or_attach = function(config)
     return true
   end
 
-  config.name = config.name or 'metals'
+  config.name = config.name or metals_name
 
   local bufnr = api.nvim_get_current_buf()
   local bufname = api.nvim_buf_get_name(bufnr)
@@ -172,7 +192,7 @@ M.initialize_or_attach = function(config)
     end
   end
 
-  config.cmd = {M.metals_bin}
+  config.cmd = {M.metals_bin()}
 
   -- This is really the only not standard thing being passed into the config
   -- table, however, we'll still keep it to ensure that it's quite easy for

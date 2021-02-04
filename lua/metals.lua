@@ -1,6 +1,5 @@
 local api = vim.api
 local fn = vim.fn
-local uv = vim.loop
 
 local decoration = require 'metals.decoration'
 local diagnostic = require 'metals.diagnostic'
@@ -8,6 +7,7 @@ local log = require 'metals.log'
 local messages = require 'metals.messages'
 local setup = require 'metals.setup'
 local ui = require 'metals.ui'
+local util = require 'metals.util'
 
 local M = {}
 
@@ -105,10 +105,12 @@ end
 -- Capture info about the currently installed Metals and display it in a
 -- floating window.
 M.info = function()
-  if not uv.fs_stat(setup.metals_bin) then
+  if not util.has_bins(setup.metals_bin()) and vim.g.metals_use_global_executable then
+    log.error_and_show(messages.use_global_set_but_cant_find)
+  elseif not util.has_bins(setup.metals_bin()) then
     log.warn_and_show(messages.metals_not_installed)
   else
-    local metals_info = fn.system(setup.metals_bin .. ' --version')
+    local metals_info = fn.system(setup.metals_bin() .. ' --version')
 
     local output = {}
     for s in metals_info:gmatch('[^\r\n]+') do
@@ -125,7 +127,12 @@ M.info = function()
     table.insert(output, '')
     table.insert(output, '## Useful locations')
     table.insert(output, string.format('  - nvim-metals log file: %s', log.nvim_metals_log))
-    table.insert(output, string.format('  - metals install location: %s', setup.metals_bin))
+    local loc_msg = '  - metals install location:'
+    if vim.g.metals_use_global_executable then
+      table.insert(output, string.format('%s %s', loc_msg, 'Using metals executable on $PATH'))
+    else
+      table.insert(output, string.format('%s %s', loc_msg, setup.metals_bin()))
+    end
     table.insert(output, '')
     table.insert(output, '## Helpful links')
     table.insert(output, '  - https://gitter.im/scalameta/metals-vim')

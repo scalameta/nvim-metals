@@ -350,6 +350,17 @@ The hightlight group that will be used to show decorations. For example, this
 will change the way worksheet evaluations are displayed in `*.worksheet.sc`
 file.
 
+                                                *g:metals_use_global_executable*
+Type: boolean ~
+Default: false ~
+
+For all you crazy Nix kids out there, or if you are want to re-use the same
+executable for multiple clients, this is for you. Please NOTE that by doing
+this, you are fully taking control of updating and installing Metals. Unless
+there is a specific reason that you want to manage your own version and install
+manually, then I'd recommend not using this setting and just letting nvim-metals
+handle it.
+
 ================================================================================
 COMMANDS                                                       *metals-commands*
 
