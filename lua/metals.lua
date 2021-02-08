@@ -1,5 +1,6 @@
 local api = vim.api
 local fn = vim.fn
+local lsp = vim.lsp
 
 local decoration = require 'metals.decoration'
 local diagnostic = require 'metals.diagnostic'
@@ -23,7 +24,7 @@ M.open_all_diagnostics = diagnostic.open_all_diagnostics
 -- @param command_params (optional, table) Paramets to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
-  vim.lsp.buf_request(0, 'workspace/executeCommand', command_params, function(err, method, resp)
+  lsp.buf_request(0, 'workspace/executeCommand', command_params, function(err, method, resp)
     if callback then
       callback(err, method, resp)
     elseif err then
@@ -139,9 +140,9 @@ M.info = function()
     table.insert(output, '  - https://github.com/scalameta/nvim-metals')
     table.insert(output, '  - https://github.com/scalameta/metals')
 
-    output = vim.lsp.util._trim_and_pad(output, {pad_left = 2, pad_top = 1})
+    output = lsp.util._trim_and_pad(output, {pad_left = 2, pad_top = 1})
     local win_id = ui.make_float_with_borders(output, 'nvim-metals')
-    vim.lsp.util.close_preview_autocmd({'BufHidden', 'BufLeave'}, win_id)
+    lsp.util.close_preview_autocmd({'BufHidden', 'BufLeave'}, win_id)
   end
 end
 
@@ -214,13 +215,33 @@ end
 -- This needs to be called in the appropriate autocommand, i.e. FocusGained
 M.did_focus = function()
   local focused_uri = vim.uri_from_bufnr(0)
-  vim.lsp.buf_notify(0, 'metals/didFocusTextDocument', focused_uri, function(err, _, _)
+  lsp.buf_notify(0, 'metals/didFocusTextDocument', focused_uri, function(err, _, _)
     if err then
       log.error_and_show(
           'Server error with `metals/didFocusTextDocument`. Please check your logs for details.')
       log.error(err.message)
     end
   end)
+end
+
+M.organize_imports = function()
+  local params = lsp.util.make_range_params()
+  params.context = {diagnostics = {}, only = {'source.organizeImports'}}
+  local resp = lsp.buf_request_sync(0, 'textDocument/codeAction', params, 1000)
+
+  if not resp or vim.tbl_isempty(resp) then
+    return
+  end
+
+  for _, response in pairs(resp) do
+    for _, result in pairs(response.result or {}) do
+      if result.edit then
+        lsp.util.apply_workspace_edit(result.edit)
+      else
+        lsp.buf.execute_command(result.command)
+      end
+    end
+  end
 end
 
 return M

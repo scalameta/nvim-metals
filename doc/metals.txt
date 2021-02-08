@@ -364,7 +364,30 @@ handle it.
 ================================================================================
 COMMANDS                                                       *metals-commands*
 
-The following commands are provided by nvim-metals.
+The following commands are provided by nvim-metals:
+  * |Format|
+  * |MetalsAmmoniteEnd|
+  * |MetalsAmmoniteStart|
+  * |MetalsBspSwitch|
+  * |MetalsBuildConnect|
+  * |MetalsBuildDisconnect|
+  * |MetalsBuildImport|
+  * |MetalsBuildRestart|
+  * |MetalsCompileCancel|
+  * |MetalsCompileClean|
+  * |MetalsCompileCascade|
+  * |MetalsCopyWorksheetOutput|
+  * |MetalsDoctor|
+  * |MetalsGenerateBspConfig|
+  * |MetalsInstall|
+  * |MetalsInfo|
+  * |MetalsLogToggle|
+  * |MetalsNewScalaFile|
+  * |MetalsNewScalaProject|
+  * |MetalsOrganizeImports|
+  * |MetalsQuickWorksheet|
+  * |MetalsResetChoice|
+  * |MetalsSourcesScan|
 
                                                                         *Format*
 Format                       Format the current buffer utilizing. (Make sure to
@@ -457,6 +480,11 @@ MetalsNewScalaProject       Create a new Scala project using one of the
                             available g8 templates. This includes simple
                             projects as well as samples for most of the popular
                             Scala frameworks.
+
+                                                         *MetalsOrganizeImports*
+MetalsOrganizeImports       Sends a code action request to Metals to organize
+                            imports. NOTE: that this is blocking, and it has a
+                            timeout of 1000ms.
 
                                                           *MetalsQuickWorksheet*
 MetalsQuickWorksheet         Creats a worksheet in the current director that
@@ -639,11 +667,15 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          After opening the quickfix, in order to refesh
                          diagnostics the function must be called again.
 
+                                                            *organize_imports()*
+organize_imports()       Use a code action request get edits from Metals to
+                         organzie imports for the current buffer.
+
                                                                 *reset_choice()*
-reset_choice()            Use to execute a |metals.reset-choice| command.
+reset_choice()           Use to execute a |metals.reset-choice| command.
 
                                                                 *sources_scan()*
-sources_scan()            Use to execute a |metals.sources-scan| command.
+sources_scan()           Use to execute a |metals.sources-scan| command.
 
                                                              *worksheet_hover()*
 worksheet_hover()        Use to expand the decoration to show the full hover
