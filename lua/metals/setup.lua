@@ -270,4 +270,38 @@ M.auto_commands = function()
   api.nvim_command [[augroup end]]
 end
 
+--- Setup function used to ensure that when using nvim-dap the
+--- metals.debug-adapter-start is called and the host correctly returned.
+M.setup_dap = function(execute_command)
+  local status, dap = pcall(require, 'dap')
+  if not status then
+    log.error_and_show(
+        'Unable to find nvim-dap. Please make sure mfussenegger/nvim-dap is installed.')
+    return
+  end
+
+  dap.adapters.scala = function(callback, config)
+    local uri = vim.uri_from_bufnr(0)
+    local runType = config.metalsRunType or 'run'
+    execute_command({
+      command = 'metals.debug-adapter-start',
+      arguments = {path = uri, runType = runType}
+    }, function(_, _, res)
+
+      local port = util.split_on(res.uri, ':')[3]
+
+      callback({
+        type = 'server',
+        host = '127.0.0.1',
+        port = port,
+        enrich_config = function(_config, on_config)
+          local final_config = vim.deepcopy(_config)
+          -- Just incase strip this out since it's metals-specific
+          final_config.metalsRunType = nil
+          on_config(final_config)
+        end
+      })
+    end)
+  end
+end
 return M
