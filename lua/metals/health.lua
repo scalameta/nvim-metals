@@ -1,7 +1,7 @@
 local uv = vim.loop
 local setup = require 'metals.setup'
 local messages = require 'metals.messages'
-local util = require 'metels.util'
+local util = require 'metals.util'
 
 local health_start = vim.fn['health#report_start']
 local health_ok = vim.fn['health#report_ok']
