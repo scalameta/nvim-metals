@@ -46,6 +46,9 @@ end
 M.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, 'nvim-metals.log')
 
 local generate_log_functions = function()
+  if not util.path.is_dir(util.nvim_metals_cache_dir) then
+    os.execute('mkdir -p ' .. util.nvim_metals_cache_dir)
+  end
   local log_at_level = function(level, show_user, ...)
     local nameupper = level:upper()
 
