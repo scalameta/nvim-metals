@@ -244,8 +244,8 @@ M.initialize_or_attach = function(config)
     config.on_attach = M.auto_commands
   else
     local user_on_attach = config.on_attach
-    config.on_attach = function()
-      user_on_attach()
+    config.on_attach = function(client, _bufnr)
+      user_on_attach(client, _bufnr)
       M.auto_commands()
     end
   end
