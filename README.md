@@ -9,10 +9,9 @@ necessary commands you'll need to develop with nvim and Metals. This extension
 also implements many of the custom Metals LSP extensions that will give you a
 much richer experience than just using Metals with the default
 [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) setup, as well as
-automatically setting all of the correct `init_options`.
-
-_NOTE:_ Keep in mind that the level of support is rapidly changing, so expect
-stuff to change without warning.
+automatically setting all of the correct `init_options`, and offering some
+integrations with other projects such as
+[nvim-dap](https://github.com/mfussenegger/nvim-dap).
 
 <p align="center">
     <a href="https://gitter.im/scalameta/metals-vim">
@@ -76,3 +75,9 @@ help docs. Similarly, to see the available configuration options, check out
 _NOTE_: You can find an example of a minimal configuration showing how to set
 various settings and options
 [here](https://github.com/scalameta/nvim-metals/discussions/39).
+
+## Integrations
+
+To see the full details on the available configurations, checkout out `:help
+metals-integrations`. The currently available integrations are:
+- [nvim-dap](https://github.com/mfussenegger/nvim-dap)

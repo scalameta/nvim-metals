@@ -16,9 +16,11 @@ CONTENTS                                                           *nvim-metals*
     6. Lua API............... |metals-lua-api|
     7. Custom Handlers....... |metals-custom-handlers|
     8. Functions............. |metals-functions|
+    9. Integrations...........|metals-integrations|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
+
 nvim-metals is a Lua plugin built to provide a better experience while using
 Metals, the Scala Language Server, with Neovim's built-in LSP support. This
 plugin provides the necessary commands you'll need to develop with nvim and
@@ -777,4 +779,66 @@ metals#warnings()        Meant to be used with a statusline integration. This
                          and |lsp.util.buf_diagnostics_count("Warning")| to
                          return a string of sign + count of warnings in the
                          current buffer.
+
+================================================================================
+INTEGRATIONS                                               *metals-integrations*
+
+Other plugins that nvim-metals integrates with for various extra features.
+
+                                                               *metals-nvim-dap*
+In order for you to utilize Metals to run, test, and debug code, a simple
+integration with https://github.com/mfussenegger/nvim-dap is provided offering
+great DAP support. Before getting starting it's best to read the |dap.txt| to
+get an understanding of how to both setup and use nvim-dap as you'll need to
+ensure you have mappings defined and the correct configurations. To get
+started, you'll want ensure that nvim-dap is installed and then extend your
+metals configuration with the following `on_attach` function. >
+
+  Metals_config.on_attach = function(client, bufnr)
+    require'metals'.setup_dap()
+  end
+<
+
+This will ensure that the correct |dap-adapter| is configured for Scala.
+You'll also then want to ensure you have configurations setup for Scala. These
+configurations are the configurations explained in |dap-configuration| with a
+metals-specific field added, `metalsRunType`.
+
+The following run types are valid for Metals.
+  - `run` (automatically discovers the main method and runs it for the current
+    build target)
+  - `testFile` (will discover all test classes in your current file and test
+    them.)
+  - `testTarget` (will discover all test classes in your current build target
+    and test them.)
+
+Below you can see an example of 3 configurations, one for each of the run
+types. >
+
+  local dap = require('dap')
+
+  dap.configurations.scala = {
+    {
+       type = 'scala',
+       request = 'launch',
+       name = 'Run',
+       console = 'integratedTerminal',
+       metalsRunType = 'run'
+    },
+    {
+       type = 'scala',
+       request = 'launch',
+       name = 'Test File',
+       console = 'integratedTerminal',
+       metalsRunType = 'testFile'
+    },
+    {
+       type = 'scala',
+       request = 'launch',
+       name = 'Test Target',
+       console = 'integratedTerminal',
+       runType = 'testTarget'
+    }
+  }
+<
 vim:tw=80:ts=2:ft=help:
