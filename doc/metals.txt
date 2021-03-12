@@ -834,7 +834,7 @@ types. >
        type = 'scala',
        request = 'launch',
        name = 'Test Target',
-       runType = 'testTarget'
+       metalsRunType = 'testTarget'
     }
   }
 <
