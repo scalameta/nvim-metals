@@ -3,6 +3,7 @@ local fn = vim.fn
 local lsp = vim.lsp
 
 local decoration = require 'metals.decoration'
+local diagnostic = require 'metals.diagnostic'
 local doctor = require 'metals.doctor'
 local log = require 'metals.log'
 local ui = require 'metals.ui'
@@ -56,6 +57,10 @@ M['metals/executeClientCommand'] = function(_, _, resp)
       local args = fn.json_decode(resp.arguments[1])
       doctor.create(args)
     end
+  elseif resp.command == 'metals-diagnostics-focus' then
+    diagnostic.open_all_diagnostics()
+  else
+    log.warn_and_show(string.format('Looks like nvim-metals doesn\'t handle %s yet.', resp.command))
   end
 end
 

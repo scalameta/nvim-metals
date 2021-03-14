@@ -287,20 +287,26 @@ M.setup_dap = function(execute_command)
       command = 'metals.debug-adapter-start',
       arguments = {path = uri, runType = runType}
     }, function(_, _, res)
+      -- In metals we throw various exceptions when hanlding
+      -- debug-adapter-start but they are all handled and status messages are
+      -- given to the client, so they aren't errors here. That's why we don't
+      -- really capture or care about the err and instead just make sure res is
+      -- there and not null.
+      if (res) then
+        local port = util.split_on(res.uri, ':')[3]
 
-      local port = util.split_on(res.uri, ':')[3]
-
-      callback({
-        type = 'server',
-        host = '127.0.0.1',
-        port = port,
-        enrich_config = function(_config, on_config)
-          local final_config = vim.deepcopy(_config)
-          -- Just incase strip this out since it's metals-specific
-          final_config.metalsRunType = nil
-          on_config(final_config)
-        end
-      })
+        callback({
+          type = 'server',
+          host = '127.0.0.1',
+          port = port,
+          enrich_config = function(_config, on_config)
+            local final_config = vim.deepcopy(_config)
+            -- Just incase strip this out since it's metals-specific
+            final_config.metalsRunType = nil
+            on_config(final_config)
+          end
+        })
+    end
     end)
   end
 end

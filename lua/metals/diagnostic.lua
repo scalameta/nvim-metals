@@ -3,20 +3,8 @@ local lsp = require 'vim.lsp'
 
 local M = {}
 
---  Fills the quick-fix with all the current LSP buffer diagnostics and opens
---  it.
---
---  WARNING: The diagnostic quickfix list WILL ONLY be refreshed when this
---  function is called, as opposed to diagnostic-nvim controlled location lists
---  that gets updated in real time.
-M.open_all_diagnostics = function()
-  lsp.util.set_qflist(M.get_all_lsp_diagnostics_as_qfitems())
-  api.nvim_command('copen')
-  api.nvim_command('wincmd p')
-end
-
 -- Collects all LSP buffer diagnostic lists and flattens them into a quick-fix item list
-M.get_all_lsp_diagnostics_as_qfitems = function()
+local function get_all_lsp_diagnostics_as_qfitems()
   local qfitems = {}
   -- Temporary array for warnings, so they are appended after errors
   local warnings = {}
@@ -48,6 +36,18 @@ M.get_all_lsp_diagnostics_as_qfitems = function()
     qfitems[#qfitems + 1] = warnings[i]
   end
   return qfitems
+end
+
+--  Fills the quick-fix with all the current LSP buffer diagnostics and opens
+--  it.
+--
+--  WARNING: The diagnostic quickfix list WILL ONLY be refreshed when this
+--  function is called, as opposed to diagnostic-nvim controlled location lists
+--  that gets updated in real time.
+M.open_all_diagnostics = function()
+  lsp.util.set_qflist(get_all_lsp_diagnostics_as_qfitems())
+  api.nvim_command('copen')
+  api.nvim_command('wincmd p')
 end
 
 return M
