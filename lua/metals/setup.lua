@@ -113,6 +113,7 @@ local metals_init_options = {
   compilerOptions = {snippetAutoIndent = false},
   decorationProvider = true,
   didFocusProvider = true,
+  disableColorOutput = true,
   doctorProvider = 'json',
   executeClientCommandProvider = true,
   inputBoxProvider = true,
