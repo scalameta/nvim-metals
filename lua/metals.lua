@@ -120,6 +120,8 @@ M.info = function()
     table.insert(output, '')
     table.insert(output, '## Useful locations')
     table.insert(output, string.format('  - nvim-metals log file: %s', log.nvim_metals_log))
+    table.insert(output, string.format('  - nvim lsp log file: %s',
+                                       util.path.join(vim.fn.stdpath('cache'), 'lsp.log')))
     local loc_msg = '  - metals install location:'
     if vim.g.metals_use_global_executable then
       table.insert(output, string.format('%s %s', loc_msg, 'Using metals executable on $PATH'))
