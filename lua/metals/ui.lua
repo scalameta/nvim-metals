@@ -1,11 +1,11 @@
 local api = vim.api
-local util = require('metals.util')
+local util = require("metals.util")
 
 local M = {}
 
 --- @param line string
 local function pad(line)
-  return ' ' .. line .. ' '
+  return " " .. line .. " "
 end
 
 --- @param item string
@@ -22,12 +22,12 @@ end
 --- @param item string
 --- @param position string 'mid' | 'bottom' | 'top'
 local function add_border(item, position)
-  if position == 'top' then
-    return '╭' .. item .. '╮'
-  elseif position == 'mid' then
-    return '│' .. item .. '│'
-  elseif position == 'bottom' then
-    return '╰' .. item .. '╯'
+  if position == "top" then
+    return "╭" .. item .. "╮"
+  elseif position == "mid" then
+    return "│" .. item .. "│"
+  elseif position == "bottom" then
+    return "╰" .. item .. "╯"
   end
 end
 
@@ -38,11 +38,13 @@ local function highlight_title(buf, title)
     return
   end
   local start_col = 4
-  api.nvim_buf_add_highlight(buf, -1, -- Namespace ID
-  'Title', -- Highlight group
-  0, -- line number
-  start_col, -- start
-  start_col + title:len() -- end
+  api.nvim_buf_add_highlight(
+    buf,
+    -1, -- Namespace ID
+    "Title", -- Highlight group
+    0, -- line number
+    start_col, -- start
+    start_col + title:len() -- end
   )
 end
 
@@ -55,13 +57,13 @@ local function get_window_config(width, height, win_id)
   local row = math.floor((vim.o.lines * 0.5 - vim.o.cmdheight - 1) / 2)
   local col = math.floor((win_width - width) / 2)
   return {
-    relative = 'win',
+    relative = "win",
     width = width,
     height = height,
     col = col,
     row = row,
-    style = 'minimal',
-    focusable = false
+    style = "minimal",
+    focusable = false,
   }
 end
 
@@ -76,11 +78,11 @@ local function enforce_width(lines, max_length)
 
   for _, line in ipairs(lines) do
     if line:len() > max_length then
-      local splits = util.split_on(line, '%.')
+      local splits = util.split_on(line, "%.")
       for _, split_line in ipairs(splits) do
         local trimmed_line = util.full_trim(split_line)
-        if trimmed_line ~= '' then
-          local full_line = trimmed_line .. '.'
+        if trimmed_line ~= "" then
+          local full_line = trimmed_line .. "."
           table.insert(output, full_line)
           if trimmed_line:len() > longest then
             longest = full_line:len()
@@ -95,7 +97,7 @@ local function enforce_width(lines, max_length)
     end
   end
 
-  return {output = output, longest = longest}
+  return { output = output, longest = longest }
 end
 
 ---Create a float relevant to the size of the content given and with borders.
@@ -114,8 +116,8 @@ M.make_float_with_borders = function(contents, title)
 
   local buf = api.nvim_create_buf(false, true)
 
-  local title_line = insert_float_title(title, float_width, '─')
-  local top = add_border(title_line, 'top')
+  local title_line = insert_float_title(title, float_width, "─")
+  local top = add_border(title_line, "top")
 
   local lines = {}
   table.insert(lines, top)
@@ -128,20 +130,20 @@ M.make_float_with_borders = function(contents, title)
     -- This sort of sucks, but it's the easiest thing to do right now since I
     -- know these two will be the only two that the Metals Doctor will send.
     -- In the future if that changes we may need to change this.
-    if trimmed:find('⚠️') then
+    if trimmed:find("⚠️") then
       needed_padding = needed_padding + 5
-    elseif trimmed:find('✅') then
+    elseif trimmed:find("✅") then
       needed_padding = needed_padding + 1
     end
 
-    local extra_padding = string.rep(' ', needed_padding)
+    local extra_padding = string.rep(" ", needed_padding)
     local needs_border = trimmed .. extra_padding
 
-    table.insert(lines, add_border(needs_border, 'mid'))
+    table.insert(lines, add_border(needs_border, "mid"))
   end
 
-  local bot_line = string.rep('─', longest_line)
-  local bot = add_border(bot_line, 'bottom')
+  local bot_line = string.rep("─", longest_line)
+  local bot = add_border(bot_line, "bottom")
 
   table.insert(lines, bot)
   api.nvim_buf_set_lines(buf, 0, -1, false, lines)
@@ -150,7 +152,7 @@ M.make_float_with_borders = function(contents, title)
   local config = get_window_config(float_width, height, 0)
   local win_id = api.nvim_open_win(buf, false, config)
   vim.fn.win_gotoid(win_id)
-  vim.bo[buf].ft = 'markdown'
+  vim.bo[buf].ft = "markdown"
   return win_id
 end
 

@@ -33,36 +33,15 @@ The process of developing nvim-metals locally should be pretty pain-free.
 Then you should be able to just make changes and restart Neovim and see them
 right away.
 
-## Project structure
-
-```
-├── autoload
-│     └── metals.vim     " only used to enable :checkhealth
-├── doc
-│  └── metals.txt        " main place for documentation
-├── lua
-│  ├── metals
-│  │  ├── decoration.lua " worksheet decoration based code
-│  │  ├── diagnostic.lua " diagnostic based code
-│  │  ├── handlers.lua   " all custom handlers for nvim-metals
-│  │  ├── health.lua     " code the :checkhealth calls
-│  │  ├── messages.lua   " message constants
-│  │  ├── setup.lua      " handles setup and main entry point
-│  │  └── util.lua       " mostly path utils
-│  └── metals.lua        " try to expose everything through here
-├── plugin
-   └── metals.vim        " all commands are defined here
-```
-
 ## Tooling
 
 The project uses [`lucheck`](https://github.com/mpeterv/luacheck) for static
 code analysis, and this is ran during CI on your project. You'll need to install
-this locally via luarocks: `luarocks install luacheck`. While not enforced in
-CI, I also use [`LuaFormatter`](https://github.com/Koihik/LuaFormatter). Pleas
-also use this as it gets rid of any need to discuss formatting. You can install
-it via luarocks: `luarocks install --server=https://luarocks.org/dev
-luaformatter`.
+this locally via luarocks: `luarocks install luacheck`. I also use
+[`StyLua`](https://github.com/JohnnyMorganz/StyLua) for formatting. Pleas also
+use this as it gets rid of any need to discuss formatting. You can install it in
+various ways found on the github page, but the easiest is with cargo via `cargo
+install stylua`.
 
 ## Logging
 
