@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  lint-check:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout sources
@@ -23,6 +23,11 @@ jobs:
       run: |
         luacheck .
 
+  format-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
     - name: Setup StyLua
       run: |
         cargo install stylua
