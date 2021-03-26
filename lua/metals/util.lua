@@ -6,7 +6,7 @@ local uv = vim.loop
 local M = {}
 
 local search_ancestors = function(startpath, func)
-  validate {func = {func, 'f'}}
+  validate({ func = { func, "f" } })
   if func(startpath) then
     return startpath
   end
@@ -34,6 +34,7 @@ M.find_root_dir = function(patterns, startpath)
   return search_ancestors(startpath, matcher)
 end
 
+
 -- This is taken verbatim from nvim-lspconfig to help with various path utils
 M.path = (function()
   local function exists(filename)
@@ -42,45 +43,45 @@ M.path = (function()
   end
 
   local function is_dir(filename)
-    return exists(filename) == 'directory'
+    return exists(filename) == "directory"
   end
 
   local function is_file(filename)
-    return exists(filename) == 'file'
+    return exists(filename) == "file"
   end
 
-  local is_windows = uv.os_uname().version:match('Windows')
-  local path_sep = is_windows and '\\' or '/'
+  local is_windows = uv.os_uname().version:match("Windows")
+  local path_sep = is_windows and "\\" or "/"
 
   local is_fs_root
   if is_windows then
     is_fs_root = function(path)
-      return path:match('^%a:$')
+      return path:match("^%a:$")
     end
   else
     is_fs_root = function(path)
-      return path == '/'
+      return path == "/"
     end
   end
 
   local dirname
   do
-    local strip_dir_pat = path_sep .. '([^' .. path_sep .. ']+)$'
-    local strip_sep_pat = path_sep .. '$'
+    local strip_dir_pat = path_sep .. "([^" .. path_sep .. "]+)$"
+    local strip_sep_pat = path_sep .. "$"
     dirname = function(path)
       if not path then
         return
       end
-      local result = path:gsub(strip_sep_pat, ''):gsub(strip_dir_pat, '')
+      local result = path:gsub(strip_sep_pat, ""):gsub(strip_dir_pat, "")
       if #result == 0 then
-        return '/'
+        return "/"
       end
       return result
     end
   end
 
   local function path_join(...)
-    local result = table.concat(vim.tbl_flatten {...}, path_sep):gsub(path_sep .. '+', path_sep)
+    local result = table.concat(vim.tbl_flatten({ ... }), path_sep):gsub(path_sep .. "+", path_sep)
     return result
   end
 
@@ -120,17 +121,17 @@ M.path = (function()
   end
 
   local function is_descendant(root, path)
-    if (not path) then
-      return false;
+    if not path then
+      return false
     end
 
     local function cb(dir, _)
-      return dir == root;
+      return dir == root
     end
 
-    local dir, _ = traverse_parents(path, cb);
+    local dir, _ = traverse_parents(path, cb)
 
-    return dir == root;
+    return dir == root
   end
 
   return {
@@ -142,15 +143,15 @@ M.path = (function()
     join = path_join,
     traverse_parents = traverse_parents,
     iterate_parents = iterate_parents,
-    is_descendant = is_descendant
+    is_descendant = is_descendant,
   }
-end)()
 
+end)()
 -- Checks to see if an executable is present for single or list of executables
 -- Note that give a list, if any is not found, this will return false Also, this
 -- is stolen from the nvim/nvim-lspconfig utils.
 M.has_bins = function(...)
-  for i = 1, select('#', ...) do
+  for i = 1, select("#", ...) do
     if 0 == fn.executable((select(i, ...))) then
       return false
     end
@@ -167,31 +168,31 @@ M.check_exists_and_merge = function(defaultTable, userTable)
   if not userTable then
     return defaultTable
   else
-    return vim.tbl_extend('force', defaultTable, userTable)
+    return vim.tbl_extend("force", defaultTable, userTable)
   end
 end
 
 M.metals_status = function(text)
   if text then
-    api.nvim_set_var('metals_status', text)
+    api.nvim_set_var("metals_status", text)
   else
-    api.nvim_set_var('metals_status', '')
+    api.nvim_set_var("metals_status", "")
   end
 end
 
 -- Location of any files or executables that nvim-metals will create on your system
-M.nvim_metals_cache_dir = M.path.join(fn.stdpath('cache'), 'nvim-metals')
+M.nvim_metals_cache_dir = M.path.join(fn.stdpath("cache"), "nvim-metals")
 
 --- Strip the leading and trailing spaces of a string
 --- @param s string the string you want to trim.
 M.full_trim = function(s)
-  return (s:gsub('^%s*(.-)%s*$', '%1'))
+  return (s:gsub("^%s*(.-)%s*$", "%1"))
 end
 
 --- Strip trailing whites and trailing empty lines
 --- @param s string the string you want to trim.
 M.trim_end = function(s)
-    return string.gsub(s, '[ \t]+%f[\r\n%z]', '')
+  return string.gsub(s, "[ \t]+%f[\r\n%z]", "")
 end
 
 M.split_on = function(s, delimiter)

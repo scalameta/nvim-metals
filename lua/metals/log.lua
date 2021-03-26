@@ -1,4 +1,4 @@
-local util = require 'metals.util'
+local util = require("metals.util")
 
 -- log.lua
 --
@@ -17,7 +17,7 @@ local util = require 'metals.util'
 --
 local M = {}
 
-local modes = {info = 'None', warn = 'WarningMsg', error = 'ErrorMsg'}
+local modes = { info = "None", warn = "WarningMsg", error = "ErrorMsg" }
 
 -- Logging utility to take x number of things to log that can be
 -- strings, tables, or numbers. This will flatten them all and retrn
@@ -26,12 +26,12 @@ local modes = {info = 'None', warn = 'WarningMsg', error = 'ErrorMsg'}
 -- @return (string)
 local make_string = function(...)
   local output = {}
-  for i = 1, select('#', ...) do
+  for i = 1, select("#", ...) do
     local thing_to_log = select(i, ...)
 
-    if type(thing_to_log) == 'number' then
+    if type(thing_to_log) == "number" then
       thing_to_log = tostring(thing_to_log)
-    elseif type(thing_to_log) == 'table' then
+    elseif type(thing_to_log) == "table" then
       thing_to_log = vim.inspect(thing_to_log)
     else
       thing_to_log = tostring(thing_to_log)
@@ -39,36 +39,36 @@ local make_string = function(...)
 
     output[#output + 1] = thing_to_log
   end
-  return table.concat(output, ' ')
+  return table.concat(output, " ")
 end
 
 -- Location of the nvim-metals specific log file
-M.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, 'nvim-metals.log')
+M.nvim_metals_log = util.path.join(util.nvim_metals_cache_dir, "nvim-metals.log")
 
 local generate_log_functions = function()
   if not util.path.is_dir(util.nvim_metals_cache_dir) then
-    os.execute('mkdir -p ' .. util.nvim_metals_cache_dir)
+    os.execute("mkdir -p " .. util.nvim_metals_cache_dir)
   end
   local log_at_level = function(level, show_user, ...)
     local nameupper = level:upper()
 
     local msg = make_string(...)
-    local info = debug.getinfo(2, 'Sl')
-    local lineinfo = info.short_src .. ':' .. info.currentline
+    local info = debug.getinfo(2, "Sl")
+    local lineinfo = info.short_src .. ":" .. info.currentline
 
     if show_user then
-      vim.cmd(string.format('echohl %s', modes[level]))
+      vim.cmd(string.format("echohl %s", modes[level]))
 
-      local split_console = vim.split(msg, '\n')
+      local split_console = vim.split(msg, "\n")
       for _, v in ipairs(split_console) do
-        vim.cmd(string.format([[echom "[%s] %s"]], 'nvim-metals', vim.fn.escape(v, '"')))
+        vim.cmd(string.format([[echom "[%s] %s"]], "nvim-metals", vim.fn.escape(v, "\"")))
       end
 
-      vim.cmd('echohl NONE')
+      vim.cmd("echohl NONE")
     end
 
-    local fp = io.open(M.nvim_metals_log, 'a')
-    local str = string.format('[%-6s%s] %s: %s\n', nameupper, os.date(), lineinfo, msg)
+    local fp = io.open(M.nvim_metals_log, "a")
+    local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
     fp:write(str)
     fp:close()
   end
@@ -78,7 +78,7 @@ local generate_log_functions = function()
       return log_at_level(key, false, ...)
     end
 
-    M[('%s_and_show'):format(key)] = function(...)
+    M[("%s_and_show"):format(key)] = function(...)
       return log_at_level(key, true, ...)
     end
   end

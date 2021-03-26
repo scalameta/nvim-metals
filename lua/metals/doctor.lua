@@ -1,7 +1,7 @@
 local api = vim.api
 local lsp = vim.lsp
 
-local ui = require 'metals.ui'
+local ui = require("metals.ui")
 
 --- Module meant to control the Metals doctor.
 --- It doesn't do a whole lot except create the doctor, and only
@@ -31,40 +31,40 @@ end
 --- Create the Doctor.
 -- @param args table of the args give by `metals/executeClientCommand`
 Doctor.create = function(args)
-  local header_text = lsp.util.convert_input_to_markdown_lines({args.headerText})
+  local header_text = lsp.util.convert_input_to_markdown_lines({ args.headerText })
   local output = header_text
-  table.insert(output, '')
+  table.insert(output, "")
 
   if args.messages then
     for _, message in ipairs(args.messages) do
-      table.insert(output, string.format('## %s', message.title))
+      table.insert(output, string.format("## %s", message.title))
 
-      table.insert(output, '')
+      table.insert(output, "")
       for _, recommendation in ipairs(message.recommendations) do
-        table.insert(output, string.format('  - %s', recommendation))
+        table.insert(output, string.format("  - %s", recommendation))
       end
     end
   else
-    table.insert(output, '## Build Targets')
+    table.insert(output, "## Build Targets")
 
     for _, target in ipairs(args.targets) do
-      table.insert(output, '')
-      table.insert(output, string.format('### %s', target.buildTarget))
-      table.insert(output, string.format('  - scala version: %s', target.scalaVersion))
-      table.insert(output, string.format('  - diagnostics: %s', target.diagnostics))
-      table.insert(output, string.format('  - goto definition: %s', target.gotoDefinition))
-      table.insert(output, string.format('  - completions: %s', target.completions))
-      table.insert(output, string.format('  - find references: %s', target.findReferences))
-      if target.recommendation ~= '' then
-        table.insert(output, string.format('  - recommendation: %s', target.recommendation))
+      table.insert(output, "")
+      table.insert(output, string.format("### %s", target.buildTarget))
+      table.insert(output, string.format("  - scala version: %s", target.scalaVersion))
+      table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
+      table.insert(output, string.format("  - goto definition: %s", target.gotoDefinition))
+      table.insert(output, string.format("  - completions: %s", target.completions))
+      table.insert(output, string.format("  - find references: %s", target.findReferences))
+      if target.recommendation ~= "" then
+        table.insert(output, string.format("  - recommendation: %s", target.recommendation))
       end
-      table.insert(output, '')
+      table.insert(output, "")
     end
   end
 
   local win_id = ui.make_float_with_borders(output, args.title)
   doctor_win_id = win_id
-  vim.lsp.util.close_preview_autocmd({'BufHidden', 'BufLeave'}, win_id)
+  vim.lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, win_id)
 end
 
 return Doctor

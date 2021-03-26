@@ -1,6 +1,0 @@
-column_limit: 100
-indent_width: 2
-tab_width: 2
-keep_simple_function_one_line: false
-keep_simple_control_block_one_line: false
-double_quote_to_single_quote: true

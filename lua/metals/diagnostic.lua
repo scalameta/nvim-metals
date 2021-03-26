@@ -1,5 +1,5 @@
 local api = vim.api
-local lsp = require 'vim.lsp'
+local lsp = require("vim.lsp")
 
 local M = {}
 
@@ -19,14 +19,14 @@ local function get_all_lsp_diagnostics_as_qfitems()
         filename = vim.uri_to_fname(uri),
         text = d.message,
         lnum = d.range.start.line + 1,
-        col = d.range.start.character + 1
+        col = d.range.start.character + 1,
       }
       if d.severity == 1 then
-        item.type = 'E'
+        item.type = "E"
         qfitems[#qfitems + 1] = item
 
       elseif d.severity == 2 then
-        item.type = 'W'
+        item.type = "W"
         warnings[#warnings + 1] = item
       end
     end
@@ -46,8 +46,8 @@ end
 --  that gets updated in real time.
 M.open_all_diagnostics = function()
   lsp.util.set_qflist(get_all_lsp_diagnostics_as_qfitems())
-  api.nvim_command('copen')
-  api.nvim_command('wincmd p')
+  api.nvim_command("copen")
+  api.nvim_command("wincmd p")
 end
 
 return M
