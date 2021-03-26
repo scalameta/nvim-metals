@@ -22,3 +22,11 @@ jobs:
     - name: Run luacheck
       run: |
         luacheck .
+
+    - name: Setup StyLua
+      run: |
+        cargo install stylua
+
+    - name: Run StyLua
+      run: |
+        stylua -g **/*.lua -g !util.lua --check -- lua
