@@ -34,7 +34,6 @@ M.find_root_dir = function(patterns, startpath)
   return search_ancestors(startpath, matcher)
 end
 
-
 -- This is taken verbatim from nvim-lspconfig to help with various path utils
 M.path = (function()
   local function exists(filename)
@@ -145,7 +144,6 @@ M.path = (function()
     iterate_parents = iterate_parents,
     is_descendant = is_descendant,
   }
-
 end)()
 -- Checks to see if an executable is present for single or list of executables
 -- Note that give a list, if any is not found, this will return false Also, this

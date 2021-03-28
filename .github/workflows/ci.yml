@@ -34,4 +34,4 @@ jobs:
 
     - name: Run StyLua
       run: |
-        stylua -g **/*.lua -g !util.lua --check -- lua
+        stylua -g **/*.lua --check -- lua

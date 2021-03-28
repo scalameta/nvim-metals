@@ -61,7 +61,7 @@ local generate_log_functions = function()
 
       local split_console = vim.split(msg, "\n")
       for _, v in ipairs(split_console) do
-        vim.cmd(string.format([[echom "[%s] %s"]], "nvim-metals", vim.fn.escape(v, "\"")))
+        vim.cmd(string.format([[echom "[%s] %s"]], "nvim-metals", vim.fn.escape(v, '"')))
       end
 
       vim.cmd("echohl NONE")

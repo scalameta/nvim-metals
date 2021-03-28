@@ -163,7 +163,6 @@ local metals_settings = {
 ---      thing.
 ---   2. This config has `root_patters` which are used to help determine the root_path.
 M.initialize_or_attach = function(config)
-
   if not config or type(config) ~= "table" then
     log.error_and_show(
       "Recieved: "
@@ -219,10 +218,7 @@ M.initialize_or_attach = function(config)
 
   config.root_dir = util.find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
   config.handlers = util.check_exists_and_merge(default_handlers, config.handlers)
-  config.capabilities = util.check_exists_and_merge(
-    lsp.protocol.make_client_capabilities(),
-    config.capabilities
-  )
+  config.capabilities = util.check_exists_and_merge(lsp.protocol.make_client_capabilities(), config.capabilities)
 
   if not config.init_options then
     config.init_options = metals_init_options
@@ -235,11 +231,9 @@ M.initialize_or_attach = function(config)
   if config.settings then
     for k, _ in pairs(config.settings) do
       if not vim.tbl_contains(metals_settings, k) then
-        local heading = string.format("\"%s\" is not a valid setting. It will be ignored.", k)
-        local valid_settings = string.format(
-          "The following are valid settings %s",
-          table.concat(metals_settings, ", ")
-        )
+        local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
+        local valid_settings =
+          string.format("The following are valid settings %s", table.concat(metals_settings, ", "))
         local err = heading .. "\n" .. valid_settings
         log.warn_and_show(err)
       end

@@ -21,10 +21,7 @@ M.checkHealth = function()
   local coursier_installed = setup.check_for_coursier()
 
   if coursier_installed then
-    health_ok(string.format(
-      "Coursier installed and found. Will use [%s] for install.",
-      coursier_installed
-    ))
+    health_ok(string.format("Coursier installed and found. Will use [%s] for install.", coursier_installed))
   else
     health_error(messages.coursier_not_installed)
   end
@@ -38,7 +35,6 @@ M.checkHealth = function()
   else
     health_error(messages.metals_not_installed)
   end
-
 end
 
 return M
