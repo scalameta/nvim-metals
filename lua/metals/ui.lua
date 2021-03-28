@@ -123,7 +123,6 @@ M.make_float_with_borders = function(contents, title)
   table.insert(lines, top)
 
   for _, line in ipairs(enforced_output.output) do
-
     local trimmed = util.trim_end(line)
     local needed_padding = longest_line - #trimmed
 

@@ -60,7 +60,7 @@ M["metals/executeClientCommand"] = function(_, _, resp)
   elseif resp.command == "metals-diagnostics-focus" then
     diagnostic.open_all_diagnostics()
   else
-    log.warn_and_show(string.format("Looks like nvim-metals doesn\'t handle %s yet.", resp.command))
+    log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", resp.command))
   end
 end
 
@@ -114,10 +114,7 @@ M["metals/publishDecorations"] = function(err, _, decorations)
   local uri = decorations.uri
   local bufnr = vim.uri_to_bufnr(uri)
   if not bufnr then
-    log.warn_and_show(string.format(
-      "Couldn\'t find buffer for %s while publishing decorations.",
-      uri
-    ))
+    log.warn_and_show(string.format("Couldn't find buffer for %s while publishing decorations.", uri))
     return
   end
 
