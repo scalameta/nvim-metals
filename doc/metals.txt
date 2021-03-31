@@ -275,7 +275,7 @@ Default: '' ~
 
 A URL pointing to an endpoint that implements a remote language server.
 
-See https://scalameta.org/metals/docs/contributors/remote-language-server.html
+See https://scalameta.org/metals/docs/integrations/remote-language-server.html
 for documentation on remote language servers.
 
 sbtScript                                                            *sbtScript*

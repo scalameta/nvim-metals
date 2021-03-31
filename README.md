@@ -57,7 +57,7 @@ it.
 example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use 'scalameta/nvim-metals'
+use({'scalameta/nvim-metals'})
 ```
 
 ## Getting started
