@@ -136,7 +136,7 @@ M.info = function()
     table.insert(output, "  - https://github.com/scalameta/nvim-metals")
     table.insert(output, "  - https://github.com/scalameta/metals")
 
-    output = lsp.util._trim_and_pad(output, { pad_left = 2, pad_top = 1 })
+    output = lsp.util._trim(output)
     local win_id = ui.make_float_with_borders(output, "nvim-metals")
     lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, win_id)
   end
