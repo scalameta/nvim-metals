@@ -389,7 +389,9 @@ The following commands are provided by nvim-metals:
   * |MetalsOrganizeImports|
   * |MetalsQuickWorksheet|
   * |MetalsResetChoice|
+  * |MetalsRestartServer|
   * |MetalsSourcesScan|
+  * |MetalsStartServer|
 
                                                                         *Format*
 Format                       Format the current buffer utilizing. (Make sure to
@@ -505,8 +507,15 @@ MetalsResetChoice            ResetChoicePopup command allows you to reset a
                              E.g. If you choose to import workspace with sbt you
                              can decide to reset and change it again.
 
+                                                           *MetalsRestartServer*
+MetalsRestartServer          Restart the Metals server.
+
                                                              *MetalsSourcesScan*
 MetalsSourcesScan            Scan all workspaces sources.
+
+                                                             *MetalsStartServer*
+MetalsStartServer           Start Metals server. Must be in a Scala or sbt file
+                            in a workspace where Metals is not yet started.
 
 ================================================================================
 LUA API                                                         *metals-lua-api*
@@ -676,8 +685,15 @@ organize_imports()       Use a code action request get edits from Metals to
                                                                 *reset_choice()*
 reset_choice()           Use to execute a |metals.reset-choice| command.
 
+                                                              *restart_server()*
+restart_server()         Restart the Metals server.
+
                                                                 *sources_scan()*
 sources_scan()           Use to execute a |metals.sources-scan| command.
+
+                                                                *start_server()*
+start_server()           Start Metals server. Must be in a Scala or sbt file in
+                         a workspace where Metals is not yet started.
 
                                                              *worksheet_hover()*
 worksheet_hover()        Use to expand the decoration to show the full hover

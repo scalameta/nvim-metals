@@ -239,6 +239,30 @@ M.organize_imports = function()
   end
 end
 
+-- Used to fully restart Metals. This will send a shutdown request to Metals,
+-- delay for 3 seconds, and then reconnect.
+M.restart_server = function()
+  for _, buf in pairs(vim.fn.getbufinfo({ bufloaded = true })) do
+    if vim.tbl_contains(setup.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
+      local clients = lsp.buf_get_clients(buf.bufnr)
+      for _, client in ipairs(clients) do
+        if client.config.name == "metals" then
+          client.stop()
+        end
+      end
+    end
+  end
+
+  vim.defer_fn(function()
+    setup.reset_lsps()
+    setup.initialize_or_attach(setup.config)
+  end, 3000)
+end
+
+M.start_server = function()
+  setup.initialize_or_attach(setup.config)
+end
+
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.bare_config = setup.bare_config

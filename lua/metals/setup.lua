@@ -13,6 +13,18 @@ local lsps = {}
 
 local metals_name = "metals"
 
+-- TODO I don't love having this exposed, but we need it in order to use the
+-- start or restart functionality. This can probably be improved.
+M.config = nil
+
+M.scala_file_types = { "sbt", "scala" }
+
+--- Clear out the lsps table. This is used when we are restarting the server
+--- and aren't - planning on closing nvim, but rather just re-connecting.
+M.reset_lsps = function()
+  lsps = {}
+end
+
 --- Ultimately what will be passed to the config.cmd to initialize the LSP -
 --- connection. If a user is using g:metals_use_global_executable then we - just
 --- default to `metals`, if not we take control and construct the location - in
@@ -107,7 +119,7 @@ M.install_or_update = function()
       Coursier_handle:close()
       if (code == 0) then
         util.metals_status("Metals installed!")
-        log.info_and_show("Metals installed! Please restart nvim, and have fun coding Scala!")
+        log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
       end
     end)
   )
@@ -174,6 +186,8 @@ M.initialize_or_attach = function(config)
     return
   end
 
+  M.config = config
+
   if not util.has_bins(M.metals_bin()) and vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_but_cant_find)
     return true
@@ -197,7 +211,7 @@ M.initialize_or_attach = function(config)
 
   -- Check to see if Metals is already attatched, and if so attatch
   for _, buf in pairs(vim.fn.getbufinfo({ bufloaded = true })) do
-    if api.nvim_buf_get_option(buf.bufnr, "filetype") == "scala" then
+    if vim.tbl_contains(M.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
       local clients = lsp.buf_get_clients(buf.bufnr)
       for _, client in ipairs(clients) do
         if client.config.name == config.name then

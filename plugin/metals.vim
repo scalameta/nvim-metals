@@ -25,7 +25,9 @@ command! MetalsNewScalaProject lua require'metals'.new_scala_project()
 command! MetalsOrganizeImports lua require'metals'.organize_imports()
 command! MetalsQuickWorksheet lua require'metals'.new_scala_file('file://' .. vim.fn.expand("%:p:h"), vim.fn.expand("%:p:h:t"), 'worksheet')
 command! MetalsResetChoice lua require'metals'.reset_choice()
+command! MetalsRestartServer lua require'metals'.restart_server()
 command! MetalsSourcesScan lua require'metals'.sources_scan()
+command! MetalsStartServer lua require'metals'.start_server()
 
 function! metals#status() abort
   return get(g:, 'metals_status', '')
