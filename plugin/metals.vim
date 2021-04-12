@@ -2,8 +2,6 @@ if exists('g:nvim_metals_loaded')
   finish
 endif
 
-command! Format lua vim.lsp.buf.formatting()
-
 command! MetalsAmmoniteEnd lua require'metals'.ammonite_end()
 command! MetalsAmmoniteStart lua require'metals'.ammonite_start()
 command! MetalsBspSwitch lua require'metals'.bsp_switch()
