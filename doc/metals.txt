@@ -367,7 +367,6 @@ handle it.
 COMMANDS                                                       *metals-commands*
 
 The following commands are provided by nvim-metals:
-  * |Format|
   * |MetalsAmmoniteEnd|
   * |MetalsAmmoniteStart|
   * |MetalsBspSwitch|
@@ -392,10 +391,6 @@ The following commands are provided by nvim-metals:
   * |MetalsRestartServer|
   * |MetalsSourcesScan|
   * |MetalsStartServer|
-
-                                                                        *Format*
-Format                       Format the current buffer utilizing. (Make sure to
-                             have a .scalafmt.conf file.)
 
                                                              *MetalsAmmoniteEnd*
 MetalsAmmoniteEnd            End the Ammonite BSP Server.
