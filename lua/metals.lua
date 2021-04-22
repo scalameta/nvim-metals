@@ -255,7 +255,7 @@ M.restart_server = function()
 
   vim.defer_fn(function()
     setup.reset_lsps()
-    setup.initialize_or_attach(setup.config)
+    setup.initialize_or_attach(setup.config_cache)
   end, 3000)
 end
 
