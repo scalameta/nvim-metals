@@ -352,6 +352,21 @@ The hightlight group that will be used to show decorations. For example, this
 will change the way worksheet evaluations are displayed in `*.worksheet.sc`
 file.
 
+                                                        *g:metals_disabled_mode*
+Type: boolean ~
+Default: false ~
+
+Used in the situation where you don't want Metals to start by default when you
+enter a Scala workspace. WARNING: Use this with caution though as it may be
+confusing why Metals isn't starting when you're in a workspace and you forgot
+you have this set. If using this, once you'd like to use Metals in a specific
+workspace you'll need to manually start the server via |MetalsStartServer| or
+via a mapping with |start_server()|. Then it will continue to work in that
+workspace until you close it. NOTE: The choice isn't persisted, so you need to
+continually do this every time you want to use it even in the same workspace.
+If people _actually_ use this setting and want that, submit a feature request,
+if not it's not worth the extra work.
+
                                                 *g:metals_use_global_executable*
 Type: boolean ~
 Default: false ~

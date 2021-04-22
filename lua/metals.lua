@@ -260,7 +260,10 @@ M.restart_server = function()
 end
 
 M.start_server = function()
-  setup.initialize_or_attach(setup.config)
+  if vim.g.metals_disabled_mode then
+    setup.explicitly_enable()
+  end
+  setup.initialize_or_attach(setup.config_cache)
 end
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's

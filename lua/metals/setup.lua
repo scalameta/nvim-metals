@@ -13,9 +13,24 @@ local lsps = {}
 
 local metals_name = "metals"
 
--- TODO I don't love having this exposed, but we need it in order to use the
--- start or restart functionality. This can probably be improved.
-M.config = nil
+-- So by default metals starts automatically, however, if a user wants it not
+-- to, then this needs to be set to true it order for Metals to continually
+-- attatch in a workspace that MetalsServerStart was called on.
+local explicity_enabled = false
+
+local function in_disabled_mode()
+  if vim.g.metals_disabled_mode and not explicity_enabled then
+    return true
+  else
+    return false
+  end
+end
+
+M.config_cache = nil
+
+M.explicitly_enable = function()
+  explicity_enabled = true
+end
 
 M.scala_file_types = { "sbt", "scala" }
 
@@ -165,7 +180,7 @@ local metals_settings = {
   "showInferredType",
 }
 
-M.add_commands = function()
+local function add_commands()
   vim.cmd([[command! MetalsAmmoniteEnd lua require'metals'.ammonite_end()]])
   vim.cmd([[command! MetalsAmmoniteStart lua require'metals'.ammonite_start()]])
   vim.cmd([[command! MetalsBspSwitch lua require'metals'.bsp_switch()]])
@@ -200,6 +215,13 @@ end
 ---      thing.
 ---   2. This config has `root_patters` which are used to help determine the root_path.
 M.initialize_or_attach = function(config)
+  M.config_cache = config
+  add_commands()
+
+  if in_disabled_mode() then
+    return
+  end
+
   if not config or type(config) ~= "table" then
     log.error_and_show(
       "Recieved: "
@@ -210,9 +232,6 @@ M.initialize_or_attach = function(config)
     )
     return
   end
-
-  M.add_commands()
-  M.config = config
 
   if not util.has_bins(M.metals_bin()) and vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_but_cant_find)
