@@ -596,7 +596,7 @@ info()                    Give info about the currently installed version of
 initialize_or_attach({config})    
                   
                           This is the main entrypoint into the plugin, and the
-                          way to set up nvim-metals. This would be usied in
+                          way to set up nvim-metals. This would be used in
                           the following way: >
 
   if has('nvim-0.5')
