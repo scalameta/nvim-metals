@@ -828,7 +828,19 @@ metals configuration with the following `on_attach` function. >
 This will ensure that the correct |dap-adapter| is configured for Scala.
 You'll also then want to ensure you have configurations setup for Scala. These
 configurations are the configurations explained in |dap-configuration| with a
-metals-specific field added, `metalsRunType`.
+metals-specific table added under the `metals` key. The valid keys in the
+metals table are as follows: >
+  metals = {
+    runType = "run",
+    args = { "foo", "bar" },
+    jvmOptions = { "-Dpropert=123" },
+    env = { "RETRY" = "TRUE" },
+    envFile = ".env"
+  }
+<
+
+You can also read about the various keys and their meaning here in the Metals
+docs https://scalameta.org/metals/docs/integrations/debug-adapter-protocol.html
 
 The following run types are valid for Metals.
   - `run` (automatically discovers the main method and runs it for the current
@@ -845,23 +857,30 @@ types. >
 
   dap.configurations.scala = {
     {
-       type = 'scala',
-       request = 'launch',
-       name = 'Run',
-       metalsRunType = 'run'
+      type = "scala",
+      request = "launch",
+      name = "Run",
+      metals = {
+        runType = "run",
+      },
     },
     {
-       type = 'scala',
-       request = 'launch',
-       name = 'Test File',
-       metalsRunType = 'testFile'
+      type = "scala",
+      request = "launch",
+      name = "Test File",
+      metals = {
+        runType = "testFIle",
+      },
     },
     {
-       type = 'scala',
-       request = 'launch',
-       name = 'Test Target',
-       metalsRunType = 'testTarget'
-    }
+      type = "scala",
+      request = "launch",
+      name = "Test Target",
+      metals = {
+        runType = "testTarget",
+      },
+    },
   }
 <
+
 vim:tw=80:ts=2:ft=help:

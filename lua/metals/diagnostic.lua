@@ -24,7 +24,6 @@ local function get_all_lsp_diagnostics_as_qfitems()
       if d.severity == 1 then
         item.type = "E"
         qfitems[#qfitems + 1] = item
-
       elseif d.severity == 2 then
         item.type = "W"
         warnings[#warnings + 1] = item
