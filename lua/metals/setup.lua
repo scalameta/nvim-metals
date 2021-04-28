@@ -2,7 +2,6 @@ local api = vim.api
 local lsp = vim.lsp
 local fn = vim.fn
 local uv = vim.loop
-
 local default_handlers = require("metals.handlers")
 local log = require("metals.log")
 local messages = require("metals.messages")
@@ -354,10 +353,17 @@ M.setup_dap = function(execute_command)
 
   dap.adapters.scala = function(callback, config)
     local uri = vim.uri_from_bufnr(0)
-    local runType = config.metalsRunType or "run"
+    local metals_dap_settings = config.metals or {}
     execute_command({
       command = "metals.debug-adapter-start",
-      arguments = { path = uri, runType = runType },
+      arguments = {
+        path = uri,
+        runType = metals_dap_settings.runType or "run",
+        args = metals_dap_settings.args,
+        jvmOptions = metals_dap_settings.jvmOptions,
+        env = metals_dap_settings.env,
+        envFile = metals_dap_settings.envFile,
+      },
     }, function(_, _, res)
       -- In metals we throw various exceptions when hanlding
       -- debug-adapter-start but they are all handled and status messages are
@@ -374,7 +380,7 @@ M.setup_dap = function(execute_command)
           enrich_config = function(_config, on_config)
             local final_config = vim.deepcopy(_config)
             -- Just incase strip this out since it's metals-specific
-            final_config.metalsRunType = nil
+            final_config.metals = nil
             on_config(final_config)
           end,
         })
