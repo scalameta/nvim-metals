@@ -21,7 +21,7 @@ jobs:
 
     - name: Run luacheck
       run: |
-        luacheck .
+        make lint
 
   format-check:
     runs-on: ubuntu-latest
@@ -30,8 +30,8 @@ jobs:
       uses: actions/checkout@v2
     - name: Setup StyLua
       run: |
-        cargo install stylua
+        cargo install --version 0.8.1 stylua
 
     - name: Run StyLua
       run: |
-        stylua -g **/*.lua --check -- lua
+        make format-check
