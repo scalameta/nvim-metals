@@ -24,7 +24,7 @@ M["metals/quickPick"] = function(_, _, resp)
   end
 
   local choice = vim.fn.inputlist(labels)
-  if (choice == 0) then
+  if choice == 0 then
     return { cancelled = true }
   else
     return { itemId = ids[choice] }
@@ -36,7 +36,7 @@ end
 M["metals/inputBox"] = function(_, _, resp)
   local name = vim.fn.input(resp.prompt .. ": ")
 
-  if (name == "") then
+  if name == "" then
     return { cancelled = true }
   else
     return { value = name }

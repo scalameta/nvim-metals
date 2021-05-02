@@ -15,7 +15,7 @@ local doctor_win_id = nil
 -- set and it's a valid win_id.
 ---@return boolean
 Doctor.is_open = function()
-  if (doctor_win_id and api.nvim_win_is_valid(doctor_win_id)) then
+  if doctor_win_id and api.nvim_win_is_valid(doctor_win_id) then
     return true
   else
     return false

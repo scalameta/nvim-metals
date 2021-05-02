@@ -131,7 +131,7 @@ M.install_or_update = function()
     { args = args, stdio = { stdin, stdout, stderr } },
     vim.schedule_wrap(function(code)
       Coursier_handle:close()
-      if (code == 0) then
+      if code == 0 then
         util.metals_status("Metals installed!")
         log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
       end
@@ -290,8 +290,7 @@ M.initialize_or_attach = function(config)
     for k, _ in pairs(config.settings) do
       if not vim.tbl_contains(metals_settings, k) then
         local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
-        local valid_settings =
-          string.format("The following are valid settings %s", table.concat(metals_settings, ", "))
+        local valid_settings = string.format("The following are valid settings %s", table.concat(metals_settings, ", "))
         local err = heading .. "\n" .. valid_settings
         log.warn_and_show(err)
       end

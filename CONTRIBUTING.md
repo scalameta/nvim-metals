@@ -43,6 +43,8 @@ use this as it gets rid of any need to discuss formatting. You can install it in
 various ways found on the github page, but the easiest is with cargo via `cargo
 install stylua`.
 
+After installed you can just use the commands in the Makefile to use them.
+
 ## Logging
 
 A helpful part of seeing what's going on when working on stuff is the various
