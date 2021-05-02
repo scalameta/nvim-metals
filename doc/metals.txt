@@ -41,7 +41,7 @@ PREREQUISITES                                             *metals-prerequisites*
   that keeping the plugin installed for other LSP servers is totally fine,
   just let nvim-metals handle Metals.
 - https://get-coursier.io/ - Metals uses coursier to manage the installation
-  and updatign of Metals.
+  and updating of Metals.
 - Make sure you have your mappings for various LSP functionality configure.
   Neovim provides functions for things like goto-definition, find references,
   etc, but they need to be mapped.
@@ -66,21 +66,21 @@ Or simply as a |vim.cmd| if using a pure Lua setup. >
   cmd [[augroup end]]
 <
 
-This will give you the the defaults that Metals provides. The empty `{}` that
-is passed into |initialize_or_attach()| is necessary and is very similiar to
+This will give you the defaults that Metals provides. The empty `{}` that
+is passed into |initialize_or_attach()| is necessary and is very similar to
 the config object that is directly passed into the |vim.lsp.start_client()|
 method. The only differences is the addition of root_patterns that can be used
 to determine your root dir, and also a slightly different shaped settings. You
 can see examples of how to use settings in the |metals-settings| section.
 You can read more about the other config parameters in
-|vim.lsp.start_client()| . This is is the primary way to edit your
-`init_options`, change or add any cusom `handlers`, and set any configurartion
+|vim.lsp.start_client()|. This is the primary way to edit your
+`init_options`, change or add any custom `handlers`, and set any configuration
 settings.
 
-NOTE: It's higly recommened to set your `statusBarProvider` to `on`. This
+NOTE: It's highly recommended to set your `statusBarProvider` to `on`. This
 enables `metals/status` and also other helpful messages that are shown to you.
 However, to enable this you _must_ have the metals status shown in your status
-bar somehow. This can be by using the provided |metals#status()| function, or
+bar somehow. This can be achieved by using the provided |metals#status()| function, or
 by just accessing it with Lua via `vim.g['metals_status']`. Everything will
 still work without this, but the status messages and feedback that you will
 get will be much less. You can enable the `statusBarProvider` like shown
@@ -90,7 +90,7 @@ below: >
   metals_config.init_options.statusBarProvider = 'on'
 <
 
-Then instead of passing an empty `{}` to |initialize_or_attach()|,  you'd pass
+Then instead of passing an empty `{}` to |initialize_or_attach()|, you'd pass
 in `metals_config`.
 
 Once setup, the first time you open a Scala project you'll be prompted to
@@ -109,7 +109,7 @@ command.
 
 If you believe that you have everything configured correctly, but do not see
 the message about installing Metals, ensure that you have removed `F` from
-`shortmess`. The you should be able to execute a |MetalsInfo| to see the
+`shortmess`. After this you should be able to execute a |MetalsInfo| to see the
 installed Metals version, the location of the install, and also the location
 of the `nvim-metals.log` file.
 ================================================================================
@@ -130,7 +130,7 @@ example below shows: >
   }
 <
 The following are all of the currently available settings. Note that this
-isn't necessarilly all of the settings that Metals has, but all of the
+isn't necessarily all of the settings that Metals has, but all of the
 settings that can currently be used with nvim-metals. Ones that will have no
 affect are simply skipped for now.
 
@@ -348,7 +348,7 @@ use the |MetalsInfo| command.
 Type: string ~
 Default: 'Conceal' ~
 
-The hightlight group that will be used to show decorations. For example, this
+The highlight group that will be used to show decorations. For example, this
 will change the way worksheet evaluations are displayed in `*.worksheet.sc`
 file.
 
@@ -478,7 +478,7 @@ MetalsInfo                   Give info about the currently installed version
 
                                                                *MetalsLogToggle*
 MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
-                             |.metals/metals.log| file in your worksapce. If
+                             |.metals/metals.log| file in your workspace. If
                              triggered again, this will either bring you to
                              the window that has the logs open, or open the
                              buffer in a split in your current window.
@@ -501,7 +501,7 @@ MetalsOrganizeImports       Sends a code action request to Metals to organize
                             timeout of 1000ms.
 
                                                           *MetalsQuickWorksheet*
-MetalsQuickWorksheet         Creats a worksheet in the current director that
+MetalsQuickWorksheet         Creates a worksheet in the current directory that
                              you're in with the name of the worksheet being the
                              parent dir.
 
@@ -671,7 +671,7 @@ new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
                          {directory_uri_opt} (string) directory that you'd
                          like the new file to be created in.
 
-                         {name_opt} (string) name you'd like to be give to the
+                         {name_opt} (string) name you'd like to be given to the
                          file.
 
                          {file_type_option} (string) the type of Scala file
@@ -685,12 +685,12 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                          for all buffers and opens it.
                          WARNING: Automatic updates in the quickfix for new
                          diagnostics are not yet implemented.
-                         After opening the quickfix, in order to refesh
+                         After opening the quickfix, in order to refresh
                          diagnostics the function must be called again.
 
                                                             *organize_imports()*
-organize_imports()       Use a code action request get edits from Metals to
-                         organzie imports for the current buffer.
+organize_imports()       Use a code action request to get edits from Metals to
+                         organize imports for the current buffer.
 
                                                                 *reset_choice()*
 reset_choice()           Use to execute a |metals.reset-choice| command.
@@ -846,9 +846,9 @@ The following run types are valid for Metals.
   - `run` (automatically discovers the main method and runs it for the current
     build target)
   - `testFile` (will discover all test classes in your current file and test
-    them.)
+    them)
   - `testTarget` (will discover all test classes in your current build target
-    and test them.)
+    and test them)
 
 Below you can see an example of 3 configurations, one for each of the run
 types. >
