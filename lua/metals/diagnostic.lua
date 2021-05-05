@@ -37,16 +37,21 @@ local function get_all_lsp_diagnostics_as_qfitems()
   return qfitems
 end
 
---  Fills the quick-fix with all the current LSP buffer diagnostics and opens
---  it.
+--  Fills the quick-fix with all the current LSP workspace diagnostics and
+--  opens it.
 --
 --  WARNING: The diagnostic quickfix list WILL ONLY be refreshed when this
 --  function is called, as opposed to diagnostic-nvim controlled location lists
 --  that gets updated in real time.
 M.open_all_diagnostics = function()
-  lsp.util.set_qflist(get_all_lsp_diagnostics_as_qfitems())
-  api.nvim_command("copen")
-  api.nvim_command("wincmd p")
+  local all_diagnostics = get_all_lsp_diagnostics_as_qfitems()
+  if #all_diagnostics > 0 then
+    lsp.util.set_qflist(all_diagnostics)
+    api.nvim_command("copen")
+    api.nvim_command("wincmd p")
+  else
+    api.nvim_command("cclose")
+  end
 end
 
 return M
