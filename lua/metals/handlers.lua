@@ -6,7 +6,6 @@ local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
 local doctor = require("metals.doctor")
 local log = require("metals.log")
-local ui = require("metals.ui")
 local util = require("metals.util")
 
 local M = {}
@@ -62,29 +61,6 @@ M["metals/executeClientCommand"] = function(_, _, resp)
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", resp.command))
   end
-end
-
--- An alternative to the hover provided by nvim LSP. Why? The default
--- implementation doesn't wrap at all, and in Scala when you have methods with
--- long signatures, this gets very annyoing.  In the future, the hope is that
--- this will just be handled upstream better and we can just remove this method
--- here.
-M["textDocument/hover"] = function(_, method, result)
-  local opts = { pad_left = 1, pad_right = 1 }
-  lsp.util.focusable_float(method, function()
-    if not (result and result.contents) then
-      return
-    end
-    local markdown_lines = lsp.util.convert_input_to_markdown_lines(result.contents)
-    markdown_lines = lsp.util.trim_empty_lines(markdown_lines)
-    if vim.tbl_isempty(markdown_lines) then
-      return
-    end
-    local bufnr, winnr = lsp.util.fancy_floating_markdown(markdown_lines, opts)
-    lsp.util.close_preview_autocmd({ "CursorMoved", "BufHidden", "InsertCharPre" }, winnr)
-    ui.wrap_hover(bufnr, winnr)
-    return bufnr, winnr
-  end)
 end
 
 -- Callback function to handle `metals/status`
