@@ -6,9 +6,14 @@ local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
 local log = require("metals.log")
 local messages = require("metals.messages")
+
+local has_plenary, Float = pcall(require, "plenary.window.float")
 local setup = require("metals.setup")
-local ui = require("metals.ui")
 local util = require("metals.util")
+
+if not has_plenary then
+  log.warn_and_show("Some features won't work without plenary installed. Please install nvim-lua/plenary.nvim")
+end
 
 local M = {}
 
@@ -133,9 +138,9 @@ M.info = function()
     table.insert(output, "  - https://github.com/scalameta/nvim-metals")
     table.insert(output, "  - https://github.com/scalameta/metals")
 
-    output = lsp.util._trim(output)
-    local win_id = ui.make_float_with_borders(output, "nvim-metals")
-    lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, win_id)
+    local float = Float.percentage_range_window(0.8, 0.6, {}, { title = "Metals Info" })
+    api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
+    lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, float.wind_wid)
   end
 end
 
