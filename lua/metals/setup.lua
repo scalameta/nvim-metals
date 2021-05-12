@@ -3,6 +3,7 @@ local lsp = vim.lsp
 local fn = vim.fn
 local uv = vim.loop
 local default_handlers = require("metals.handlers")
+local tvp_handlers = require("metals.tvp").handlers
 local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
@@ -157,6 +158,7 @@ local metals_init_options = {
   inputBoxProvider = true,
   quickPickProvider = true,
   statusBarProvider = "show-message",
+  treeViewProvider = true,
 }
 
 -- Currently available settings.
@@ -275,7 +277,11 @@ M.initialize_or_attach = function(config)
   config.root_patterns = config.root_patterns or { "build.sbt", "build.sc", "build.gradle", "pom.xml", ".git" }
 
   config.root_dir = util.find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
-  config.handlers = util.check_exists_and_merge(default_handlers, config.handlers)
+
+  local base_handlers = vim.tbl_extend("error", default_handlers, tvp_handlers)
+
+  config.handlers = util.check_exists_and_merge(base_handlers, config.handlers)
+
   config.capabilities = util.check_exists_and_merge(lsp.protocol.make_client_capabilities(), config.capabilities)
 
   if not config.init_options then
