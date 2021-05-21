@@ -13,18 +13,13 @@ P = function(thing)
   print(vim.inspect(thing))
   return thing
 end
--- interface TreeViewNode {
---   viewId: string;
---   nodeUri?: string;
---   label: string;
---   command?: Command;
---   icon?: string;
---   tooltip?: string;
---   collapseState?: "expanded" | "collapsed";
--- }
 
 local state = {
-  attatched_buf = nil,
+  -- NOTE: this is a bit of a hack since once we create the tvp panel, we can
+  -- no longer use 0 as the buffer to send the requests so we store a valid
+  -- buffer that Metals is attatched to. It doesn't really matter _whats_ in
+  -- that buffer, as long as Metals is attatched.
+  attatched_bufnr = nil,
   tvp_tree = nil,
 }
 
@@ -35,7 +30,7 @@ Node.__index = Node
 
 function Node:new(raw_node)
   if not raw_node.viewId or not raw_node.label then
-    log.error_and_show("Invalid node. Node must have a viewId and label.")
+    log.error_and_show("Invalid node. Node must have a viewId and a label.")
     log.error(raw_node)
   else
     local node = {}
@@ -68,19 +63,31 @@ local function tree_view_children(view_id, parent_uri)
   if parent_uri ~= nil then
     params["nodeUri"] = parent_uri
   end
-  vim.lsp.buf_request(state.attatched_buf, "metals/treeViewChildren", params, function(err, _, res)
-    -- TODO handle err
-    local new_nodes = {}
-    for _, node in pairs(res.nodes) do
-      table.insert(new_nodes, Node:new(node))
-    end
-    -- If this is nil we are dealing with a root element
-    if parent_uri == nil then
-      state.tvp_tree.children = new_nodes
+  vim.lsp.buf_request(state.attatched_bufnr, "metals/treeViewChildren", params, function(err, _, res)
+    if err then
+      log.error(err)
+      log.error_and_show("Something went wrong while requesting tvp children.")
     else
-      state.tvp_tree:update(parent_uri, new_nodes)
+      local new_nodes = {}
+      for _, node in pairs(res.nodes) do
+        table.insert(new_nodes, Node:new(node))
+      end
+      if parent_uri == nil then
+        state.tvp_tree.children = new_nodes
+      else
+        state.tvp_tree:update(parent_uri, new_nodes)
+      end
+      -- TODO can we do this in a way we don't have to iterate over the nodes twice?
+      -- NOTE: Not ideal to have to iterate over these again, but we want the
+      -- update to happene before we call this or else we'll have issues adding the
+      -- children to a node that doesn't yet exist.
+      for _, node in pairs(new_nodes) do
+        if node.collapse_state == collapse_state.expanded then
+          tree_view_children(metals_packages, node.node_uri)
+        end
+      end
+      state.tvp_tree:reload_and_show()
     end
-    state.tvp_tree:show()
   end)
 end
 
@@ -88,8 +95,11 @@ end
 -- @param view_id (string) the view_id that has changed visiblity
 -- @param visible (boolean)
 local function tree_view_visibility_did_change(view_id, visible)
-  -- TODO this shouldn't always be zero it it won't send in when we are in the tvp panel
-  vim.lsp.buf_notify(0, "metals/treeViewVisibilityDidChange", { viewId = view_id, visible = visible })
+  vim.lsp.buf_notify(
+    state.attatched_bufnr or 0,
+    "metals/treeViewVisibilityDidChange",
+    { viewId = view_id, visible = visible }
+  )
 end
 
 -- Notify the server that the collapse statet for a node has changed
@@ -98,7 +108,7 @@ end
 -- @param collapsed (boolean)
 local function tree_view_node_collapse_did_change(view_id, node_uri, collapsed)
   lsp.buf_notify(
-    0,
+    state.attatched_bufnr or 0,
     "metals/treeViewNodeCollapseDidChange",
     { viewId = view_id, nodeUri = node_uri, collapsed = collapsed }
   )
@@ -115,6 +125,11 @@ local function create_tvp_panel()
   api.nvim_win_set_option(win_id, "relativenumber", false)
   api.nvim_win_set_option(win_id, "cursorline", false)
 
+  -- TODO Maybe possible to add tvp to filteypes for metals to attatch to in
+  -- order to avoid the whole attatched_bufnr hack
+  api.nvim_buf_set_option(bufnr, "filetype", "tvp")
+  api.nvim_buf_set_option(bufnr, "buftype", "nofile")
+
   return {
     bufnr = bufnr,
     win_id = win_id,
@@ -122,11 +137,19 @@ local function create_tvp_panel()
 end
 
 local function set_keymaps(bufnr)
+  -- TODO pull all of these from a config
   api.nvim_buf_set_keymap(
     bufnr,
     "n",
     "<CR>",
     [[<cmd>lua require("metals.tvp").toggle_node()<CR>]],
+    { nowait = true, silent = true }
+  )
+  api.nvim_buf_set_keymap(
+    bufnr,
+    "n",
+    "r",
+    [[<cmd>lua require("metals.tvp").node_command()<CR>]],
     { nowait = true, silent = true }
   )
 end
@@ -135,7 +158,9 @@ local Tree = { bufnr = nil }
 
 Tree.__index = Tree
 
-function Tree:new(base_nodes)
+function Tree:new()
+  -- In reality this should take root nodes, but since we are only implementing
+  -- metalsPackages, we just auto make that the root
   local root = Node:new({ label = metals_packages, viewId = metals_packages })
   return setmetatable(root, self)
 end
@@ -145,13 +170,16 @@ function Tree:cache()
 end
 
 function Tree:set_lines(start_idx, end_idx, lines)
-  -- grab buffer from state
-  api.nvim_buf_set_option(0, "modifiable", true)
-  api.nvim_buf_set_lines(0, start_idx, end_idx, true, lines)
-  api.nvim_buf_set_option(0, "modifiable", false)
+  -- NOTE We are replacing the entire buffer with set_lines. If performance
+  -- every becomes an issue it may be better to _only_ update the nodes that
+  -- have changed and their children. For now this seems fast enough to just
+  -- not care
+  api.nvim_buf_set_option(self.bufnr, "modifiable", true)
+  api.nvim_buf_set_lines(self.bufnr, start_idx, end_idx, true, lines)
+  api.nvim_buf_set_option(self.bufnr, "modifiable", false)
 end
 
-function Tree:show()
+function Tree:reload_and_show()
   local base_nodes = self.children
 
   local lines = {}
@@ -162,6 +190,7 @@ function Tree:show()
     for _, node in pairs(nodes) do
       local sign
       if node.collapse_state == collapse_state.collapsed then
+        -- TODO grab these from a config
         sign = "▸"
       elseif node.collapse_state == collapse_state.expanded then
         sign = "▾"
@@ -201,7 +230,7 @@ function Tree:toggle()
     tree_view_children(metals_packages)
   elseif self.win_id == nil then
     tree_view_visibility_did_change(metals_packages, true)
-    self:show()
+    self:reload_and_show()
   else
     tree_view_visibility_did_change(metals_packages, false)
     if api.nvim_win_is_valid(self.win_id) then
@@ -219,11 +248,28 @@ function Tree:toggle_node()
     node_info.collapse_state = collapse_state.expanded
     tree_view_node_collapse_did_change(metals_packages, node_info.node_uri, false)
     tree_view_children(node_info.view_id, node_info.node_uri)
-  else
+  elseif node_info.collapse_state == collapse_state.expanded then
     node_info.collapse_state = collapse_state.collapsed
     tree_view_node_collapse_did_change(metals_packages, node_info.node_uri, true)
-    self:show()
-    -- TODO actually collapse and change ui
+    self:reload_and_show()
+  end
+end
+
+function Tree:node_command()
+  local lnum, _ = unpack(vim.api.nvim_win_get_cursor(0))
+  local node_info = self.lookup[lnum]
+
+  if node_info.command ~= nil then
+    -- Jump to the last window so this doesn't open up in the actual tvp panel
+    vim.cmd([[wincmd p]])
+    vim.lsp.buf_request(state.attatched_bufnr, "workspace/executeCommand", {
+      command = node_info.command.command,
+      arguments = node_info.command.arguments,
+    }, function(err, _, _)
+      if err then
+        log.error_and_show("Unable to execute node command.")
+      end
+    end)
   end
 end
 
@@ -242,11 +288,24 @@ function Tree:update(parent_uri, new_nodes)
   return self
 end
 
-handlers["metals/treeViewDidChange"] = function(_, _, nodes)
+handlers["metals/treeViewDidChange"] = function(_, _, res)
   if not state.tvp_tree then
-    Tree:new(nodes):cache()
+    Tree:new():cache()
   else
-    -- Figure out the update here
+    -- TODO An improvement here would be to remember the old collapsed state of
+    -- a node before replacing it. While this works, you end up with a node that
+    -- was expanded previously, then replaced, and then now collapsed since
+    -- that's the state the new node comes with. It'd be nicer to remember that
+    -- old state and mimic the "collapsed" state.
+    for _, node in pairs(res.nodes) do
+      local new_node = Node:new(node)
+      state.tvp_tree:update(new_node.node_uri, {})
+      -- As far as I know, the res.nodes here will never be children of eachother, so we
+      -- should be safe doing this call for the children int he same loop as the update.
+      if new_node.collapse_state == collapse_state.expanded then
+        tree_view_children(metals_packages, new_node.node_uri)
+      end
+    end
   end
 end
 
@@ -271,7 +330,7 @@ local function toggle_tree_view()
   else
     local bufnr = api.nvim_get_current_buf()
     -- TODO does that have to keep being set?
-    state.attatched_buf = bufnr
+    state.attatched_bufnr = bufnr
     state.tvp_tree:toggle()
   end
 end
@@ -280,8 +339,13 @@ local function toggle_node()
   state.tvp_tree:toggle_node()
 end
 
+local function node_command()
+  state.tvp_tree:node_command()
+end
+
 return {
   handlers = handlers,
+  node_command = node_command,
   toggle_tree_view = toggle_tree_view,
   toggle_node = toggle_node,
   debug_tree = function()
