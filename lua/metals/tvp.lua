@@ -25,6 +25,18 @@ local state = {
 
 local handlers = {}
 
+-- Notify the server that the collapse statet for a node has changed
+-- @param view_id (string) the view id that contains the node
+-- @param node_uri (string) uri of the node
+-- @param collapsed (boolean)
+local function tree_view_node_collapse_did_change(view_id, node_uri, collapsed)
+  lsp.buf_notify(
+    state.attatched_bufnr or 0,
+    "metals/treeViewNodeCollapseDidChange",
+    { viewId = view_id, nodeUri = node_uri, collapsed = collapsed }
+  )
+end
+
 local Node = {}
 Node.__index = Node
 
@@ -53,42 +65,14 @@ function Node:new(raw_node)
   end
 end
 
--- Sends a request to the server to retrive the children of a given node_uri. If
--- the node_uri is absent we are dealing with the root node
--- @param view_id (string)
--- @param node_uri(string)
--- @returns (table) nodes
-local function tree_view_children(view_id, parent_uri)
-  local params = { viewId = view_id }
-  if parent_uri ~= nil then
-    params["nodeUri"] = parent_uri
-  end
-  vim.lsp.buf_request(state.attatched_bufnr, "metals/treeViewChildren", params, function(err, _, res)
-    if err then
-      log.error(err)
-      log.error_and_show("Something went wrong while requesting tvp children.")
-    else
-      local new_nodes = {}
-      for _, node in pairs(res.nodes) do
-        table.insert(new_nodes, Node:new(node))
-      end
-      if parent_uri == nil then
-        state.tvp_tree.children = new_nodes
-      else
-        state.tvp_tree:update(parent_uri, new_nodes)
-      end
-      -- TODO can we do this in a way we don't have to iterate over the nodes twice?
-      -- NOTE: Not ideal to have to iterate over these again, but we want the
-      -- update to happene before we call this or else we'll have issues adding the
-      -- children to a node that doesn't yet exist.
-      for _, node in pairs(new_nodes) do
-        if node.collapse_state == collapse_state.expanded then
-          tree_view_children(metals_packages, node.node_uri)
-        end
-      end
-      state.tvp_tree:reload_and_show()
-    end
-  end)
+function Node:expand()
+  self.collapse_state = collapse_state.expanded
+  tree_view_node_collapse_did_change(self.view_id, self.node_uri, false)
+end
+
+function Node:collapse()
+  self.collapse_state = collapse_state.collapsed
+  tree_view_node_collapse_did_change(self.view_id, self.node_uri, true)
 end
 
 -- Notify the server that the visiblity of a specific viewId has changed
@@ -99,18 +83,6 @@ local function tree_view_visibility_did_change(view_id, visible)
     state.attatched_bufnr or 0,
     "metals/treeViewVisibilityDidChange",
     { viewId = view_id, visible = visible }
-  )
-end
-
--- Notify the server that the collapse statet for a node has changed
--- @param view_id (string) the view id that contains the node
--- @param node_uri (string) uri of the node
--- @param collapsed (boolean)
-local function tree_view_node_collapse_did_change(view_id, node_uri, collapsed)
-  lsp.buf_notify(
-    state.attatched_bufnr or 0,
-    "metals/treeViewNodeCollapseDidChange",
-    { viewId = view_id, nodeUri = node_uri, collapsed = collapsed }
   )
 end
 
@@ -163,6 +135,59 @@ function Tree:new()
   -- metalsPackages, we just auto make that the root
   local root = Node:new({ label = metals_packages, viewId = metals_packages })
   return setmetatable(root, self)
+end
+
+-- Sends a request to the server to retrive the children of a given node_uri. If
+-- the node_uri is absent we are dealing with the root node
+-- @param view_id (string)
+-- @param node_uri(string)
+function Tree:tree_view_children(opts)
+  local view_id = opts.view_id
+  opts = opts or {}
+  local params = { viewId = view_id }
+  if opts.parent_uri ~= nil then
+    params["nodeUri"] = opts.parent_uri
+  end
+  vim.lsp.buf_request(state.attatched_bufnr, "metals/treeViewChildren", params, function(err, _, res)
+    if err then
+      log.error(err)
+      log.error_and_show(err)
+      log.error_and_show("Something went wrong while requesting tvp children.")
+    else
+      local new_nodes = {}
+      for _, node in pairs(res.nodes) do
+        table.insert(new_nodes, Node:new(node))
+      end
+      if opts.parent_uri == nil then
+        self.children = new_nodes
+      else
+        self:update(opts.parent_uri, new_nodes)
+      end
+      -- TODO can we do this in a way we don't have to iterate over the nodes twice?
+      -- NOTE: Not ideal to have to iterate over these again, but we want the
+      -- update to happene before we call this or else we'll have issues adding the
+      -- children to a node that doesn't yet exist.
+      for _, node in pairs(new_nodes) do
+        if node.collapse_state == collapse_state.expanded then
+          self:tree_view_children({ view_id = metals_packages, parent_uri = node.node_uri })
+        end
+      end
+      if opts.expand then
+        local node = self:find(opts.parent_uri)
+        if node and node.collapse_state and node.collapse_state == collapse_state.collapsed then
+          node:expand()
+        end
+      end
+      local additionals = opts.additionals
+      if additionals and #additionals > 1 then
+        local head = table.remove(additionals, 1)
+        self:tree_view_children({ view_id = view_id, parent_uri = head, additionals = additionals, expand = opts.expand })
+      elseif additionals and #additionals == 1 then
+        self:tree_view_children({ view_id = view_id, parent_uri = additionals[1], expand = opts.expand })
+      end
+      self:reload_and_show()
+    end
+  end)
 end
 
 function Tree:cache()
@@ -224,14 +249,13 @@ function Tree:reload_and_show()
   end
 end
 
-function Tree:create_and_open()
-  tree_view_visibility_did_change(metals_packages, true)
-  tree_view_children(metals_packages)
-end
-
 function Tree:open()
+  if self.bufnr then
+    self:reload_and_show()
+  else
+    self:tree_view_children({ view_id = metals_packages })
+  end
   tree_view_visibility_did_change(metals_packages, true)
-  self:reload_and_show()
 end
 
 function Tree:close()
@@ -243,9 +267,7 @@ function Tree:close()
 end
 
 function Tree:toggle()
-  if self.bufnr == nil then
-    self:create_and_open()
-  elseif self.win_id == nil or not api.nvim_win_is_valid(self.win_id) then
+  if self.win_id == nil or not api.nvim_win_is_valid(self.win_id) then
     self:open()
   else
     self:close()
@@ -257,19 +279,17 @@ function Tree:toggle_node()
   local node = self.lookup[lnum]
 
   if node.collapse_state == collapse_state.collapsed then
-    node.collapse_state = collapse_state.expanded
-    tree_view_node_collapse_did_change(metals_packages, node.node_uri, false)
+    node:expand()
     -- If the node already has children we can assume that request has already
     -- been made and therefore don't send it again, we just reload the UI and
     -- show it.
     if #node.children > 0 then
       self:reload_and_show()
     else
-      tree_view_children(node.view_id, node.node_uri)
+      self:tree_view_children({ view_id = node.view_id, parent_uri = node.node_uri })
     end
   elseif node.collapse_state == collapse_state.expanded then
-    node.collapse_state = collapse_state.collapsed
-    tree_view_node_collapse_did_change(metals_packages, node.node_uri, true)
+    node:collapse()
     self:reload_and_show()
   end
 end
@@ -292,6 +312,7 @@ function Tree:node_command()
   end
 end
 
+-- TODO maybe this should be named replace
 function Tree:update(parent_uri, new_nodes)
   local function recurse(node)
     if node.node_uri ~= parent_uri then
@@ -307,41 +328,23 @@ function Tree:update(parent_uri, new_nodes)
   return self
 end
 
-function Tree:find_and_open(node_chain)
-  local current_level = 1
-  local total_levels = #node_chain
+function Tree:find(uri)
+  local found_node = nil
 
-  local function recurse(node_uri, nodes)
-    local found = false
-    local iterator = 1
-    local number_of_nodes = #nodes
-    while not found do
-      if iterator > number_of_nodes then
-        found = true
-        log.error_and_show("something went wrong unable to find node")
-      else
-        local node = nodes[iterator]
-        if node.node_uri == node_uri then
-          found = true
-          if node.collapse_state ~= nil and #node.children == 0 then
-            tree_view_children(node.view_id, node.node_uri)
-          end
-          if node.collapse_state == collapse_state.collapsed then
-            node.collapse_state = collapse_state.expanded
-            tree_view_node_collapse_did_change(metals_packages, node.node_uri, false)
-          end
-          current_level = current_level + 1
-          if current_level <= total_levels then
-            recurse(node_chain[current_level], node.children)
-          end
-        else
-          iterator = iterator + 1
-        end
+  local function search(nodes)
+    for _, node in pairs(nodes) do
+      if node.node_uri == uri then
+        found_node = node
+        break
+      elseif #node.children > 0 then
+        search(node.children)
       end
     end
   end
 
-  recurse(node_chain[current_level], self.children)
+  search(self.children)
+
+  return found_node
 end
 
 handlers["metals/treeViewDidChange"] = function(_, _, res)
@@ -359,7 +362,7 @@ handlers["metals/treeViewDidChange"] = function(_, _, res)
       -- As far as I know, the res.nodes here will never be children of eachother, so we
       -- should be safe doing this call for the children int he same loop as the update.
       if new_node.collapse_state == collapse_state.expanded then
-        tree_view_children(metals_packages, new_node.node_uri)
+        state.tvp_tree:tree_view_children({ view_id = metals_packages, parent_uri = new_node.node_uri })
       end
     end
   end
@@ -399,6 +402,7 @@ local function reverse(t)
 end
 
 local function reveal_in_tree()
+  state.tvp_tree:open()
   local params = lsp.util.make_position_params()
   state.attatched_bufnr = api.nvim_get_current_buf()
 
@@ -407,41 +411,21 @@ local function reveal_in_tree()
       log.error_and_show("Unable to execute node command.")
     else
       if res and res.viewId == metals_packages then
-        if state.tvp_tree.bufnr then
-          state.tvp_tree:open()
-        else
-          state.tvp_tree:create_and_open()
-        end
-
         reverse(res.uriChain)
 
-        for _, uri in pairs(res.uriChain) do
-          -- 1. open node
-          -- 2. get children for node
-          tree_view_children(metals_packages, uri, false)
-        end
-        --
-        --P(state.tvp_tree.children)
-        --state.tvp_tree:find_and_open(res.uriChain)
-        -- TODO we need to refactor some before doing this
-        -- for _, uri in pairs(res.uriChain) do
-        --   tree_view_children(metals_packages, uri)
-        -- end
-        -- TODO find in tree
+        local head = table.remove(res.uriChain, 1)
+
+        state.tvp_tree:tree_view_children({
+          view_id = res.viewId,
+          parent_uri = head,
+          additionals = res.uriChain,
+          expand = true,
+        })
+        local total = #state.tvp_tree.lookup
+        P(total)
       else
         P("idn this shouldn't happen")
       end
-
-      -- [Trace - 07:34:00 PM] Sending response 'metals/treeViewReveal - (34)'. Processing request took 181ms
-      -- Result: {
-      --   "viewId": "metalsPackages",
-      --   "uriChain": [
-      --     "projects:file:/Users/ckipp/Documents/scala-workspace/sanity/?id\u003ddefault-9036fd!/sanity/Main.",
-      --     "projects:file:/Users/ckipp/Documents/scala-workspace/sanity/?id\u003ddefault-9036fd!/sanity/",
-      --     "projects:file:/Users/ckipp/Documents/scala-workspace/sanity/?id\u003ddefault-9036fd!/_root_/",
-      --     "projects:"
-      --   ]
-      -- }
     end
   end)
 end
