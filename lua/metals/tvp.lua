@@ -212,7 +212,7 @@ function Tree:reload_and_show()
 
   self.lookup = lookup
 
-  if self.win_id then
+  if self.win_id and api.nvim_win_is_valid(self.win_id) then
     self:set_lines(0, -1, lines)
   else
     local tvp_panel = create_tvp_panel()
@@ -224,33 +224,52 @@ function Tree:reload_and_show()
   end
 end
 
+function Tree:create_and_open()
+  tree_view_visibility_did_change(metals_packages, true)
+  tree_view_children(metals_packages)
+end
+
+function Tree:open()
+  tree_view_visibility_did_change(metals_packages, true)
+  self:reload_and_show()
+end
+
+function Tree:close()
+  tree_view_visibility_did_change(metals_packages, false)
+  if api.nvim_win_is_valid(self.win_id) then
+    api.nvim_win_close(self.win_id, true)
+    self.win_id = nil
+  end
+end
+
 function Tree:toggle()
   if self.bufnr == nil then
-    tree_view_visibility_did_change(metals_packages, true)
-    tree_view_children(metals_packages)
-  elseif self.win_id == nil then
-    tree_view_visibility_did_change(metals_packages, true)
-    self:reload_and_show()
+    self:create_and_open()
+  elseif self.win_id == nil or not api.nvim_win_is_valid(self.win_id) then
+    self:open()
   else
-    tree_view_visibility_did_change(metals_packages, false)
-    if api.nvim_win_is_valid(self.win_id) then
-      api.nvim_win_close(self.win_id, true)
-      self.win_id = nil
-    end
+    self:close()
   end
 end
 
 function Tree:toggle_node()
   local lnum, _ = unpack(vim.api.nvim_win_get_cursor(0))
-  local node_info = self.lookup[lnum]
+  local node = self.lookup[lnum]
 
-  if node_info.collapse_state == collapse_state.collapsed then
-    node_info.collapse_state = collapse_state.expanded
-    tree_view_node_collapse_did_change(metals_packages, node_info.node_uri, false)
-    tree_view_children(node_info.view_id, node_info.node_uri)
-  elseif node_info.collapse_state == collapse_state.expanded then
-    node_info.collapse_state = collapse_state.collapsed
-    tree_view_node_collapse_did_change(metals_packages, node_info.node_uri, true)
+  if node.collapse_state == collapse_state.collapsed then
+    node.collapse_state = collapse_state.expanded
+    tree_view_node_collapse_did_change(metals_packages, node.node_uri, false)
+    -- If the node already has children we can assume that request has already
+    -- been made and therefore don't send it again, we just reload the UI and
+    -- show it.
+    if #node.children > 0 then
+      self:reload_and_show()
+    else
+      tree_view_children(node.view_id, node.node_uri)
+    end
+  elseif node.collapse_state == collapse_state.expanded then
+    node.collapse_state = collapse_state.collapsed
+    tree_view_node_collapse_did_change(metals_packages, node.node_uri, true)
     self:reload_and_show()
   end
 end
@@ -288,6 +307,43 @@ function Tree:update(parent_uri, new_nodes)
   return self
 end
 
+function Tree:find_and_open(node_chain)
+  local current_level = 1
+  local total_levels = #node_chain
+
+  local function recurse(node_uri, nodes)
+    local found = false
+    local iterator = 1
+    local number_of_nodes = #nodes
+    while not found do
+      if iterator > number_of_nodes then
+        found = true
+        log.error_and_show("something went wrong unable to find node")
+      else
+        local node = nodes[iterator]
+        if node.node_uri == node_uri then
+          found = true
+          if node.collapse_state ~= nil and #node.children == 0 then
+            tree_view_children(node.view_id, node.node_uri)
+          end
+          if node.collapse_state == collapse_state.collapsed then
+            node.collapse_state = collapse_state.expanded
+            tree_view_node_collapse_did_change(metals_packages, node.node_uri, false)
+          end
+          current_level = current_level + 1
+          if current_level <= total_levels then
+            recurse(node_chain[current_level], node.children)
+          end
+        else
+          iterator = iterator + 1
+        end
+      end
+    end
+  end
+
+  recurse(node_chain[current_level], self.children)
+end
+
 handlers["metals/treeViewDidChange"] = function(_, _, res)
   if not state.tvp_tree then
     Tree:new():cache()
@@ -312,16 +368,8 @@ end
 handlers["metals/treeViewParent"] = function(err, _, tree_view_parent_result)
 end
 
-handlers["metals/treeViewReveal"] = function(err, _, tree_view_result)
-end
-
 local function tree_view_parent()
   vim.lsp.buf_request(0, "metals/treeViewParent", { viewId = metals_packages })
-end
-
--- sends in TextDocumentPositionParams
-local function tree_view_reveal()
-  lsp.buf_request(0, "metals/treeViewReveal", {})
 end
 
 local function toggle_tree_view()
@@ -343,9 +391,65 @@ local function node_command()
   state.tvp_tree:node_command()
 end
 
+local function reverse(t)
+  for i = 1, math.floor(#t / 2) do
+    local j = #t - i + 1
+    t[i], t[j] = t[j], t[i]
+  end
+end
+
+local function reveal_in_tree()
+  local params = lsp.util.make_position_params()
+  state.attatched_bufnr = api.nvim_get_current_buf()
+
+  vim.lsp.buf_request(0, "metals/treeViewReveal", params, function(err, _, res)
+    if err then
+      log.error_and_show("Unable to execute node command.")
+    else
+      if res and res.viewId == metals_packages then
+        if state.tvp_tree.bufnr then
+          state.tvp_tree:open()
+        else
+          state.tvp_tree:create_and_open()
+        end
+
+        reverse(res.uriChain)
+
+        for _, uri in pairs(res.uriChain) do
+          -- 1. open node
+          -- 2. get children for node
+          tree_view_children(metals_packages, uri, false)
+        end
+        --
+        --P(state.tvp_tree.children)
+        --state.tvp_tree:find_and_open(res.uriChain)
+        -- TODO we need to refactor some before doing this
+        -- for _, uri in pairs(res.uriChain) do
+        --   tree_view_children(metals_packages, uri)
+        -- end
+        -- TODO find in tree
+      else
+        P("idn this shouldn't happen")
+      end
+
+      -- [Trace - 07:34:00 PM] Sending response 'metals/treeViewReveal - (34)'. Processing request took 181ms
+      -- Result: {
+      --   "viewId": "metalsPackages",
+      --   "uriChain": [
+      --     "projects:file:/Users/ckipp/Documents/scala-workspace/sanity/?id\u003ddefault-9036fd!/sanity/Main.",
+      --     "projects:file:/Users/ckipp/Documents/scala-workspace/sanity/?id\u003ddefault-9036fd!/sanity/",
+      --     "projects:file:/Users/ckipp/Documents/scala-workspace/sanity/?id\u003ddefault-9036fd!/_root_/",
+      --     "projects:"
+      --   ]
+      -- }
+    end
+  end)
+end
+
 return {
   handlers = handlers,
   node_command = node_command,
+  reveal_in_tree = reveal_in_tree,
   toggle_tree_view = toggle_tree_view,
   toggle_node = toggle_node,
   debug_tree = function()
