@@ -3,7 +3,7 @@ local lsp = vim.lsp
 local fn = vim.fn
 local uv = vim.loop
 local default_handlers = require("metals.handlers")
-local tvp_handlers = require("metals.tvp").handlers
+local tvp = require("metals.tvp")
 local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
@@ -209,13 +209,10 @@ local function add_commands()
 end
 
 --- The main entrypoint into the plugin.
---- @param config table this config is very similiar to the config that is directly
----   passed into the `lsp.start_client(config)` with a couple exceptions.
----   1. This config doesn't make you preface the settings with `metals`. Instead
----      we just allow the user to pass in the setting and we preface the entire
----      thing.
----   2. This config has `root_patters` which are used to help determine the root_path.
 M.initialize_or_attach = function(config)
+  local tvp_config = vim.deepcopy(config.tvp)
+  tvp.setup_config(tvp_config)
+  config.tvp = nil
   M.config_cache = config
   add_commands()
 
@@ -278,7 +275,7 @@ M.initialize_or_attach = function(config)
 
   config.root_dir = util.find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
 
-  local base_handlers = vim.tbl_extend("error", default_handlers, tvp_handlers)
+  local base_handlers = vim.tbl_extend("error", default_handlers, tvp.handlers)
 
   config.handlers = util.check_exists_and_merge(base_handlers, config.handlers)
 

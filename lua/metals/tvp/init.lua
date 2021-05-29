@@ -2,17 +2,28 @@ local api = vim.api
 local lsp = vim.lsp
 
 local log = require("metals.log")
+local Node = require("metals.tvp.node")
+local tvp_util = require("metals.tvp.util")
+local util = require("metals.util")
 
-local metals_packages = "metalsPackages"
-local collapse_state = {
-  expanded = "expanded",
-  collapsed = "collapsed",
-}
+local collapse_state = tvp_util.collapse_state
+local metals_packages = tvp_util.metals_packages
 
 P = function(thing)
   print(vim.inspect(thing))
   return thing
 end
+
+local defult_config = {
+  panel_width = 40,
+  panel_alignment = "left",
+  toggle_node_mapping = "<CR>",
+  node_command_mapping = "r",
+  collapsed_sign = "▸",
+  expanded_sign = "▾",
+}
+
+local config = nil
 
 local state = {
   -- NOTE: this is a bit of a hack since once we create the tvp panel, we can
@@ -23,56 +34,22 @@ local state = {
   tvp_tree = nil,
 }
 
-local handlers = {}
-
--- Notify the server that the collapse statet for a node has changed
--- @param view_id (string) the view id that contains the node
--- @param node_uri (string) uri of the node
--- @param collapsed (boolean)
-local function tree_view_node_collapse_did_change(view_id, node_uri, collapsed)
-  lsp.buf_notify(
-    state.attatched_bufnr or 0,
-    "metals/treeViewNodeCollapseDidChange",
-    { viewId = view_id, nodeUri = node_uri, collapsed = collapsed }
-  )
-end
-
-local Node = {}
-Node.__index = Node
-
-function Node:new(raw_node)
-  if not raw_node.viewId or not raw_node.label then
-    log.error_and_show("Invalid node. Node must have a viewId and a label.")
-    log.error(raw_node)
-  else
-    local node = {}
-    node.view_id = raw_node.viewId
-    node.label = raw_node.label
-    if raw_node.nodeUri ~= nil then
-      node.node_uri = raw_node.nodeUri
-    end
-    if raw_node.command ~= nil then
-      node.command = raw_node.command
-    end
-    if raw_node.icon ~= nil then
-      node.icon = raw_node.icon
-    end
-    if raw_node.collapseState ~= nil then
-      node.collapse_state = raw_node.collapseState
-    end
-    node.children = {}
-    return setmetatable(node, self)
+local function setup_config(user_config)
+  if config == nil then
+    config = util.check_exists_and_merge(defult_config, user_config or {})
   end
 end
 
-function Node:expand()
-  self.collapse_state = collapse_state.expanded
-  tree_view_node_collapse_did_change(self.view_id, self.node_uri, false)
-end
+local handlers = {}
 
-function Node:collapse()
-  self.collapse_state = collapse_state.collapsed
-  tree_view_node_collapse_did_change(self.view_id, self.node_uri, true)
+local function valid_metals_buffer()
+  if api.nvim_buf_is_loaded(state.attatched_bufnr) then
+    return state.attatched_bufnr
+  else
+    local valid_buf = tvp_util.find_metals_buffer()
+    state.attatched_bufnr = valid_buf
+    return valid_buf
+  end
 end
 
 -- Notify the server that the visiblity of a specific viewId has changed
@@ -80,15 +57,25 @@ end
 -- @param visible (boolean)
 local function tree_view_visibility_did_change(view_id, visible)
   vim.lsp.buf_notify(
-    state.attatched_bufnr or 0,
+    valid_metals_buffer(),
     "metals/treeViewVisibilityDidChange",
     { viewId = view_id, visible = visible }
   )
 end
 
 local function create_tvp_panel()
-  -- TODO this should be pulled from a config
-  vim.cmd("40vnew [tvp]")
+  local alignment
+  if config.panel_alignment == "right" then
+    alignment = "botright"
+  elseif config.panel_alignment == "left" then
+    alignment = "topleft"
+  else
+    log.warn_and_show(string.format(
+      "%s is an invalid option for panel_alignment. Must choose left or right.",
+      config.panel_alignment
+    ))
+  end
+  vim.cmd(string.format("silent %s vertical %d new [tvp]", alignment, config.panel_width))
   local win_id = api.nvim_get_current_win()
   local bufnr = api.nvim_get_current_buf()
 
@@ -96,9 +83,6 @@ local function create_tvp_panel()
   api.nvim_win_set_option(win_id, "number", false)
   api.nvim_win_set_option(win_id, "relativenumber", false)
   api.nvim_win_set_option(win_id, "cursorline", false)
-
-  -- TODO Maybe possible to add tvp to filteypes for metals to attatch to in
-  -- order to avoid the whole attatched_bufnr hack
   api.nvim_buf_set_option(bufnr, "filetype", "tvp")
   api.nvim_buf_set_option(bufnr, "buftype", "nofile")
 
@@ -109,10 +93,10 @@ local function create_tvp_panel()
 end
 
 local function set_keymaps(bufnr)
-  -- TODO pull all of these from a config
   api.nvim_buf_set_keymap(
     bufnr,
     "n",
+    config.toggle_node_mapping,
     "<CR>",
     [[<cmd>lua require("metals.tvp").toggle_node()<CR>]],
     { nowait = true, silent = true }
@@ -120,7 +104,7 @@ local function set_keymaps(bufnr)
   api.nvim_buf_set_keymap(
     bufnr,
     "n",
-    "r",
+    "config.node_command_mapping",
     [[<cmd>lua require("metals.tvp").node_command()<CR>]],
     { nowait = true, silent = true }
   )
@@ -140,7 +124,8 @@ end
 -- Sends a request to the server to retrive the children of a given node_uri. If
 -- the node_uri is absent we are dealing with the root node
 -- @param view_id (string)
--- @param node_uri(string)
+-- @param node_uri (string)
+-- @param opts (table)
 function Tree:tree_view_children(opts)
   local view_id = opts.view_id
   opts = opts or {}
@@ -148,10 +133,9 @@ function Tree:tree_view_children(opts)
   if opts.parent_uri ~= nil then
     params["nodeUri"] = opts.parent_uri
   end
-  vim.lsp.buf_request(state.attatched_bufnr, "metals/treeViewChildren", params, function(err, _, res)
+  vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewChildren", params, function(err, _, res)
     if err then
       log.error(err)
-      log.error_and_show(err)
       log.error_and_show("Something went wrong while requesting tvp children.")
     else
       local new_nodes = {}
@@ -175,17 +159,37 @@ function Tree:tree_view_children(opts)
       if opts.expand then
         local node = self:find(opts.parent_uri)
         if node and node.collapse_state and node.collapse_state == collapse_state.collapsed then
-          node:expand()
+          node:expand(valid_metals_buffer())
         end
       end
       local additionals = opts.additionals
       if additionals and #additionals > 1 then
         local head = table.remove(additionals, 1)
-        self:tree_view_children({ view_id = view_id, parent_uri = head, additionals = additionals, expand = opts.expand })
+        self:tree_view_children({
+          view_id = view_id,
+          parent_uri = head,
+          additionals = additionals,
+          expand = opts.expand,
+          focus = opts.focus,
+        })
       elseif additionals and #additionals == 1 then
-        self:tree_view_children({ view_id = view_id, parent_uri = additionals[1], expand = opts.expand })
+        self:tree_view_children({
+          view_id = view_id,
+          parent_uri = additionals[1],
+          expand = opts.expand,
+          focus = opts.focus,
+        })
       end
+
       self:reload_and_show()
+      if opts.focus and not opts.additionals then
+        for line, node in pairs(self.lookup) do
+          if node.node_uri == opts.parent_uri then
+            api.nvim_win_set_cursor(self.win_id, { line, 0 })
+            break
+          end
+        end
+      end
     end
   end)
 end
@@ -215,10 +219,9 @@ function Tree:reload_and_show()
     for _, node in pairs(nodes) do
       local sign
       if node.collapse_state == collapse_state.collapsed then
-        -- TODO grab these from a config
-        sign = "▸"
+        sign = config.collapsed_sign
       elseif node.collapse_state == collapse_state.expanded then
-        sign = "▾"
+        sign = config.expanded_sign
       else
         sign = " "
       end
@@ -279,7 +282,7 @@ function Tree:toggle_node()
   local node = self.lookup[lnum]
 
   if node.collapse_state == collapse_state.collapsed then
-    node:expand()
+    node:expand(valid_metals_buffer())
     -- If the node already has children we can assume that request has already
     -- been made and therefore don't send it again, we just reload the UI and
     -- show it.
@@ -289,7 +292,7 @@ function Tree:toggle_node()
       self:tree_view_children({ view_id = node.view_id, parent_uri = node.node_uri })
     end
   elseif node.collapse_state == collapse_state.expanded then
-    node:collapse()
+    node:collapse(valid_metals_buffer())
     self:reload_and_show()
   end
 end
@@ -301,7 +304,7 @@ function Tree:node_command()
   if node_info.command ~= nil then
     -- Jump to the last window so this doesn't open up in the actual tvp panel
     vim.cmd([[wincmd p]])
-    vim.lsp.buf_request(state.attatched_bufnr, "workspace/executeCommand", {
+    vim.lsp.buf_request(valid_metals_buffer(), "workspace/executeCommand", {
       command = node_info.command.command,
       arguments = node_info.command.arguments,
     }, function(err, _, _)
@@ -312,7 +315,6 @@ function Tree:node_command()
   end
 end
 
--- TODO maybe this should be named replace
 function Tree:update(parent_uri, new_nodes)
   local function recurse(node)
     if node.node_uri ~= parent_uri then
@@ -368,9 +370,7 @@ handlers["metals/treeViewDidChange"] = function(_, _, res)
   end
 end
 
-handlers["metals/treeViewParent"] = function(err, _, tree_view_parent_result)
-end
-
+-- NOTE I don't think we actually need this
 local function tree_view_parent()
   vim.lsp.buf_request(0, "metals/treeViewParent", { viewId = metals_packages })
 end
@@ -379,9 +379,7 @@ local function toggle_tree_view()
   if not state.tvp_tree then
     log.info_and_show("Tree view data has not yet been loaded. Wait until indexing finishes.")
   else
-    local bufnr = api.nvim_get_current_buf()
-    -- TODO does that have to keep being set?
-    state.attatched_bufnr = bufnr
+    state.attatched_bufnr = api.nvim_get_current_buf()
     state.tvp_tree:toggle()
   end
 end
@@ -406,7 +404,7 @@ local function reveal_in_tree()
   local params = lsp.util.make_position_params()
   state.attatched_bufnr = api.nvim_get_current_buf()
 
-  vim.lsp.buf_request(0, "metals/treeViewReveal", params, function(err, _, res)
+  vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, _, res)
     if err then
       log.error_and_show("Unable to execute node command.")
     else
@@ -420,11 +418,10 @@ local function reveal_in_tree()
           parent_uri = head,
           additionals = res.uriChain,
           expand = true,
+          focus = true,
         })
-        local total = #state.tvp_tree.lookup
-        P(total)
       else
-        P("idn this shouldn't happen")
+        log.warn_and_show("You recieved a node for a view nvim-metals doesn't support")
       end
     end
   end)
@@ -434,6 +431,7 @@ return {
   handlers = handlers,
   node_command = node_command,
   reveal_in_tree = reveal_in_tree,
+  setup_config = setup_config,
   toggle_tree_view = toggle_tree_view,
   toggle_node = toggle_node,
   debug_tree = function()
