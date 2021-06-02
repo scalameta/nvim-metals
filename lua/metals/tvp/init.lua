@@ -14,7 +14,7 @@ P = function(thing)
   return thing
 end
 
-local defult_config = {
+local default_config = {
   panel_width = 40,
   panel_alignment = "left",
   toggle_node_mapping = "<CR>",
@@ -36,7 +36,7 @@ local state = {
 
 local function setup_config(user_config)
   if config == nil then
-    config = util.check_exists_and_merge(defult_config, user_config or {})
+    config = util.check_exists_and_merge(default_config, user_config or {})
   end
 end
 

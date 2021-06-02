@@ -30,9 +30,9 @@ local function find_metals_buffer()
   end
   return metals_buf
 end
+
 return {
   collapse_state = collapse_state,
   find_metals_buffer = find_metals_buffer,
   metals_packages = metals_packages
 }
-
