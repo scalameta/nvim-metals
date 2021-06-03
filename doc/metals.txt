@@ -802,16 +802,6 @@ The spec for this can be found here:
 
 https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand
 
-                                                        *['textDocument/hover']*
-['textDocument/hover']({err}, {method}, {result})
-                          Used to override the default ["textDocument/hover"]
-                          callback since the default doesn't wrap lines.
-
-                          Parameters:
-                          {err}    Hover error
-                          {method} textDocument/hover
-                          {result} hover results from the server
-
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
 
