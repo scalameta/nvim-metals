@@ -14,9 +14,10 @@ CONTENTS                                                           *nvim-metals*
     4. Options............... |metals-options|
     5. Commands.............. |metals-commands|
     6. Lua API............... |metals-lua-api|
-    7. Custom Handlers....... |metals-custom-handlers|
-    8. Functions............. |metals-functions|
-    9. Integrations...........|metals-integrations|
+    7. TVP Module............ |metals-tvp-module|
+    8. Custom Handlers....... |metals-custom-handlers|
+    9. Functions............. |metals-functions|
+    10. Integrations......... |metals-integrations|
 
 ================================================================================
 INTRODUCTION                                                *metals-introdction*
@@ -33,8 +34,8 @@ the correct `init_options`.
 PREREQUISITES                                             *metals-prerequisites*
 
 - Nvim v0.5.x The later the snapshot the better unitl v0.5.x stable is
-  released. _NOTE_: Make sure the version you're using includes commit
-  #6e660d4.
+  released. If something doesn't quite seem to be working, before doing
+  anything else, update to the latest NeoVim.
 - *DO NOT* use this plugin for Metals and also `nvim/nvim-lspconfig` for
   Metals.  If you've used `nvim-nvim-lspconfig` before with Metals, make sure
   to remove metals setup for it as it and this plugin will conflict.  NOTE:
@@ -42,7 +43,7 @@ PREREQUISITES                                             *metals-prerequisites*
   just let nvim-metals handle Metals.
 - https://get-coursier.io/ - Metals uses coursier to manage the installation
   and updating of Metals.
-- Make sure you have your mappings for various LSP functionality configure.
+- Make sure you have your mappings for various LSP functionality configured.
   Neovim provides functions for things like goto-definition, find references,
   etc, but they need to be mapped.
 
@@ -116,7 +117,7 @@ of the `nvim-metals.log` file.
 SETTINGS                                                       *metals-settings*
 
 The following settings are able to be passed along with the config table to
-|initialize_or_attatch()|. The keys are checked to ensure that you don't pass
+|initialize_or_attach()|. The keys are checked to ensure that you don't pass
 in a setting that is not a valid Metals setting. You can set these like the
 example below shows: >
 
@@ -530,7 +531,7 @@ MetalsStartServer           Start Metals server. Must be in a Scala or sbt file
 ================================================================================
 LUA API                                                         *metals-lua-api*
 
-The following Lua module functions are exposed for you to use in via mappings.
+The following Lua module functions are exposed for you to use via mappings.
 In order to use any of these you'd need to require the module. As an example,
 if you wanted to bind the |buid_import()| to a mapping, you could do the
 following. >
@@ -708,6 +709,38 @@ start_server()           Start Metals server. Must be in a Scala or sbt file in
                                                              *worksheet_hover()*
 worksheet_hover()        Use to expand the decoration to show the full hover
                          message that was returned from the decoration.
+
+================================================================================
+METALS TVP MODULE                                            *metals-tvp-module*
+
+nvim-metals implements part of the Metals Tree View Protocol:
+  https://scalameta.org/metals/docs/integrations/tree-view-protocol.html
+
+The following configuration values are available to be passed into
+|initialize_or_attach| under the `tvp` key. >
+
+  -- Defaults
+  Metals_config.tvp = {
+    panel_width = 40,
+    panel_alignment = "left",
+    toggle_node_mapping = "<CR>",
+    node_command_mapping = "r",
+    collapsed_sign = "▸",
+    expanded_sign = "▾",
+  }
+<
+
+The two main functions that you'll want to make sure to have mapped are
+|toggle_tree_view| and |reveal_in_tree|. The full api is below:
+
+                                                              *reveal_in_tree()*
+reveal_in_tree()             When in your source code this will locate the
+                             node of the symbol that you are on, open the tree
+                             view panel, and jump to it.
+
+                                                            *toggle_tree_view()*
+toggle_tree_view()           This will toggle your tree view panel open and
+                             closed.
 
 ================================================================================
 CUSTOM HANDLERS                                         *metals-custom-handlers*

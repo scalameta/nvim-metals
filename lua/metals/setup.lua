@@ -3,6 +3,7 @@ local lsp = vim.lsp
 local fn = vim.fn
 local uv = vim.loop
 local default_handlers = require("metals.handlers")
+local tvp = require("metals.tvp")
 local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
@@ -145,7 +146,7 @@ end
 -- A bare config to use to be passed into initialize_or_attach.
 -- This is meant only to be used when a user is editing anything in the config
 -- just to ensure they don' thave to do a couple manual initialization of tables
-M.bare_config = { handlers = {}, init_options = {}, settings = {} }
+M.bare_config = { handlers = {}, init_options = {}, settings = {}, tvp = {} }
 
 local metals_init_options = {
   compilerOptions = { snippetAutoIndent = false },
@@ -157,6 +158,7 @@ local metals_init_options = {
   inputBoxProvider = true,
   quickPickProvider = true,
   statusBarProvider = "show-message",
+  treeViewProvider = true,
 }
 
 -- Currently available settings.
@@ -207,13 +209,10 @@ local function add_commands()
 end
 
 --- The main entrypoint into the plugin.
---- @param config table this config is very similiar to the config that is directly
----   passed into the `lsp.start_client(config)` with a couple exceptions.
----   1. This config doesn't make you preface the settings with `metals`. Instead
----      we just allow the user to pass in the setting and we preface the entire
----      thing.
----   2. This config has `root_patters` which are used to help determine the root_path.
 M.initialize_or_attach = function(config)
+  local tvp_config = vim.deepcopy(config.tvp)
+  tvp.setup_config(tvp_config)
+  config.tvp = nil
   M.config_cache = config
   add_commands()
 
@@ -275,7 +274,11 @@ M.initialize_or_attach = function(config)
   config.root_patterns = config.root_patterns or { "build.sbt", "build.sc", "build.gradle", "pom.xml", ".git" }
 
   config.root_dir = util.find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
-  config.handlers = util.check_exists_and_merge(default_handlers, config.handlers)
+
+  local base_handlers = vim.tbl_extend("error", default_handlers, tvp.handlers)
+
+  config.handlers = util.check_exists_and_merge(base_handlers, config.handlers)
+
   config.capabilities = util.check_exists_and_merge(lsp.protocol.make_client_capabilities(), config.capabilities)
 
   if not config.init_options then

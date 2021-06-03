@@ -163,6 +163,8 @@ end
 -- @param userTable The user defined table to check if exists and then merge
 -- @return a new table that is either the default or merged with the user one.
 M.check_exists_and_merge = function(defaultTable, userTable)
+  -- TODO should we add another check in here to ensure that a key that a user
+  -- is trying to set actually exists in the default table?
   if not userTable then
     return defaultTable
   else
@@ -204,6 +206,13 @@ M.split_on = function(s, delimiter)
   end
   table.insert(result, string.sub(s, from))
   return result
+end
+
+M.reverse = function(t)
+  for i = 1, math.floor(#t / 2) do
+    local j = #t - i + 1
+    t[i], t[j] = t[j], t[i]
+  end
 end
 
 return M
