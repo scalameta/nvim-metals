@@ -164,7 +164,7 @@ end
 -- @return a new table that is either the default or merged with the user one.
 M.check_exists_and_merge = function(defaultTable, userTable)
   -- TODO should we add another check in here to ensure that a key that a user
-  -- is trying to set actually exists int he default table?
+  -- is trying to set actually exists in the default table?
   if not userTable then
     return defaultTable
   else

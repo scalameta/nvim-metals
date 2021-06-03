@@ -146,7 +146,7 @@ end
 -- A bare config to use to be passed into initialize_or_attach.
 -- This is meant only to be used when a user is editing anything in the config
 -- just to ensure they don' thave to do a couple manual initialization of tables
-M.bare_config = { handlers = {}, init_options = {}, settings = {} }
+M.bare_config = { handlers = {}, init_options = {}, settings = {}, tvp = {} }
 
 local metals_init_options = {
   compilerOptions = { snippetAutoIndent = false },
