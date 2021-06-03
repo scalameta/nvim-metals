@@ -263,7 +263,6 @@ M.start_server = function()
   setup.initialize_or_attach(setup.config_cache)
 end
 
-
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.bare_config = setup.bare_config

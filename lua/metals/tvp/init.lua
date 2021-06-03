@@ -9,11 +9,6 @@ local util = require("metals.util")
 local collapse_state = tvp_util.collapse_state
 local metals_packages = tvp_util.metals_packages
 
-P = function(thing)
-  print(vim.inspect(thing))
-  return thing
-end
-
 local default_config = {
   panel_width = 40,
   panel_alignment = "left",
@@ -34,6 +29,8 @@ local state = {
   tvp_tree = nil,
 }
 
+-- Used to setup the TVP panel config.
+-- @param user_config (table) Pulled from the tvp key of the table passed into `initialize_or_attach`.
 local function setup_config(user_config)
   if config == nil then
     config = util.check_exists_and_merge(default_config, user_config or {})
@@ -97,14 +94,13 @@ local function set_keymaps(bufnr)
     bufnr,
     "n",
     config.toggle_node_mapping,
-    "<CR>",
     [[<cmd>lua require("metals.tvp").toggle_node()<CR>]],
     { nowait = true, silent = true }
   )
   api.nvim_buf_set_keymap(
     bufnr,
     "n",
-    "config.node_command_mapping",
+    config.node_command_mapping,
     [[<cmd>lua require("metals.tvp").node_command()<CR>]],
     { nowait = true, silent = true }
   )
@@ -125,18 +121,23 @@ end
 -- the node_uri is absent we are dealing with the root node
 -- @param view_id (string)
 -- @param node_uri (string)
--- @param opts (table)
+-- @param opts (table) The opts table has the following keys:
+--  additionals (table)
+--  expland (boolean)
+--  focus (boolean)
+--  parent_uri (string)
+--  view_id (string)
 function Tree:tree_view_children(opts)
   local view_id = opts.view_id
   opts = opts or {}
-  local params = { viewId = view_id }
+  local tree_view_children_params = { viewId = view_id }
   if opts.parent_uri ~= nil then
-    params["nodeUri"] = opts.parent_uri
+    tree_view_children_params["nodeUri"] = opts.parent_uri
   end
-  vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewChildren", params, function(err, _, res)
+  vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewChildren", tree_view_children_params, function(err, _, res)
     if err then
       log.error(err)
-      log.error_and_show("Something went wrong while requesting tvp children.")
+      log.error_and_show("Something went wrong while requesting tvp children. More info in logs.")
     else
       local new_nodes = {}
       for _, node in pairs(res.nodes) do
@@ -147,9 +148,8 @@ function Tree:tree_view_children(opts)
       else
         self:update(opts.parent_uri, new_nodes)
       end
-      -- TODO can we do this in a way we don't have to iterate over the nodes twice?
       -- NOTE: Not ideal to have to iterate over these again, but we want the
-      -- update to happene before we call this or else we'll have issues adding the
+      -- update to happen before we call this or else we'll have issues adding the
       -- children to a node that doesn't yet exist.
       for _, node in pairs(new_nodes) do
         if node.collapse_state == collapse_state.expanded then
@@ -163,22 +163,18 @@ function Tree:tree_view_children(opts)
         end
       end
       local additionals = opts.additionals
-      if additionals and #additionals > 1 then
+      if additionals then
         local head = table.remove(additionals, 1)
-        self:tree_view_children({
+        local additional_params = {
           view_id = view_id,
           parent_uri = head,
-          additionals = additionals,
           expand = opts.expand,
           focus = opts.focus,
-        })
-      elseif additionals and #additionals == 1 then
-        self:tree_view_children({
-          view_id = view_id,
-          parent_uri = additionals[1],
-          expand = opts.expand,
-          focus = opts.focus,
-        })
+        }
+        if #additionals > 1 then
+          additional_params.additionals = additionals
+        end
+        self:tree_view_children(additional_params)
       end
 
       self:reload_and_show()
@@ -199,7 +195,7 @@ function Tree:cache()
 end
 
 function Tree:set_lines(start_idx, end_idx, lines)
-  -- NOTE We are replacing the entire buffer with set_lines. If performance
+  -- NOTE: We are replacing the entire buffer with set_lines. If performance
   -- every becomes an issue it may be better to _only_ update the nodes that
   -- have changed and their children. For now this seems fast enough to just
   -- not care
@@ -370,11 +366,6 @@ handlers["metals/treeViewDidChange"] = function(_, _, res)
   end
 end
 
--- NOTE I don't think we actually need this
-local function tree_view_parent()
-  vim.lsp.buf_request(0, "metals/treeViewParent", { viewId = metals_packages })
-end
-
 local function toggle_tree_view()
   if not state.tvp_tree then
     log.info_and_show("Tree view data has not yet been loaded. Wait until indexing finishes.")
@@ -392,13 +383,6 @@ local function node_command()
   state.tvp_tree:node_command()
 end
 
-local function reverse(t)
-  for i = 1, math.floor(#t / 2) do
-    local j = #t - i + 1
-    t[i], t[j] = t[j], t[i]
-  end
-end
-
 local function reveal_in_tree()
   state.tvp_tree:open()
   local params = lsp.util.make_position_params()
@@ -409,7 +393,7 @@ local function reveal_in_tree()
       log.error_and_show("Unable to execute node command.")
     else
       if res and res.viewId == metals_packages then
-        reverse(res.uriChain)
+        util.reverse(res.uriChain)
 
         local head = table.remove(res.uriChain, 1)
 
@@ -432,9 +416,6 @@ return {
   node_command = node_command,
   reveal_in_tree = reveal_in_tree,
   setup_config = setup_config,
-  toggle_tree_view = toggle_tree_view,
   toggle_node = toggle_node,
-  debug_tree = function()
-    P(state)
-  end,
+  toggle_tree_view = toggle_tree_view,
 }

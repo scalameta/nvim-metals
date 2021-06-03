@@ -208,4 +208,11 @@ M.split_on = function(s, delimiter)
   return result
 end
 
+M.reverse = function(t)
+  for i = 1, math.floor(#t / 2) do
+    local j = #t - i + 1
+    t[i], t[j] = t[j], t[i]
+  end
+end
+
 return M

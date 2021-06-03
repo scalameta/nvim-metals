@@ -34,5 +34,5 @@ end
 return {
   collapse_state = collapse_state,
   find_metals_buffer = find_metals_buffer,
-  metals_packages = metals_packages
+  metals_packages = metals_packages,
 }
