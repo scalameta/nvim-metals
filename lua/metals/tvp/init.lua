@@ -366,13 +366,19 @@ handlers["metals/treeViewDidChange"] = function(_, _, res)
   end
 end
 
-local function toggle_tree_view()
+local function ensure_tree_exists_then(fn)
   if not state.tvp_tree then
     log.info_and_show("Tree view data has not yet been loaded. Wait until indexing finishes.")
   else
     state.attatched_bufnr = api.nvim_get_current_buf()
-    state.tvp_tree:toggle()
+    fn()
   end
+end
+
+local function toggle_tree_view()
+  ensure_tree_exists_then(function()
+    state.tvp_tree:toggle()
+  end)
 end
 
 local function toggle_node()
@@ -384,30 +390,31 @@ local function node_command()
 end
 
 local function reveal_in_tree()
-  state.tvp_tree:open()
-  local params = lsp.util.make_position_params()
-  state.attatched_bufnr = api.nvim_get_current_buf()
+  ensure_tree_exists_then(function()
+    state.tvp_tree:open()
+    local params = lsp.util.make_position_params()
 
-  vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, _, res)
-    if err then
-      log.error_and_show("Unable to execute node command.")
-    else
-      if res and res.viewId == metals_packages then
-        util.reverse(res.uriChain)
-
-        local head = table.remove(res.uriChain, 1)
-
-        state.tvp_tree:tree_view_children({
-          view_id = res.viewId,
-          parent_uri = head,
-          additionals = res.uriChain,
-          expand = true,
-          focus = true,
-        })
+    vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, _, res)
+      if err then
+        log.error_and_show("Unable to execute node command.")
       else
-        log.warn_and_show("You recieved a node for a view nvim-metals doesn't support")
+        if res and res.viewId == metals_packages then
+          util.reverse(res.uriChain)
+
+          local head = table.remove(res.uriChain, 1)
+
+          state.tvp_tree:tree_view_children({
+            view_id = res.viewId,
+            parent_uri = head,
+            additionals = res.uriChain,
+            expand = true,
+            focus = true,
+          })
+        else
+          log.warn_and_show("You recieved a node for a view nvim-metals doesn't support")
+        end
       end
-    end
+    end)
   end)
 end
 
