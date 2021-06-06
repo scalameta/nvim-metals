@@ -81,3 +81,4 @@ various settings and options
 To see the full details on the available configurations, checkout out `:help
 metals-integrations`. The currently available integrations are:
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap)
+- [Telescope](https://github.com/nvim-telescope/telescope.nvim)

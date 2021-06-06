@@ -910,4 +910,28 @@ types. >
   }
 <
 
-vim:tw=80:ts=2:ft=help:
+                                                              *metals-telescope*
+
+Metals provides a custom picker from
+https://github.com/nvim-telescope/telescope.nvim which allows you to easily
+choose any of the |metals-commands|. You can trigger the picker by using a
+mapping similiar to this: >
+
+  map("n", "<leader>mc", [[<cmd>lua require("telescope").extensions.metals.commands()<CR>]])
+<
+
+If this is the only way you'll trigger the picker, then there is no need to
+explicitly load it in your telescope config. However, if you want the module
+to be autocompleted when trying to trigger it via: >
+
+  :Telescope metals commands
+
+<
+
+Then you'll want to explicity enable it. NOTE that by doing this it will no
+longer be lazy loaded. >
+
+  require('telescope').extensions.metals.commands()
+
+<
+

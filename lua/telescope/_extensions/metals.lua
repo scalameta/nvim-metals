@@ -7,7 +7,8 @@ local commands_table = require("metals.commands").commands_table
 local has_telescope, telescope = pcall(require, "telescope")
 
 if not has_telescope then
-  log.error_and_show("telescope must be installed to use this functionality (https://github.com/nvim-telescope/telescope.nvim)")
+  local msg = "Telescope must be installed to use this functionality (https://github.com/nvim-telescope/telescope.nvim)"
+  log.error_and_show(msg)
 end
 
 local actions = require("telescope.actions")
@@ -69,7 +70,7 @@ local function get_max_width(commands)
   return max
 end
 
-local function telescope_commands(opts)
+local function commands(opts)
   opts = opts or themes.get_dropdown({
     previewer = false,
     results_height = #commands_table,
@@ -97,6 +98,6 @@ end
 
 return telescope.register_extension({
   exports = {
-    commands = telescope_commands,
+    commands = commands,
   },
 })
