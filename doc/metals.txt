@@ -383,8 +383,8 @@ handle it.
 COMMANDS                                                       *metals-commands*
 
 The following commands are provided by nvim-metals:
-  * |MetalsAmmoniteEnd|
   * |MetalsAmmoniteStart|
+  * |MetalsAmmoniteStop|
   * |MetalsBspSwitch|
   * |MetalsBuildConnect|
   * |MetalsBuildDisconnect|
@@ -408,11 +408,11 @@ The following commands are provided by nvim-metals:
   * |MetalsSourcesScan|
   * |MetalsStartServer|
 
-                                                             *MetalsAmmoniteEnd*
-MetalsAmmoniteEnd            End the Ammonite BSP Server.
-
                                                            *MetalsAmmoniteStart*
 MetalsAmmoniteStart          Start the Ammonite BSP Server.
+
+                                                            *MetalsAmmoniteStop*
+MetalsAmmoniteStop            Stop the Ammonite BSP Server.
 
                                                                *MetalsBspSwitch*
 MetalsBspSwitch              Prompts the user to select a new build server to
@@ -692,6 +692,10 @@ open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
                                                             *organize_imports()*
 organize_imports()       Use a code action request to get edits from Metals to
                          organize imports for the current buffer.
+
+                                                             *quick_worksheet()*
+quick_worksheet()        Create a quick worksheet in your current dir with the
+                         name of your current dir.
 
                                                                 *reset_choice()*
 reset_choice()           Use to execute a |metals.reset-choice| command.

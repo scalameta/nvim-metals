@@ -215,4 +215,18 @@ M.reverse = function(t)
   end
 end
 
+M.title_case = function(first, rest)
+  return first:upper() .. rest:lower()
+end
+
+M.camel_to_pascal = function(s)
+  local parts = M.split_on(s, "_")
+  local pascal_string = ""
+  for _, part in pairs(parts) do
+    local capitalized_part = string.gsub(part, "(%a)([%w_']*)", M.title_case)
+    pascal_string = pascal_string .. capitalized_part
+  end
+  return pascal_string
+end
+
 return M
