@@ -533,10 +533,10 @@ LUA API                                                         *metals-lua-api*
 
 The following Lua module functions are exposed for you to use via mappings.
 In order to use any of these you'd need to require the module. As an example,
-if you wanted to bind the |buid_import()| to a mapping, you could do the
-following. >
+if you wanted to bind the |buid_import()| to a mapping, the right hand side of
+the mapping would be: >
 
-  nnoremap <silent> <leader>bi  <cmd>lua require'metals'.build_import()<CR>
+    <cmd>lua require'metals'.build_import()<CR>
 <
 
 Note: Most of these that are just executing a command have commands that you
@@ -914,10 +914,10 @@ types. >
 
 Metals provides a custom picker from
 https://github.com/nvim-telescope/telescope.nvim which allows you to easily
-choose any of the |metals-commands|. You can trigger the picker by using a
-mapping similiar to this: >
+choose any of the |metals-commands|. You can trigger the picker by using the
+following function in a mapping: >
 
-  map("n", "<leader>mc", [[<cmd>lua require("telescope").extensions.metals.commands()<CR>]])
+  lua require("telescope").extensions.metals.commands()
 <
 
 If this is the only way you'll trigger the picker, then there is no need to
@@ -935,3 +935,4 @@ longer be lazy loaded. >
 
 <
 
+vim:tw=80:ts=2:ft=help:
