@@ -25,12 +25,12 @@ local function execute_command(command_params, callback)
   end)
 end
 
-M.ammonite_end = function()
-  execute_command({ command = "metals.ammonite-end" })
-end
-
 M.ammonite_start = function()
   execute_command({ command = "metals.ammonite-start" })
+end
+
+M.ammonite_stop = function()
+  execute_command({ command = "metals.ammonite-stop" })
 end
 
 M.bsp_switch = function()
@@ -194,6 +194,12 @@ end
 
 M.new_scala_project = function()
   execute_command({ command = "metals.new-scala-project" })
+end
+
+M.quick_worksheet = function()
+  local dir = "file://" .. vim.fn.expand("%:p:h")
+  local name = vim.fn.expand("%:p:h:t")
+  M.new_scala_file(dir, name, "worksheet")
 end
 
 M.sources_scan = function()

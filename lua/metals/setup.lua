@@ -2,6 +2,8 @@ local api = vim.api
 local lsp = vim.lsp
 local fn = vim.fn
 local uv = vim.loop
+
+local commands_table = require("metals.commands").commands_table
 local default_handlers = require("metals.handlers")
 local tvp = require("metals.tvp")
 local log = require("metals.log")
@@ -182,30 +184,10 @@ local metals_settings = {
 }
 
 local function add_commands()
-  vim.cmd([[command! MetalsAmmoniteEnd lua require'metals'.ammonite_end()]])
-  vim.cmd([[command! MetalsAmmoniteStart lua require'metals'.ammonite_start()]])
-  vim.cmd([[command! MetalsBspSwitch lua require'metals'.bsp_switch()]])
-  vim.cmd([[command! MetalsBuildConnect lua require'metals'.build_connect()]])
-  vim.cmd([[command! MetalsBuildDisconnect lua require'metals'.build_disconnect()]])
-  vim.cmd([[command! MetalsBuildImport lua require'metals'.build_import()]])
-  vim.cmd([[command! MetalsBuildRestart lua require'metals'.build_restart()]])
-  vim.cmd([[command! MetalsCompileCancel lua require'metals'.compile_cancel()]])
-  vim.cmd([[command! MetalsCompileCascade lua require'metals'.compile_cascade()]])
-  vim.cmd([[command! MetalsCompileClean lua require'metals'.compile_clean()]])
-  vim.cmd([[command! MetalsCopyWorksheetOutput lua require'metals'.copy_worksheet_output()]])
-  vim.cmd([[command! MetalsDoctor lua require'metals'.doctor_run()]])
-  vim.cmd([[command! MetalsGenerateBspConfig lua require'metals'.generate_bsp_config()]])
-  vim.cmd([[command! MetalsInfo lua require'metals'.info()]])
-  vim.cmd([[command! MetalsInstall lua require'metals'.install_or_update()]])
-  vim.cmd([[command! MetalsLogsToggle lua require'metals'.logs_toggle()]])
-  vim.cmd([[command! MetalsNewScalaFile lua require'metals'.new_scala_file()]])
-  vim.cmd([[command! MetalsNewScalaProject lua require'metals'.new_scala_project()]])
-  vim.cmd([[command! MetalsOrganizeImports lua require'metals'.organize_imports()]])
-  vim.cmd([[command! MetalsQuickWorksheet lua require'metals'.new_scala_file('file://' .. vim.fn.expand("%:p:h"), vim.fn.expand("%:p:h:t"), 'worksheet')]]) -- luacheck: ignore 631
-  vim.cmd([[command! MetalsResetChoice lua require'metals'.reset_choice()]])
-  vim.cmd([[command! MetalsRestartServer lua require'metals'.restart_server()]])
-  vim.cmd([[command! MetalsSourcesScan lua require'metals'.sources_scan()]])
-  vim.cmd([[command! MetalsStartServer lua require'metals'.start_server()]])
+  for _, cmd in pairs(commands_table) do
+    local vim_cmd = util.camel_to_pascal(cmd.id)
+    vim.cmd(string.format([[command! Metals%s lua require'metals'.%s()]], vim_cmd, cmd.id))
+  end
 end
 
 --- The main entrypoint into the plugin.
