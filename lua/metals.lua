@@ -273,7 +273,8 @@ end
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
-M.install_or_update = setup.install_or_update
+M.install = setup.install_or_update
+M.update = setup.install_or_update
 M.worksheet_hover = decoration.worksheet_hover
 M.open_all_diagnostics = diagnostic.open_all_diagnostics
 M.setup_dap = function()
