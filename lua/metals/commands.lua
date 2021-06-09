@@ -76,9 +76,14 @@ local commands_table = {
     hint = "Open Metals info window.",
   },
   {
-    id = "install_or_update",
-    label = "Install",
-    hint = "Install or update to the latest Metals.",
+    id = "install",
+    label = "Install Metals",
+    hint = "Install Metals.",
+  },
+  {
+    id = "update",
+    label = "Update Metals",
+    hint = "Update to the latest Metals.",
   },
   {
     id = "logs_toggle",

@@ -105,8 +105,7 @@ following: >
 
 If no version is set, it defaults to the latest stable release. If a new
 release comes out or you change your |g:metals_server_version|, you can
-simply issue another |MetalsInstall| command which also serves as an update
-command.
+simply issue a |MetalsUpdate| command.
 
 If you believe that you have everything configured correctly, but do not see
 the message about installing Metals, ensure that you have removed `F` from
@@ -341,9 +340,9 @@ Type: string ~
 Default: 'latest.stable' ~
 
 Targeted server version that you'd like to install. Note that if this is
-changed you need to do a |:MetalsInstall| again to ensure that it is
-installed. If you need to check what version you're currently using, you can
-use the |MetalsInfo| command.
+changed you need to do a |:MetalsInstall| or |:MetalsUpdate| again to ensure
+that it is installed. If you need to check what version you're currently
+using, you can use the |MetalsInfo| command.
 
                                                      *g:metals_decoration_color*
 Type: string ~
@@ -407,6 +406,7 @@ The following commands are provided by nvim-metals:
   * |MetalsRestartServer|
   * |MetalsSourcesScan|
   * |MetalsStartServer|
+  * |MetalsUpdate|
 
                                                            *MetalsAmmoniteStart*
 MetalsAmmoniteStart          Start the Ammonite BSP Server.
@@ -467,7 +467,8 @@ MetalsGenerateBspConfig      Checks to see if your build tool can serve as a BSP
                              will attempt to auto-connect to it.
 
                                                                  *MetalsInstall*
-MetalsInstall                Install or update Metals.
+MetalsInstall                Install Metals. NOTE that behind the scenes this
+                             calls the exact same function as |MetalsUpdate|.
 
                                                                     *MetalsInfo*
 MetalsInfo                   Give info about the currently installed version
@@ -527,6 +528,13 @@ MetalsSourcesScan            Scan all workspaces sources.
                                                              *MetalsStartServer*
 MetalsStartServer           Start Metals server. Must be in a Scala or sbt file
                             in a workspace where Metals is not yet started.
+
+                                                                  *MetalsUpdate*
+MetalsUpdate                Update to the latest stable version of Metals or
+                            change versions to the new version you added in
+                            |metals_server_version|. NOTE
+                            that behind the scenes this calls the same function
+                            as |MetalsInstall|.
 
 ================================================================================
 LUA API                                                         *metals-lua-api*
