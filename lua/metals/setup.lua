@@ -181,6 +181,7 @@ local metals_settings = {
   "showImplicitArguments",
   "showImplicitConversionsAndClasses",
   "showInferredType",
+  "superMethodLensesEnabled",
 }
 
 local function add_commands()
@@ -323,6 +324,7 @@ M.auto_commands = function()
   api.nvim_command([[autocmd BufEnter <buffer> lua require'metals'.did_focus()]])
   api.nvim_command([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
   api.nvim_command([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
+  api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()]])
   api.nvim_command([[augroup end]])
 end
 

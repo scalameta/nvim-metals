@@ -25,6 +25,15 @@ local function execute_command(command_params, callback)
   end)
 end
 
+M.analyze_stacktrace = function()
+  local trace = vim.fn.getreg("*")
+  if trace:len() > 0 then
+    execute_command({ command = "metals.analyze-stacktrace", arguments = { trace } })
+  else
+    log.warn_and_show("No text found in your register.")
+  end
+end
+
 M.ammonite_start = function()
   execute_command({ command = "metals.ammonite-start" })
 end
