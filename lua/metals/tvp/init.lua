@@ -67,10 +67,9 @@ local function create_tvp_panel()
   elseif config.panel_alignment == "left" then
     alignment = "topleft"
   else
-    log.warn_and_show(string.format(
-      "%s is an invalid option for panel_alignment. Must choose left or right.",
-      config.panel_alignment
-    ))
+    log.warn_and_show(
+      string.format("%s is an invalid option for panel_alignment. Must choose left or right.", config.panel_alignment)
+    )
   end
   vim.cmd(string.format("silent %s vertical %d new [tvp]", alignment, config.panel_width))
   local win_id = api.nvim_get_current_win()
