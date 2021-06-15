@@ -6,11 +6,6 @@
 -- issue we wait.
 local commands_table = {
   {
-    id = "analyze_stacktrace",
-    label = "Analyze Stacktrace",
-    hint = "Analyze stacktrace frop clipboard.",
-  },
-  {
     id = "ammonite_start",
     label = "Ammonite Start",
     hint = "Start the Ammonite build server.",
@@ -19,6 +14,11 @@ local commands_table = {
     id = "ammonite_stop",
     label = "Ammonite Stop",
     hint = "Stop the Ammonite build server.",
+  },
+  {
+    id = "analyze_stacktrace",
+    label = "Analyze Stacktrace",
+    hint = "Analyze stacktrace frop clipboard.",
   },
   {
     id = "bsp_switch",
