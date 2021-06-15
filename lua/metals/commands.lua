@@ -16,6 +16,11 @@ local commands_table = {
     hint = "Stop the Ammonite build server.",
   },
   {
+    id = "analyze_stacktrace",
+    label = "Analyze Stacktrace",
+    hint = "Analyze stacktrace frop clipboard.",
+  },
+  {
     id = "bsp_switch",
     label = "Switch Build Server",
     hint = "Switch to another available build server.",
