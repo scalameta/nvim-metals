@@ -49,6 +49,14 @@ local function valid_metals_buffer()
   end
 end
 
+local function tvp_panel_is_open(win_id)
+  if win_id == nil or not api.nvim_win_is_valid(win_id) then
+    return false
+  else
+    return true
+  end
+end
+
 -- Notify the server that the visiblity of a specific viewId has changed
 -- @param view_id (string) the view_id that has changed visiblity
 -- @param visible (boolean)
@@ -265,7 +273,7 @@ function Tree:close()
 end
 
 function Tree:toggle()
-  if self.win_id == nil or not api.nvim_win_is_valid(self.win_id) then
+  if not tvp_panel_is_open(self.win_id) then
     self:open()
   else
     self:close()
@@ -367,7 +375,7 @@ end
 
 local function ensure_tree_exists_then(fn)
   if not state.tvp_tree then
-    log.info_and_show("Tree view data has not yet been loaded. Wait until indexing finishes.")
+    log.warn_and_show("Tree view data has not yet been loaded. Wait until indexing finishes.")
   else
     state.attatched_bufnr = api.nvim_get_current_buf()
     fn()
@@ -390,16 +398,21 @@ end
 
 local function reveal_in_tree()
   ensure_tree_exists_then(function()
-    state.tvp_tree:open()
+    if not tvp_panel_is_open(state.tvp_tree.win_id) then
+      state.tvp_tree:open()
+    end
     local params = lsp.util.make_position_params()
 
-    vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, _, res)
+    vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, method, res)
       if err then
-        log.error_and_show("Unable to execute node command.")
+        log.error_and_show(string.format("Unable to execute command: %s.", method))
       else
         if res and res.viewId == metals_packages then
-          util.reverse(res.uriChain)
+          if api.nvim_get_current_win() ~= state.tvp_tree.win_id then
+            vim.fn.win_gotoid(state.tvp_tree.win_id)
+          end
 
+          util.reverse(res.uriChain)
           local head = table.remove(res.uriChain, 1)
 
           state.tvp_tree:tree_view_children({
