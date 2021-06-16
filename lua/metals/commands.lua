@@ -135,6 +135,11 @@ local commands_table = {
     label = "Start Server",
     hint = "Start Metals (only useful if you have it disabled by default).",
   },
+  {
+    id = "super_method_hierarchy",
+    label = "Super Method Hierarchy",
+    hint = "Calculate inheritance hierarchy.",
+  },
 }
 
 return {

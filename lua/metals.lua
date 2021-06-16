@@ -278,6 +278,15 @@ M.start_server = function()
   setup.initialize_or_attach(setup.config_cache)
 end
 
+M.super_method_hierarchy = function()
+  local uri = vim.uri_from_bufnr(0)
+  local text_doc_position = lsp.util.make_position_params()
+  execute_command({
+    command = "metals.super-method-hierarchy",
+    arguments = { { document = uri, position = text_doc_position.position } },
+  })
+end
+
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.bare_config = setup.bare_config
