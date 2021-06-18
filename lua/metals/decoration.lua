@@ -29,7 +29,7 @@ M.worksheet_hover = function()
     return
   end
 
-  local bufnr, winnr = lsp.util.fancy_floating_markdown(hover_message, { pad_left = 1, pad_right = 1 })
+  local bufnr, winnr = lsp.util.open_floating_preview(hover_message, "markdown", { pad_left = 1, pad_right = 1 })
 
   lsp.util.close_preview_autocmd({ "CursorMoved", "BufHidden", "InsertCharPre" }, winnr)
   ui.wrap_hover(bufnr, winnr)
