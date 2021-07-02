@@ -73,7 +73,6 @@ end
 local function commands(opts)
   opts = opts or themes.get_dropdown({
     previewer = false,
-    results_height = #commands_table,
   })
 
   pickers.new(opts, {
