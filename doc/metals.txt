@@ -20,7 +20,7 @@ CONTENTS                                                           *nvim-metals*
     10. Integrations......... |metals-integrations|
 
 ================================================================================
-INTRODUCTION                                                *metals-introdction*
+INTRODUCTION                                                *metals-introduction*
 
 nvim-metals is a Lua plugin built to provide a better experience while using
 Metals, the Scala Language Server, with Neovim's built-in LSP support. This
