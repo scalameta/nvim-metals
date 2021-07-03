@@ -3,7 +3,7 @@
 # nvim-metals
 
 nvim-metals is a Lua plugin built to provide a better experience while using
-Metals, the Scala Language Server, with Neovim's built-in [LSP
+Metals, the Scala Language Server, with NeoVim's built-in [LSP
 support](https://neovim.io/doc/user/lsp.html). This plugin provides the
 necessary commands you'll need to develop with nvim and Metals. This extension
 also implements many of the custom Metals LSP extensions that will give you a
@@ -11,7 +11,8 @@ much richer experience than just using Metals with the default
 [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) setup, as well as
 automatically setting all of the correct `init_options`, and offering some
 integrations with other projects such as
-[nvim-dap](https://github.com/mfussenegger/nvim-dap).
+[nvim-dap](https://github.com/mfussenegger/nvim-dap) and
+[Telescope](https://github.com/nvim-telescope/telescope.nvim).
 
 <p align="center">
     <a href="https://gitter.im/scalameta/metals-vim">
@@ -24,15 +25,8 @@ integrations with other projects such as
 
 ## Prerequisites
 
-- Before you get started you need to ensure that you have the nightly/development
-    build of Neovim. LSP support hasn't landed in stable yet. You can find
-    instructions for how to do this for your OS
-    [here](https://github.com/neovim/neovim/wiki/Installing-Neovim). It's best to
-    re-build often as LSP support is changing daily. The easiest way to ensure
-    you're on nightly is to to do a `nvim --version`. If you see anything `v0.4.x`
-    then it didn't work. You're looking for `v0.5.x`. _NOTE_: If you hit on something
-    that doesn't work, ensure you're on the latest nvim nightly version as there
-    is no compatibility guarantees until 0.5.0 releases.
+- Before you get started you need to ensure that you are using the latest stable
+    version of nvim, v.0.5.x.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F` _NOTE_: Without doing this,
@@ -40,8 +34,8 @@ integrations with other projects such as
     and since we heavily rely on this, this _must_ be set.
 - Ensure that you have mappings created for functionality that you desire. By
     default methods for things like goto definition, find references, etc are
-    there, but not automatically mapped. You can find both minimal mixed
-    Vimscript/Lua and pure Lua example configurations for `nvim-metals`
+    there, but not automatically mapped. You can find a minimal example
+    configuration
     [here](https://github.com/scalameta/nvim-metals/discussions/39).
 
 ## Installation
@@ -58,6 +52,14 @@ example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use({'scalameta/nvim-metals'})
+```
+
+NOTE: By default, the main branch of `nvim-metals` is compatible with v0.5.0 of
+NeoVim. If you'd like to test out new functionality that is added that requires
+the nightly build of NeoVim, then you can target the `next` branch:
+
+```lua
+use({'scalameta/nvim-metals', branch = 'next'})
 ```
 
 ## Getting started

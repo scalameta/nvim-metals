@@ -33,9 +33,7 @@ the correct `init_options`.
 ================================================================================
 PREREQUISITES                                             *metals-prerequisites*
 
-- Nvim v0.5.x The later the snapshot the better unitl v0.5.x stable is
-  released. If something doesn't quite seem to be working, before doing
-  anything else, update to the latest NeoVim.
+- Ensure you're using the latest stable version of NeoVim, v0.5.x.
 - *DO NOT* use this plugin for Metals and also `nvim/nvim-lspconfig` for
   Metals.  If you've used `nvim-nvim-lspconfig` before with Metals, make sure
   to remove metals setup for it as it and this plugin will conflict.  NOTE:
@@ -52,12 +50,10 @@ GETTING STARTED                                         *metals-getting-started*
 
 Once installed, the most basic setup is to have the following >
 
-  if has('nvim-0.5')
-    augroup lsp
-      au!
-      au FileType scala,sbt lua require('metals').initialize_or_attach({})
-    augroup end
-  endif
+  augroup lsp
+    au!
+    au FileType scala,sbt lua require('metals').initialize_or_attach({})
+  augroup end
 <
 
 Or simply as a |vim.cmd| if using a pure Lua setup. >
