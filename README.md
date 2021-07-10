@@ -30,7 +30,7 @@ integrations with other projects such as
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F`
-    (for lua `vim.o.shortmess = string.gsub(vim.o.shortmess, "F", "") .. "c"`)
+    (for lua `vim.opt_global.shortmess:remove("F"):append("c")`)
     _NOTE_: Without doing this,
     autocommands that deal with filetypes prohibit messages from being shown...
     and since we heavily rely on this, this _must_ be set.
