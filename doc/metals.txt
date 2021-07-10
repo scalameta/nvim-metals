@@ -25,7 +25,7 @@ INTRODUCTION                                                *metals-introduction
 nvim-metals is a Lua plugin built to provide a better experience while using
 Metals, the Scala Language Server, with Neovim's built-in LSP support. This
 plugin provides the necessary commands you'll need to develop with nvim and
-Metals. This extension also implements many of the custom Metals LSP
+Metals. This plugin also implements many of the custom Metals LSP
 extensions that will give you a much richer experience than just using Metals
 with the default nvim-lspconfig setup, as well as automatically setting all of
 the correct `init_options`.
@@ -33,10 +33,10 @@ the correct `init_options`.
 ================================================================================
 PREREQUISITES                                             *metals-prerequisites*
 
-- Ensure you're using the latest stable version of NeoVim, v0.5.x.
-- *DO NOT* use this plugin for Metals and also `nvim/nvim-lspconfig` for
-  Metals.  If you've used `nvim-nvim-lspconfig` before with Metals, make sure
-  to remove metals setup for it as it and this plugin will conflict.  NOTE:
+- Ensure you're using the latest stable version of Neovim, v0.5.x.
+- *DO NOT* use this plugin for Metals and also `neovim/nvim-lspconfig` for
+  Metals. If you've used `neovim/nvim-lspconfig` before with Metals, make sure
+  to remove metals setup for it as it will conflict with this plugin.  NOTE:
   that keeping the plugin installed for other LSP servers is totally fine,
   just let nvim-metals handle Metals.
 - https://get-coursier.io/ - Metals uses coursier to manage the installation
@@ -48,11 +48,11 @@ PREREQUISITES                                             *metals-prerequisites*
 ================================================================================
 GETTING STARTED                                         *metals-getting-started*
 
-Once installed, the most basic setup is to have the following >
+Once installed, the most basic setup is to have the following: >
 
   augroup lsp
     au!
-    au FileType scala,sbt lua require('metals').initialize_or_attach({})
+    au FileType scala,sbt lua require("metals").initialize_or_attach({})
   augroup end
 <
 
@@ -66,7 +66,7 @@ Or simply as a |vim.cmd| if using a pure Lua setup. >
 This will give you the defaults that Metals provides. The empty `{}` that
 is passed into |initialize_or_attach()| is necessary and is very similar to
 the config object that is directly passed into the |vim.lsp.start_client()|
-method. The only differences is the addition of root_patterns that can be used
+method. The only differences are the addition of root_patterns that can be used
 to determine your root dir, and also a slightly different shaped settings. You
 can see examples of how to use settings in the |metals-settings| section.
 You can read more about the other config parameters in
@@ -83,8 +83,8 @@ still work without this, but the status messages and feedback that you will
 get will be much less. You can enable the `statusBarProvider` like shown
 below: >
 
-  metals_config = require'metals'.bare_config
-  metals_config.init_options.statusBarProvider = 'on'
+  metals_config = require("metals").bare_config
+  metals_config.init_options.statusBarProvider = "on"
 <
 
 Then instead of passing an empty `{}` to |initialize_or_attach()|, you'd pass
@@ -96,7 +96,7 @@ install Metals. You can do this with the following command: |MetalsInstall|.
 In order to install the latest snapshot of metals, you'll need to have set the
 following: >
 
-  let g:metals_server_version = '0.9.7+236-8d0924af-SNAPSHOT'
+  let g:metals_server_version = '0.10.4+146-b5f79053-SNAPSHOT'
 <
 
 If no version is set, it defaults to the latest stable release. If a new
@@ -116,7 +116,7 @@ The following settings are able to be passed along with the config table to
 in a setting that is not a valid Metals setting. You can set these like the
 example below shows: >
 
-  metals_config = require'metals'.bare_config
+  metals_config = require("metals").bare_config
   metals_config.settings = {
     showImplicitArguments = true,
     excludePackages = {
@@ -128,12 +128,12 @@ example below shows: >
 The following are all of the currently available settings. Note that this
 isn't necessarily all of the settings that Metals has, but all of the
 settings that can currently be used with nvim-metals. Ones that will have no
-affect are simply skipped for now.
+effect are simply skipped for now.
 
 NOTE: keep in mind that for now, when settings are set, they are only sent
 once to the server with a `workspace/didChangeConfiguration` right after
 initialization. If you change your settings, you'll need to restart nvim for
-them to take affect.
+them to take effect.
 
 All available settings:
   * |ammoniteJvmProperties|
@@ -169,7 +169,7 @@ bloopSbtAlreadyInstalled                              *bloopSbtAlreadyInstalled*
 Type: boolean ~
 Default: false ~
 
-If true, Metals will not generate `metals.sbt` files under the assumption that
+If true, Metals will not generate `metals.sbt` file under the assumption that
 sbt-bloop is already manually installed in the sbt build. Build import will
 fail with a 'not valid command bloopInstall' error in case Bloop is not
 manually installed in the build when using this option.
@@ -441,7 +441,7 @@ MetalsBspSwitch              Prompts the user to select a new build server to
 MetalsBuildConnect           Manually connect to the build server.
 
                                                          *MetalsBuildDisconnect*
-MetalsBuildDisconnect        Manually disconnect to the build server without
+MetalsBuildDisconnect        Manually disconnect from the build server without
                              reconnecting.
 
                                                              *MetalsBuildImport*
@@ -565,7 +565,7 @@ In order to use any of these you'd need to require the module. As an example,
 if you wanted to bind the |buid_import()| to a mapping, the right hand side of
 the mapping would be: >
 
-    <cmd>lua require'metals'.build_import()<CR>
+    <cmd>lua require("metals").build_import()<CR>
 <
 
 Note: Most of these that are just executing a command have commands that you
@@ -635,7 +635,7 @@ initialize_or_attach({config})
   if has('nvim-0.5')
     augroup lsp
       au!
-      au FileType scala,sbt lua require('metals').initialize_or_attach({})
+      au FileType scala,sbt lua require("metals").initialize_or_attach({})
     augroup end
   endif
 <
@@ -665,7 +665,7 @@ initialize_or_attach({config})
 
   api.nvim_command [[augroup NvimMetals]]
   api.nvim_command [[autocmd!]]
-  api.nvim_command [[autocmd BufEnter <buffer> lua require'metals'.did_focus()]]
+  api.nvim_command [[autocmd BufEnter <buffer> lua require("metals").did_focus()]]
   api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
   api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]]
   api.nvim_command [[augroup end]]
@@ -800,7 +800,7 @@ things that nvim-metals is providing you.
 
 The spec for this can be found here:
 
-https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
+https://scalameta.org/metals/docs/integrations/new-editor/#metalsstatus
 
                                                            *['metals/inputBox']*
 ['metals/inputBox']({err}, {method}, {result})
@@ -813,7 +813,7 @@ https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
 
 The spec for this can be found here:
 
-https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox
+https://scalameta.org/metals/docs/integrations/new-editor/#metalsinputbox
 
                                                           *['metals/quickPick']*
 ['metals/quickPick']({err}, {method}, {result})
@@ -826,7 +826,7 @@ https://scalameta.org/metals/docs/editors/new-editor.html#metalsinputbox
 
 The spec for this can be found here:
 
-https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick
+https://scalameta.org/metals/docs/integrations/new-editor/#metalsquickpick
 
                                                *['metals/executeClientCommand']*
 ['metals/executeClientCommand']({err}, {method}, {result})
@@ -840,7 +840,7 @@ https://scalameta.org/metals/docs/editors/new-editor.html#metalsquickpick
 
 The spec for this can be found here:
 
-https://scalameta.org/metals/docs/editors/new-editor.html#metalsexecuteclientcommand
+https://scalameta.org/metals/docs/integrations/new-editor/#metalsexecuteclientcommand
 
 ================================================================================
 FUNCTIONS                                                     *metals-functions*
@@ -884,7 +884,7 @@ started, you'll want ensure that nvim-dap is installed and then extend your
 metals configuration with the following `on_attach` function. >
 
   Metals_config.on_attach = function(client, bufnr)
-    require'metals'.setup_dap()
+    require("metals").setup_dap()
   end
 <
 
@@ -916,7 +916,7 @@ The following run types are valid for Metals.
 Below you can see an example of 3 configurations, one for each of the run
 types. >
 
-  local dap = require('dap')
+  local dap = require("dap")
 
   dap.configurations.scala = {
     {
@@ -964,7 +964,7 @@ to be autocompleted when trying to trigger it via: >
 
 <
 
-Then you'll want to explicity enable it. NOTE that by doing this it will no
+Then you'll want to explicitly enable it. NOTE that by doing this it will no
 longer be lazy loaded. >
 
   require('telescope').extensions.metals.commands()
