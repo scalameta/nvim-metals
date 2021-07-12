@@ -38,7 +38,7 @@ right away.
 The project uses [`lucheck`](https://github.com/mpeterv/luacheck) for static
 code analysis, and this is ran during CI on your project. You'll need to install
 this locally via luarocks: `luarocks install luacheck`. I also use
-[`StyLua`](https://github.com/JohnnyMorganz/StyLua) for formatting. Pleas also
+[`StyLua`](https://github.com/JohnnyMorganz/StyLua) for formatting. Please also
 use this as it gets rid of any need to discuss formatting. You can install it in
 various ways found on the github page, but the easiest is with cargo via `cargo
 install stylua`.
