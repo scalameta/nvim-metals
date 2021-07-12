@@ -92,10 +92,7 @@ M.copy_worksheet_output = function()
         -- return a warning with logMessage, so we can skip it here.
       end
     end
-    execute_command({
-      command_params = { command = "metals.copy-worksheet-output", arguments = uri },
-      callback = copy_response,
-    })
+    execute_command({ command = "metals.copy-worksheet-output", arguments = uri }, copy_response)
   end
 end
 
