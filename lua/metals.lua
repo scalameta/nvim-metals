@@ -13,7 +13,7 @@ local util = require("metals.util")
 local M = {}
 
 -- General function used to execute various server commands.
--- @param command_params (optional, table) Paramets to send to the server (arguments and command).
+-- @param command_params (optional, table) Parameters to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
   lsp.buf_request(0, "workspace/executeCommand", command_params, function(err, method, resp)
@@ -26,7 +26,7 @@ local function execute_command(command_params, callback)
 end
 
 M.analyze_stacktrace = function()
-  local trace = vim.fn.getreg("*")
+  local trace = fn.getreg("*")
   if trace:len() > 0 then
     execute_command({ command = "metals.analyze-stacktrace", arguments = { trace } })
   else
@@ -129,7 +129,7 @@ M.info = function()
     table.insert(output, "")
     table.insert(output, "## Useful locations")
     table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
-    table.insert(output, string.format("  - nvim lsp log file: %s", util.path.join(vim.fn.stdpath("cache"), "lsp.log")))
+    table.insert(output, string.format("  - nvim lsp log file: %s", util.path.join(fn.stdpath("cache"), "lsp.log")))
     local loc_msg = "  - metals install location:"
     if vim.g.metals_use_global_executable then
       table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
@@ -156,9 +156,9 @@ M.logs_toggle = function()
     local _, purpose = pcall(api.nvim_buf_get_var, buf, "metals_buf_purpose")
 
     if buftype == "terminal" and purpose == "logs" then
-      local first_window_id = vim.fn.win_findbuf(buf)[1]
+      local first_window_id = fn.win_findbuf(buf)[1]
       if first_window_id then
-        vim.fn.win_gotoid(first_window_id)
+        fn.win_gotoid(first_window_id)
       else
         api.nvim_command(string.format("vsp | :b %i", buf))
       end
@@ -173,30 +173,21 @@ M.logs_toggle = function()
 end
 
 -- Implements the new-scala-file feature.
--- https://scalameta.org/metals/docs/integrations/new-editor.html#create-new-scala-file
+-- https://scalameta.org/metals/docs/integrations/new-editor/#create-new-scala-file
 --
 -- @param directory_uri_opt Path URI for the new file. e.g. 'file:///home/...'
 -- @param name_opt Name for the scala file. e.g.: 'MyNewClass'. If nil, it's asked in an input box.
 -- @param file_type_opt Type of file. e.g.: 'worksheet'
 M.new_scala_file = function(directory_uri_opt, name_opt, file_type_opt)
+  directory_uri_opt = directory_uri_opt or vim.NIL
+  name_opt = name_opt or vim.NIL
+  file_type_opt = file_type_opt or vim.NIL
+
   local args_string_array = {}
-  if directory_uri_opt then
-    table.insert(args_string_array, 1, directory_uri_opt)
-  else
-    table.insert(args_string_array, 1, vim.NIL)
-  end
 
-  if name_opt then
-    table.insert(args_string_array, 2, name_opt)
-  else
-    table.insert(args_string_array, 2, vim.NIL)
-  end
-
-  if file_type_opt then
-    table.insert(args_string_array, 3, file_type_opt)
-  else
-    table.insert(args_string_array, 3, vim.NIL)
-  end
+  table.insert(args_string_array, 1, directory_uri_opt)
+  table.insert(args_string_array, 2, name_opt)
+  table.insert(args_string_array, 3, file_type_opt)
 
   execute_command({ command = "metals.new-scala-file", arguments = args_string_array })
 end
@@ -206,8 +197,8 @@ M.new_scala_project = function()
 end
 
 M.quick_worksheet = function()
-  local dir = "file://" .. vim.fn.expand("%:p:h")
-  local name = vim.fn.expand("%:p:h:t")
+  local dir = "file://" .. fn.expand("%:p:h")
+  local name = fn.expand("%:p:h:t")
   M.new_scala_file(dir, name, "worksheet")
 end
 
@@ -254,7 +245,7 @@ end
 -- Used to fully restart Metals. This will send a shutdown request to Metals,
 -- delay for 3 seconds, and then reconnect.
 M.restart_server = function()
-  for _, buf in pairs(vim.fn.getbufinfo({ bufloaded = true })) do
+  for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
     if vim.tbl_contains(setup.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
       local clients = lsp.buf_get_clients(buf.bufnr)
       for _, client in ipairs(clients) do
