@@ -6,44 +6,9 @@
 -- issue we wait.
 local commands_table = {
   {
-    id = "start_ammonite",
-    label = "Start Ammonite",
-    hint = "Start the Ammonite build server.",
-  },
-  {
-    id = "stop_ammonite",
-    label = "Stop Ammonite",
-    hint = "Stop the Ammonite build server.",
-  },
-  {
     id = "analyze_stacktrace",
     label = "Analyze Stacktrace",
-    hint = "Analyze stacktrace frop clipboard.",
-  },
-  {
-    id = "switch_bsp",
-    label = "Switch Build Server",
-    hint = "Switch to another available build server.",
-  },
-  {
-    id = "connect_build",
-    label = "Connect Build",
-    hint = "Connect to the current build server.",
-  },
-  {
-    id = "disconnect_build",
-    label = "Disconnect Build",
-    hint = "Disconnect from the current build server.",
-  },
-  {
-    id = "import_build",
-    label = "Import Build",
-    hint = "Import the current build.",
-  },
-  {
-    id = "restart_build",
-    label = "Restart Build",
-    hint = "Restart the current build server.",
+    hint = "Analyze stacktrace from clipboard.",
   },
   {
     id = "compile_cancel",
@@ -61,14 +26,19 @@ local commands_table = {
     hint = "Trigger a clean compile.",
   },
   {
+    id = "connect_build",
+    label = "Connect Build",
+    hint = "Connect to the current build server.",
+  },
+  {
     id = "copy_worksheet_output",
     label = "Copy Worksheet Output",
     hint = "Copy the evaluated worksheet output to your clipboard.",
   },
   {
-    id = "run_doctor",
-    label = "Run Doctor",
-    hint = "Run doctor.",
+    id = "disconnect_build",
+    label = "Disconnect Build",
+    hint = "Disconnect from the current build server.",
   },
   {
     id = "generate_bsp_config",
@@ -86,14 +56,9 @@ local commands_table = {
     hint = "Install Metals.",
   },
   {
-    id = "update",
-    label = "Update Metals",
-    hint = "Update to the latest Metals.",
-  },
-  {
-    id = "toggle_logs",
-    label = "Toggle Logs",
-    hint = "Toggle Metals logs.",
+    id = "import_build",
+    label = "Import Build",
+    hint = "Import the current build.",
   },
   {
     id = "new_scala_file",
@@ -121,9 +86,19 @@ local commands_table = {
     hint = "Reset a specific choice.",
   },
   {
+    id = "restart_build",
+    label = "Restart Build",
+    hint = "Restart the current build server.",
+  },
+  {
     id = "restart_server",
     label = "Restart Server",
     hint = "Restart Metals",
+  },
+  {
+    id = "run_doctor",
+    label = "Run Doctor",
+    hint = "Run doctor.",
   },
   {
     id = "scan_sources",
@@ -131,14 +106,39 @@ local commands_table = {
     hint = "Scan all workspace sources.",
   },
   {
+    id = "start_ammonite",
+    label = "Start Ammonite",
+    hint = "Start the Ammonite build server.",
+  },
+  {
     id = "start_server",
     label = "Start Server",
     hint = "Start Metals (only useful if you have it disabled by default).",
   },
   {
+    id = "stop_ammonite",
+    label = "Stop Ammonite",
+    hint = "Stop the Ammonite build server.",
+  },
+  {
     id = "super_method_hierarchy",
     label = "Super Method Hierarchy",
     hint = "Calculate inheritance hierarchy.",
+  },
+  {
+    id = "switch_bsp",
+    label = "Switch Build Server",
+    hint = "Switch to another available build server.",
+  },
+  {
+    id = "toggle_logs",
+    label = "Toggle Logs",
+    hint = "Toggle Metals logs.",
+  },
+  {
+    id = "update",
+    label = "Update Metals",
+    hint = "Update to the latest Metals.",
   },
 }
 
