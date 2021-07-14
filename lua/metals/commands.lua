@@ -7,12 +7,12 @@
 local commands_table = {
   {
     id = "ammonite_start",
-    label = "Ammonite Start",
+    label = "Start Ammonite",
     hint = "Start the Ammonite build server.",
   },
   {
     id = "ammonite_stop",
-    label = "Ammonite Stop",
+    label = "Stop Ammonite",
     hint = "Stop the Ammonite build server.",
   },
   {
@@ -27,12 +27,12 @@ local commands_table = {
   },
   {
     id = "build_connect",
-    label = "Build Connect",
+    label = "Connect Build",
     hint = "Connect to the current build server.",
   },
   {
     id = "build_disconnect",
-    label = "Build Disconnect",
+    label = "Disconnect Build",
     hint = "Disconnect from the current build server.",
   },
   {
@@ -42,7 +42,7 @@ local commands_table = {
   },
   {
     id = "build_restart",
-    label = "Build Restart",
+    label = "Restart Build",
     hint = "Restart the current build server.",
   },
   {
@@ -52,18 +52,18 @@ local commands_table = {
   },
   {
     id = "compile_cascade",
-    label = "Cascade Compile",
+    label = "Compile Cascade",
     hint = "Trigger a cascade compile.",
   },
   {
     id = "compile_clean",
-    label = "Clean Compile",
+    label = "Compile Clean",
     hint = "Trigger a clean compile.",
   },
   {
     id = "copy_worksheet_output",
     label = "Copy Worksheet Output",
-    hint = "Copy the evauluated worksheet output to your clipboard.",
+    hint = "Copy the evaluated worksheet output to your clipboard.",
   },
   {
     id = "doctor_run",
@@ -127,7 +127,7 @@ local commands_table = {
   },
   {
     id = "sources_scan",
-    label = "Sources Scan",
+    label = "Scan Sources",
     hint = "Scan all workspace sources.",
   },
   {
