@@ -34,31 +34,31 @@ M.analyze_stacktrace = function()
   end
 end
 
-M.ammonite_start = function()
+M.start_ammonite = function()
   execute_command({ command = "metals.ammonite-start" })
 end
 
-M.ammonite_stop = function()
+M.stop_ammonite = function()
   execute_command({ command = "metals.ammonite-stop" })
 end
 
-M.bsp_switch = function()
+M.switch_bsp = function()
   execute_command({ command = "metals.bsp-switch" })
 end
 
-M.build_connect = function()
+M.connect_build = function()
   execute_command({ command = "metals.build-connect" })
 end
 
-M.build_disconnect = function()
+M.disconnect_build = function()
   execute_command({ command = "metals.build-disconnect" })
 end
 
-M.build_import = function()
+M.import_build = function()
   execute_command({ command = "metals.build-import" })
 end
 
-M.build_restart = function()
+M.restart_build = function()
   execute_command({ command = "metals.build-restart" })
 end
 
@@ -96,7 +96,7 @@ M.copy_worksheet_output = function()
   end
 end
 
-M.doctor_run = function()
+M.run_doctor = function()
   execute_command({ command = "metals.doctor-run" })
 end
 
@@ -148,7 +148,7 @@ M.info = function()
   end
 end
 
-M.logs_toggle = function()
+M.toggle_logs = function()
   local bufs = api.nvim_list_bufs()
 
   for _, buf in ipairs(bufs) do
@@ -202,7 +202,7 @@ M.quick_worksheet = function()
   M.new_scala_file(dir, name, "worksheet")
 end
 
-M.sources_scan = function()
+M.scan_sources = function()
   execute_command({ command = "metals.sources-scan" })
 end
 

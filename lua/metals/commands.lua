@@ -6,12 +6,12 @@
 -- issue we wait.
 local commands_table = {
   {
-    id = "ammonite_start",
+    id = "start_ammonite",
     label = "Start Ammonite",
     hint = "Start the Ammonite build server.",
   },
   {
-    id = "ammonite_stop",
+    id = "stop_ammonite",
     label = "Stop Ammonite",
     hint = "Stop the Ammonite build server.",
   },
@@ -21,27 +21,27 @@ local commands_table = {
     hint = "Analyze stacktrace frop clipboard.",
   },
   {
-    id = "bsp_switch",
+    id = "switch_bsp",
     label = "Switch Build Server",
     hint = "Switch to another available build server.",
   },
   {
-    id = "build_connect",
+    id = "connect_build",
     label = "Connect Build",
     hint = "Connect to the current build server.",
   },
   {
-    id = "build_disconnect",
+    id = "disconnect_build",
     label = "Disconnect Build",
     hint = "Disconnect from the current build server.",
   },
   {
-    id = "build_import",
+    id = "import_build",
     label = "Import Build",
     hint = "Import the current build.",
   },
   {
-    id = "build_restart",
+    id = "restart_build",
     label = "Restart Build",
     hint = "Restart the current build server.",
   },
@@ -66,7 +66,7 @@ local commands_table = {
     hint = "Copy the evaluated worksheet output to your clipboard.",
   },
   {
-    id = "doctor_run",
+    id = "run_doctor",
     label = "Run Doctor",
     hint = "Run doctor.",
   },
@@ -91,7 +91,7 @@ local commands_table = {
     hint = "Update to the latest Metals.",
   },
   {
-    id = "logs_toggle",
+    id = "toggle_logs",
     label = "Toggle Logs",
     hint = "Toggle Metals logs.",
   },
@@ -126,7 +126,7 @@ local commands_table = {
     hint = "Restart Metals",
   },
   {
-    id = "sources_scan",
+    id = "scan_sources",
     label = "Scan Sources",
     hint = "Scan all workspace sources.",
   },
