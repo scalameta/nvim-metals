@@ -38,28 +38,68 @@ M.start_ammonite = function()
   execute_command({ command = "metals.ammonite-start" })
 end
 
+--not supported
+M.ammonite_start = function()
+  log.error_and_show("ammonite_start() is not supported, use require(\"metals\").start_ammonite() instead.")
+end
+
+
 M.stop_ammonite = function()
   execute_command({ command = "metals.ammonite-stop" })
+end
+
+--not supported
+M.ammonite_stop = function()
+  log.error_and_show("ammonite_stop() is not supported, use require(\"metals\").stop_ammonite() instead.")
 end
 
 M.switch_bsp = function()
   execute_command({ command = "metals.bsp-switch" })
 end
 
+--not supported
+M.bsp_switch = function()
+  log.error_and_show("bsp_switch() not supported, use require(\"metals\").switch_bsp() instead.")
+end
+
 M.connect_build = function()
   execute_command({ command = "metals.build-connect" })
+end
+
+--deprecated
+M.build_connect = function()
+  log.warn_and_show("build_connect() is deprecated, use require(\"metals\").connect_build() instead.")
+  M.connect_build()
 end
 
 M.disconnect_build = function()
   execute_command({ command = "metals.build-disconnect" })
 end
 
+--deprecated
+M.build_disconnect = function()
+  log.warn_and_show("build_disconnect() is deprecated, use require(\"metals\").disconnect_build() instead.")
+  M.disconnect_build()
+end
+
 M.import_build = function()
   execute_command({ command = "metals.build-import" })
 end
 
+--deprecated
+M.build_import = function()
+  log.warn_and_show("build_import() is deprecated, use require(\"metals\").import_build() instead.")
+  M.import_build()
+end
+
 M.restart_build = function()
   execute_command({ command = "metals.build-restart" })
+end
+
+--deprecated
+M.build_restart = function()
+  log.warn_and_show("build_restart() is deprecated, use require(\"metals\").restart_build() instead.")
+  M.restart_build()
 end
 
 M.compile_cancel = function()
@@ -98,6 +138,11 @@ end
 
 M.run_doctor = function()
   execute_command({ command = "metals.doctor-run" })
+end
+
+--not supported
+M.doctor_run = function()
+  log.error_and_show("doctor_run() is not supported, use require(\"metals\").run_doctor() instead.")
 end
 
 M.generate_bsp_config = function()
@@ -172,6 +217,11 @@ M.toggle_logs = function()
   vim.b["metals_buf_purpose"] = "logs"
 end
 
+--not supported
+M.logs_toggle = function()
+  log.error_and_show("logs_toggle() is not supported, use require(\"metals\").toggle_logs() instead.")
+end
+
 -- Implements the new-scala-file feature.
 -- https://scalameta.org/metals/docs/integrations/new-editor/#create-new-scala-file
 --
@@ -204,6 +254,12 @@ end
 
 M.scan_sources = function()
   execute_command({ command = "metals.sources-scan" })
+end
+
+--deprecated
+M.sources_scan = function()
+  log.warn_and_show("sources_scan() is deprecated, use require(\"metals\").scan_sources() instead.")
+  M.scan_sources()
 end
 
 M.reset_choice = function()
@@ -284,7 +340,15 @@ M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
 M.install = setup.install_or_update
 M.update = setup.install_or_update
+
 M.hover_worksheet = decoration.hover_worksheet
+
+--not supported
+M.worksheet_hover = function()
+  log.error_and_show("worksheet_hover() is not supported, use require(\"metals\").hover_worksheet() instead.")
+  M.hover_worksheet()
+end
+
 M.open_all_diagnostics = diagnostic.open_all_diagnostics
 M.setup_dap = function()
   setup.setup_dap(execute_command)
