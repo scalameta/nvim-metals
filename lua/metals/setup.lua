@@ -16,8 +16,8 @@ local lsps = {}
 local metals_name = "metals"
 
 -- So by default metals starts automatically, however, if a user wants it not
--- to, then this needs to be set to true it order for Metals to continually
--- attatch in a workspace that MetalsServerStart was called on.
+-- to, then this needs to be set to true in order for Metals to continually
+-- attach in a workspace that MetalsStartServer was called on.
 local explicity_enabled = false
 
 local function in_disabled_mode()
@@ -321,7 +321,7 @@ end
 M.auto_commands = function()
   api.nvim_command([[augroup NvimMetals]])
   api.nvim_command([[autocmd!]])
-  api.nvim_command([[autocmd BufEnter * lua require'metals'.did_focus()]])
+  api.nvim_command([[autocmd BufEnter * lua require("metals").did_focus()]])
   api.nvim_command([[autocmd CursorHold  *.scala lua vim.lsp.buf.document_highlight()]])
   api.nvim_command([[autocmd CursorMoved *.scala lua vim.lsp.buf.clear_references()]])
   api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave *.scala lua vim.lsp.codelens.refresh()]])
@@ -351,7 +351,7 @@ M.setup_dap = function(execute_command)
         envFile = metals_dap_settings.envFile,
       },
     }, function(_, _, res)
-      -- In metals we throw various exceptions when hanlding
+      -- In metals we throw various exceptions when handling
       -- debug-adapter-start but they are all handled and status messages are
       -- given to the client, so they aren't errors here. That's why we don't
       -- really capture or care about the err and instead just make sure res is
@@ -365,7 +365,7 @@ M.setup_dap = function(execute_command)
           port = port,
           enrich_config = function(_config, on_config)
             local final_config = vim.deepcopy(_config)
-            -- Just incase strip this out since it's metals-specific
+            -- Just in case strip this out since it's metals-specific
             final_config.metals = nil
             on_config(final_config)
           end,
