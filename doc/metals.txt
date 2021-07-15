@@ -415,6 +415,7 @@ The following commands are provided by nvim-metals:
   * |MetalsSwitchBsp|
   * |MetalsToggleLogs|
   * |MetalsUpdate|
+
                                                        *MetalsAnalyzeStacktrace*
 MetalsAnalyzeStacktrace      Takes the stacktrace from your current register
                              and sends it to Metals to be analyzed. This will
