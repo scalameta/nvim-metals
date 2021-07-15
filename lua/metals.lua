@@ -284,7 +284,7 @@ M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
 M.install = setup.install_or_update
 M.update = setup.install_or_update
-M.worksheet_hover = decoration.worksheet_hover
+M.hover_worksheet = decoration.hover_worksheet
 M.open_all_diagnostics = diagnostic.open_all_diagnostics
 M.setup_dap = function()
   setup.setup_dap(execute_command)
