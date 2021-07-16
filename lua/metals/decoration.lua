@@ -21,7 +21,7 @@ M.store_hover_message = function(decoration)
   hover_messages[hover_line] = hover_message
 end
 
-M.worksheet_hover = function()
+M.hover_worksheet = function()
   local row, _ = unpack(api.nvim_win_get_cursor(0))
   local hover_message = hover_messages[row]
 
