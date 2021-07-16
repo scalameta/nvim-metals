@@ -191,8 +191,26 @@ local function add_commands()
   end
 end
 
+-- Checks to ensure that you're not in a buffer that a plugin opens up. There
+-- are situations like `:GdiffSplit` which will open up a buffer that still has
+-- a scala filetype and ends in `.scala`, however we don't want Metals to
+-- attatch to that buffer. For now, we just have a hard list here and will add
+-- as we come across them.
+local function invalid_scala_file()
+  local name = vim.api.nvim_buf_get_name(0)
+  if vim.startswith(name, "fugitive://") or vim.startswith(name, "gitsigns://") then
+    return true
+  else
+    return false
+  end
+end
+
 --- The main entrypoint into the plugin.
 M.initialize_or_attach = function(config)
+  if invalid_scala_file() then
+    return
+  end
+
   local tvp_config = vim.deepcopy(config.tvp)
   tvp.setup_config(tvp_config)
   config.tvp = nil
