@@ -198,7 +198,7 @@ end
 -- as we come across them.
 local function invalid_scala_file()
   local name = vim.api.nvim_buf_get_name(0)
-  if vim.startswith(name, "fugitive://") or vim.startswith(name, "gitsigns://") then
+  if not vim.loop.fs_stat(name) then
     return true
   else
     return false
