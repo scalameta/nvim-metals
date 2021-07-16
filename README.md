@@ -56,14 +56,6 @@ example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 use({'scalameta/nvim-metals'})
 ```
 
-NOTE: By default, the main branch of `nvim-metals` is compatible with v0.5.0 of
-Neovim. If you'd like to test out new functionality that is added that requires
-the nightly build of Neovim, then you can target the `next` branch:
-
-```lua
-use({'scalameta/nvim-metals', branch = 'next'})
-```
-
 ## Getting started
 
 To get started with `nvim-metals`, _please read_ [`:help
