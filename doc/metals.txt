@@ -13,7 +13,7 @@ CONTENTS                                                           *nvim-metals*
     3.  Settings............. |metals-settings|
     4.  Options.............. |metals-options|
     5.  Commands............. |metals-commands|
-    6.  Lua API.............. |metals-lua-api|
+    6.  LUA API.............. |metals-lua-api|
     7.  TVP Module........... |metals-tvp-module|
     8.  Custom Handlers...... |metals-custom-handlers|
     9.  Functions............ |metals-functions|
@@ -388,39 +388,33 @@ handle it.
 COMMANDS                                                       *metals-commands*
 
 The following commands are provided by nvim-metals:
-  * |MetalsAmmoniteStart|
-  * |MetalsAmmoniteStop|
   * |MetalsAnalyzeStacktrace|
-  * |MetalsBspSwitch|
-  * |MetalsBuildConnect|
-  * |MetalsBuildDisconnect|
-  * |MetalsBuildImport|
-  * |MetalsBuildRestart|
   * |MetalsCompileCancel|
-  * |MetalsCompileClean|
   * |MetalsCompileCascade|
+  * |MetalsCompileClean|
+  * |MetalsConnectBuild|
   * |MetalsCopyWorksheetOutput|
-  * |MetalsDoctor|
+  * |MetalsDisconnectBuild|
   * |MetalsGenerateBspConfig|
-  * |MetalsInstall|
+  * |MetalsImportBuild|
   * |MetalsInfo|
-  * |MetalsLogToggle|
+  * |MetalsInstall|
   * |MetalsNewScalaFile|
   * |MetalsNewScalaProject|
   * |MetalsOrganizeImports|
   * |MetalsQuickWorksheet|
   * |MetalsResetChoice|
+  * |MetalsRestartBuild|
   * |MetalsRestartServer|
-  * |MetalsSourcesScan|
+  * |MetalsRunDoctor|
+  * |MetalsScanSources|
+  * |MetalsStartAmmonite|
   * |MetalsStartServer|
+  * |MetalsStopAmmonite|
   * |MetalsSuperMethodHierarchy|
+  * |MetalsSwitchBsp|
+  * |MetalsToggleLogs|
   * |MetalsUpdate|
-
-                                                           *MetalsAmmoniteStart*
-MetalsAmmoniteStart          Start the Ammonite BSP Server.
-
-                                                            *MetalsAmmoniteStop*
-MetalsAmmoniteStop           Stop the Ammonite BSP Server.
 
                                                        *MetalsAnalyzeStacktrace*
 MetalsAnalyzeStacktrace      Takes the stacktrace from your current register
@@ -429,29 +423,12 @@ MetalsAnalyzeStacktrace      Takes the stacktrace from your current register
                              which will be populated with code lenses to help
                              you navigate to the trace location.
 
-                                                               *MetalsBspSwitch*
-MetalsBspSwitch              Prompts the user to select a new build server to
-                             connect to. This command does nothing in case there
-                             are less than two installed build servers on the
-                             computer. In case the user has multiple BSP servers
-                             installed then Metals will prompt the user to
-                             select which server to use.
-
-                                                            *MetalsBuildConnect*
-MetalsBuildConnect           Manually connect to the build server.
-
-                                                         *MetalsBuildDisconnect*
-MetalsBuildDisconnect        Manually disconnect from the build server without
-                             reconnecting.
-
-                                                             *MetalsBuildImport*
-MetalsBuildImport            Trigger an import for the current workspace.
-
-                                                            *MetalsBuildRestart*
-MetalsBuildRestart           Manually restart the build server.
-
                                                            *MetalsCompileCancel*
 MetalsCompileCancel          Cancel any ongoing compilation.
+
+                                                          *MetalsCompileCascade*
+MetalsCompileCascade         Compile the current open file along with all build
+                             targets that depend on it.
 
                                                             *MetalsCompileClean*
 MetalsCompileClean           Recompile all build targets in this workspace. By
@@ -460,30 +437,29 @@ MetalsCompileClean           Recompile all build targets in this workspace. By
                              command might be run to make sure everything is
                              recompiled correctly.
 
-                                                          *MetalsCompileCascade*
-MetalsCompileCascade         Compile the current open file along with all build
-                             targets that depend on it.
+                                                            *MetalsConnectBuild*
+MetalsConnectBuild           Manually connect to the build server.
 
                                                      *MetalsCopyWorksheetOutput*
 MetalsCopyWorksheetOutput    Copy the contents of a worksheet to your local
                              buffer.
 
-                                                                  *MetalsDoctor*
-MetalsDoctor                 Run Metals Doctor, which will open a floating
-                             window to show you the status of Metals.
+                                                         *MetalsDisconnectBuild*
+MetalsDisconnectBuild        Manually disconnect from the build server without
+                             reconnecting.
 
                                                        *MetalsGenerateBspConfig*
-MetalsGenerateBspConfig      Checks to see if your build tool can serve as a BSP
-                             server. If so, generate the necessary BSP config to
-                             connect to the server. If there is more than one
-                             build tool for a workspace, you can then choose the
-                             desired one and that one will be used to generate
-                             the config. After the config is generated, Metals
-                             will attempt to auto-connect to it.
+MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
+                             BSP server. If so, generate the necessary BSP
+                             config to connect to the server. If there is more
+                             than one build tool for a workspace, you can then
+                             choose the desired one and that one will be used 
+                             to generate the config. After the config is 
+                             generated, Metals will attempt to auto-connect to
+                             it.
 
-                                                                 *MetalsInstall*
-MetalsInstall                Install Metals. NOTE that behind the scenes this
-                             calls the exact same function as |MetalsUpdate|.
+                                                             *MetalsImportBuild*
+MetalsImportBuild            Trigger an import for the current workspace.
 
                                                                     *MetalsInfo*
 MetalsInfo                   Give info about the currently installed version
@@ -493,12 +469,9 @@ MetalsInfo                   Give info about the currently installed version
                              |MetalsInstall| and also the location of the
                              `nvim-metals.log` file and some helpful links.
 
-                                                               *MetalsLogToggle*
-MetalsLogsToggle             Opens the embedded Nvim terminal tailing the
-                             |.metals/metals.log| file in your workspace. If
-                             triggered again, this will either bring you to
-                             the window that has the logs open, or open the
-                             buffer in a split in your current window.
+                                                                 *MetalsInstall*
+MetalsInstall                Install Metals. NOTE that behind the scenes this
+                             calls the exact same function as |MetalsUpdate|.
 
                                                             *MetalsNewScalaFile*
 MetalsNewScalaFile           Create a new Scala file. This will produce a
@@ -507,15 +480,15 @@ MetalsNewScalaFile           Create a new Scala file. This will produce a
                              also prompts for a name.
 
                                                          *MetalsNewScalaProject*
-MetalsNewScalaProject       Create a new Scala project using one of the
-                            available g8 templates. This includes simple
-                            projects as well as samples for most of the popular
-                            Scala frameworks.
+MetalsNewScalaProject        Create a new Scala project using one of the
+                             available g8 templates. This includes simple
+                             projects as well as samples for most of the popular
+                             Scala frameworks.
 
                                                          *MetalsOrganizeImports*
-MetalsOrganizeImports       Sends a code action request to Metals to organize
-                            imports. NOTE: that this is blocking, and it has a
-                            timeout of 1000ms.
+MetalsOrganizeImports        Sends a code action request to Metals to organize
+                             imports. NOTE: that this is blocking, and it has a
+                             timeout of 1000ms.
 
                                                           *MetalsQuickWorksheet*
 MetalsQuickWorksheet         Creates a worksheet in the current directory that
@@ -531,51 +504,75 @@ MetalsQuickWorksheet         Creates a worksheet in the current directory that
                                                              *MetalsResetChoice*
 MetalsResetChoice            ResetChoicePopup command allows you to reset a
                              decision you made about different settings.
-                             E.g. If you choose to import workspace with sbt you
-                             can decide to reset and change it again.
+                             E.g. If you choose to import workspace with sbt 
+                             you can decide to reset and change it again.
+
+                                                            *MetalsRestartBuild*
+MetalsRestartBuild           Manually restart the build server.
 
                                                            *MetalsRestartServer*
 MetalsRestartServer          Restart the Metals server.
 
-                                                             *MetalsSourcesScan*
-MetalsSourcesScan            Scan all workspaces sources.
+                                                                *MetalsRunDoctor*
+MetalsRunDoctor                 Run Metals Doctor, which will open a floating
+                             window to show you the status of Metals.
+
+                                                             *MetalsScanSources*
+MetalsScanSources            Scan all workspaces sources.
+
+                                                           *MetalsStartAmmonite*
+MetalsStartAmmonite          Start the Ammonite BSP Server.
 
                                                              *MetalsStartServer*
-MetalsStartServer           Start Metals server. Must be in a Scala or sbt file
-                            in a workspace where Metals is not yet started.
+MetalsStartServer            Start Metals server. Must be in a Scala or sbt file
+                             in a workspace where Metals is not yet started.
+
+                                                            *MetalsStopAmmonite*
+MetalsStopAmmonite           Stop the Ammonite BSP Server.
 
                                                     *MetalsSuperMethodHierarchy*
-MetalsSuperMethodHierarchy  Gathers the inheritance hierarchy of a member and
-                            if more than one is found, the user is given a quick
-                            pick option to jump to the point in the hierarchy
-                            tree selected.
+MetalsSuperMethodHierarchy   Gathers the inheritance hierarchy of a member and
+                             if more than one is found, the user is given a
+                             quick pick option to jump to the point in the
+                             hierarchy tree selected.
+
+                                                               *MetalsSwitchBsp*
+MetalsSwitchBsp              Prompts the user to select a new build server to
+                             connect to. This command does nothing in case there
+                             are less than two installed build servers on the
+                             computer. In case the user has multiple BSP servers
+                             installed then Metals will prompt the user to
+                             select which server to use.
+
+                                                               *MetalsToggleLogs*
+MetalsToggleLogs             Opens the embedded Nvim terminal tailing the
+                             |.metals/metals.log| file in your workspace. If
+                             triggered again, this will either bring you to
+                             the window that has the logs open, or open the
+                             buffer in a split in your current window.
 
                                                                   *MetalsUpdate*
-MetalsUpdate                Update to the latest stable version of Metals or
-                            change versions to the new version you added in
-                            |metals_server_version|. NOTE
-                            that behind the scenes this calls the same function
-                            as |MetalsInstall|.
+MetalsUpdate                 Update to the latest stable version of Metals or
+                             change versions to the new version you added in
+                             |metals_server_version|.
+                             NOTE that behind the scenes this calls the same
+                             function as |MetalsInstall|.
 
 ================================================================================
 LUA API                                                         *metals-lua-api*
 
 The following Lua module functions are exposed for you to use via mappings.
 In order to use any of these you'd need to require the module. As an example,
-if you wanted to bind the |buid_import()| to a mapping, the right hand side of
+if you wanted to bind the |import_build()| to a mapping, the right hand side of
 the mapping would be: >
 
-    <cmd>lua require("metals").build_import()<CR>
+    <cmd>lua require("metals").import_build()<CR>
 <
 
 Note: Most of these that are just executing a command have commands that you
-can find above in |metals-commands| with more details.
-
-                                                                *ammonite_end()*
-ammonite_end()            Use to execute a |metals.ammonite-end| command.
-
-                                                              *ammonite_start()*
-ammonite_start()          Use to execute a |metals.ammonite-start| command.
+can find above in |metals-commands| with more details. Please keep in mind
+that here we are trying to unify command names with verb followed by noun.
+That's why nvim-metals lua commands sometimes differ from metals commands.
 
                                                           *analyze_stacktrace()*
 analyze_stacktrace()      Use to execute a |metals.analyze-stacktrace| command.
@@ -584,21 +581,6 @@ analyze_stacktrace()      Use to execute a |metals.analyze-stacktrace| command.
 bare_config
                           An empty config table with empty tables also set for
                           settings, handlers, and init_options.
-
-                                                                  *bsp_switch()*
-bsp_switch()              Use to execute a |metals.bsp-switch| command.
-
-                                                               *build_connect()*
-build_connect()           Use to execute a |metals.build-connect| command.
-
-                                                            *build_disconnect()*
-build_disconnect()        Use to execute a |metals.build-disconnect| command.
-
-                                                                *build_import()*
-build_import()            Use to execute a |metals.build-import| command.
-
-                                                               *build_restart()*
-build_restart()           Use to execute a |metals.build-restart| command.
 
                                                               *compile_cancel()*
 compile_cancel()          Use to execute a |metals.compile-cancel| command.
@@ -609,15 +591,25 @@ compile_cascade()         Use to execute a |metals.compile-cascade| command.
                                                                *compile_clean()*
 compile_clean()           Use to execute a |metals.compile-clean| command.
 
+                                                               *connect_build()*
+connect_build()           Use to execute a |metals.build-connect| command.
+
                                                        *copy_worksheet_output()*
 copy_worksheet_output()   Use to execute a |metals.copy-worksheet-output|
                           command.
 
-                                                                  *doctor_run()*
-doctor_run()              Use to execute a |metals.doctor-run| command.
+                                                            *disconnect_build()*
+disconnect_build()        Use to execute a |metals.build-disconnect| command.
 
                                                          *generate_bsp_config()*
-generate_bsp_config()    Use to execute a |metals.generate-bsp-config| command.
+generate_bsp_config()     Use to execute a |metals.generate-bsp-config| command.
+
+                                                             *hover_worksheet()*
+hover_worksheet()         Use to expand the decoration to show the full hover
+                          message that was returned from the decoration.
+
+                                                                *import_build()*
+import_build()            Use to execute a |metals.build-import| command.
 
                                                                         *info()*
 info()                    Give info about the currently installed version of
@@ -688,67 +680,78 @@ install_or_update()       Install Metals if it doesn't exist or update to the
                           latest stable version or version set if
                           |g.metals_server_version| is set.
 
-                                                                 *logs_toggle()*
-logs_toggle()             Use to trigger a |tail -f .metals/log| on your current
-                          workspace that will open in the embedded Neovim
-                          terminal.
-
                                                               *new_scala_file()*
 new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
 
-                         Use to execute a |metals.new-scala-file| command. All
-                         of the params are optional. If they are not provided
-                         you will be prompted for them.
+                          Use to execute a |metals.new-scala-file| command. All
+                          of the parameters are optional. If they are not
+                          provided you will be prompted for them.
 
-                         Parameters:
-                         {directory_uri_opt} (string) directory that you'd
-                         like the new file to be created in.
+                          Parameters:
+                          {directory_uri_opt} (string) directory that you'd
+                          like the new file to be created in.
 
-                         {name_opt} (string) name you'd like to be given to the
-                         file.
+                          {name_opt} (string) name you'd like to be given to 
+                          the file.
 
-                         {file_type_option} (string) the type of Scala file
-                         that you'd like to be created.
+                          {file_type_option} (string) the type of Scala file
+                          that you'd like to be created.
 
                                                            *new_scala_project()*
-new_scala_project()      Use to execute a |metals.new-scala-project| command.
+new_scala_project()       Use to execute a |metals.new-scala-project| command.
 
-
-open_all_diagnostics()   Fills the quickfix list with the LSP diagnostics
-                         for all buffers and opens it.
-                         WARNING: Automatic updates in the quickfix for new
-                         diagnostics are not yet implemented.
-                         After opening the quickfix, in order to refresh
-                         diagnostics the function must be called again.
+                                                        *open_all_diagnostics()*
+open_all_diagnostics()    Fills the quickfix list with the LSP diagnostics
+                          for all buffers and opens it.
+                          WARNING: Automatic updates in the quickfix for new
+                          diagnostics are not yet implemented.
+                          After opening the quickfix, in order to refresh
+                          diagnostics the function must be called again.
 
                                                             *organize_imports()*
-organize_imports()       Use a code action request to get edits from Metals to
-                         organize imports for the current buffer.
+organize_imports()        Use a code action request to get edits from Metals
+                          to organize imports for the current buffer.
 
                                                              *quick_worksheet()*
-quick_worksheet()        Create a quick worksheet in your current dir with the
-                         name of your current dir.
+quick_worksheet()         Create a quick worksheet in your current dir with 
+                          the name of your current dir.
 
                                                                 *reset_choice()*
-reset_choice()           Use to execute a |metals.reset-choice| command.
+reset_choice()            Use to execute a |metals.reset-choice| command.
+
+                                                               *restart_build()*
+restart_build()           Use to execute a |metals.build-restart| command.
 
                                                               *restart_server()*
-restart_server()         Restart the Metals server.
+restart_server()          Restart the Metals server.
 
-                                                                *sources_scan()*
-sources_scan()           Use to execute a |metals.sources-scan| command.
+                                                                  *run_doctor()*
+run_doctor()              Use to execute a |metals.doctor-run| command.
+
+                                                                *scan_sources()*
+scan_sources()            Use to execute a |metals.sources-scan| command.
+
+                                                              *start_ammonite()*
+start_ammonite()          Use to execute a |metals.ammonite-start| command.
 
                                                                 *start_server()*
-start_server()           Start Metals server. Must be in a Scala or sbt file in
-                         a workspace where Metals is not yet started.
+start_server()            Start Metals server. Must be in a Scala or sbt file 
+                          in a workspace where Metals is not yet started.
+
+                                                               *stop_ammonite()*
+stop_ammonite()           Use to execute a |metals.ammonite-stop| command.
 
                                                       *super_method_hierarchy()*
-super_method_hierarchy() Use to execute a |metals.super-method-hierarchy|
-                         command.
+super_method_hierarchy()  Use to execute a |metals.super-method-hierarchy|
+                          command.
 
-                                                             *worksheet_hover()*
-worksheet_hover()        Use to expand the decoration to show the full hover
-                         message that was returned from the decoration.
+                                                                  *switch_bsp()*
+switch_bsp()              Use to execute a |metals.bsp-switch| command.
+
+                                                                 *toggle_logs()*
+toggle_logs()             Use to trigger a |tail -f .metals/log| on your
+                          current workspace that will open in the embedded
+                          Neovim terminal.
 
 ================================================================================
 METALS TVP MODULE                                            *metals-tvp-module*
@@ -967,7 +970,7 @@ to be autocompleted when trying to trigger it via: >
 Then you'll want to explicitly enable it. NOTE that by doing this it will no
 longer be lazy loaded. >
 
-  require('telescope').extensions.metals.commands()
+  require("telescope").extensions.metals.commands()
 
 <
 

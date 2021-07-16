@@ -35,7 +35,7 @@ right away.
 
 ## Tooling
 
-The project uses [`lucheck`](https://github.com/mpeterv/luacheck) for static
+The project uses [`luacheck`](https://github.com/mpeterv/luacheck) for static
 code analysis, and this is ran during CI on your project. You'll need to install
 this locally via luarocks: `luarocks install luacheck`. I also use
 [`StyLua`](https://github.com/JohnnyMorganz/StyLua) for formatting. Please also
@@ -50,7 +50,7 @@ After installed you can just use the commands in the Makefile to use them.
 A helpful part of seeing what's going on when working on stuff is the various
 logging files. Starting at the most basic, you can look in the
 `.metals/metals.log` file to see basic logs given from Metals. The
-`:MetalsLogsToggle` actually just looks at this file. If you want to further
+`:MetalsToggleLogs` actually just looks at this file. If you want to further
 look at the communication between Metals and Neovim, you can create trace files
 as outlined [here on the Metals
 site](https://scalameta.org/metals/docs/contributors/getting-started.html#json-rpc-trace).
