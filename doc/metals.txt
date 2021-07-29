@@ -657,9 +657,10 @@ initialize_or_attach({config})
 
   api.nvim_command [[augroup NvimMetals]]
   api.nvim_command [[autocmd!]]
-  api.nvim_command [[autocmd BufEnter <buffer> lua require("metals").did_focus()]]
+  api.nvim_command [[autocmd BufEnter * lua require("metals").did_focus()]]
   api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
   api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]]
+  api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()]])
   api.nvim_command [[augroup end]]
 <
                           Notice that this adds in an autocmd for
@@ -752,6 +753,22 @@ switch_bsp()              Use to execute a |metals.bsp-switch| command.
 toggle_logs()             Use to trigger a |tail -f .metals/log| on your
                           current workspace that will open in the embedded
                           Neovim terminal.
+
+                                                              *toggle_setting()*
+toggle_setting({setting})
+
+                          Use to toggle a boolean setting in |metals-settings|.
+                          If the setting is not set, you'll be toggling it on.
+
+                          Parameters:
+                          {setting} (string) the name of the setting that
+                          you'd like to toggle.
+
+                          Example usage: >
+
+    lua require("metals").toggle_setting("showImplicitArguments")
+<
+
 
 ================================================================================
 METALS TVP MODULE                                            *metals-tvp-module*

@@ -352,4 +352,20 @@ M.setup_dap = function()
   setup.setup_dap(execute_command)
 end
 
+M.toggle_setting = function(setting)
+  if not vim.tbl_contains(setup.metals_settings, setting) then
+    log.warn_and_show(string.format("%s is not a valid metals settings. Doing nothing.", setting))
+  elseif not type(setting) == "boolean" then
+    log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
+  else
+    local settings = setup.settings
+    if settings[setting] == nil then
+      settings[setting] = true
+    else
+      settings[setting] = not settings[setting]
+    end
+    lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { metals = settings } })
+  end
+end
+
 return M
