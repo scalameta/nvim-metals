@@ -10,7 +10,6 @@ local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
 
-local M = {}
 local lsps = {}
 
 local metals_name = "metals"
@@ -28,17 +27,18 @@ local function in_disabled_mode()
   end
 end
 
-M.config_cache = nil
+local config_cache = nil
+local settings_cache = nil
 
-M.explicitly_enable = function()
+local function explicitly_enable()
   explicity_enabled = true
 end
 
-M.scala_file_types = { "sbt", "scala" }
+local scala_file_types = { "sbt", "scala" }
 
 --- Clear out the lsps table. This is used when we are restarting the server
 --- and aren't - planning on closing nvim, but rather just re-connecting.
-M.reset_lsps = function()
+local function reset_lsps()
   lsps = {}
 end
 
@@ -47,7 +47,7 @@ end
 --- default to `metals`, if not we take control and construct the location - in
 --- the cache dir.
 --- @return string executable
-M.metals_bin = function()
+local function metals_bin()
   if vim.g.metals_use_global_executable then
     return metals_name
   else
@@ -59,7 +59,7 @@ end
 --- Check to see if coursier is installed. This method favors the native cs. So if
 --- cs is installed, that will be returned, if not, then coursier will be returned.
 --- @return string 'cs', 'coursier', or nil
-M.check_for_coursier = function()
+local function check_for_coursier()
   if util.has_bins("cs") then
     return "cs"
   elseif util.has_bins("coursier") then
@@ -73,13 +73,13 @@ end
 --- overwritten by the bootstrap command.
 --- NOTE: that if a user has g:metals_use_global_executable set, this will just
 --- throw an error at them since they can't use this in that case.
-M.install_or_update = function()
+local function install_or_update()
   if vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_so_cant_update)
     return true
   end
 
-  local coursier_exe = M.check_for_coursier()
+  local coursier_exe = check_for_coursier()
   if not coursier_exe then
     log.error_and_show(messages.coursier_installed)
     return true
@@ -125,12 +125,12 @@ M.install_or_update = function()
     "-r",
     "sonatype:snapshots",
     "-o",
-    M.metals_bin(),
+    metals_bin(),
     "-f",
   }
 
   Coursier_handle = uv.spawn(
-    M.check_for_coursier(),
+    check_for_coursier(),
     { args = args, stdio = { stdin, stdout, stderr } },
     vim.schedule_wrap(function(code)
       Coursier_handle:close()
@@ -148,7 +148,7 @@ end
 -- A bare config to use to be passed into initialize_or_attach.
 -- This is meant only to be used when a user is editing anything in the config
 -- just to ensure they don' thave to do a couple manual initialization of tables
-M.bare_config = { handlers = {}, init_options = {}, settings = {}, tvp = {} }
+local bare_config = { handlers = {}, init_options = {}, settings = {}, tvp = {} }
 
 local metals_init_options = {
   compilerOptions = { snippetAutoIndent = false },
@@ -164,7 +164,7 @@ local metals_init_options = {
 }
 
 -- Currently available settings.
-M.metals_settings = {
+local valid_metals_settings = {
   "ammoniteJvmProperties",
   "bloopSbtAlreadyInstalled",
   "bloopVersion",
@@ -191,6 +191,19 @@ local function add_commands()
   end
 end
 
+--- auto commands necessary for `metals/didFocusTextDocument`.
+--- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
+--- auto commands also necessary for document highlight to work.
+local function auto_commands()
+  api.nvim_command([[augroup NvimMetals]])
+  api.nvim_command([[autocmd!]])
+  api.nvim_command([[autocmd BufEnter * lua require("metals").did_focus()]])
+  api.nvim_command([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
+  api.nvim_command([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
+  api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()]])
+  api.nvim_command([[augroup end]])
+end
+
 -- Checks to ensure that you're not in a buffer that a plugin opens up. There
 -- are situations like `:GdiffSplit` which will open up a buffer that still has
 -- a scala filetype and ends in `.scala`, however we don't want Metals to
@@ -206,7 +219,7 @@ local function invalid_scala_file()
 end
 
 --- The main entrypoint into the plugin.
-M.initialize_or_attach = function(config)
+local function initialize_or_attach(config)
   if invalid_scala_file() then
     return
   end
@@ -214,7 +227,7 @@ M.initialize_or_attach = function(config)
   local tvp_config = vim.deepcopy(config.tvp)
   tvp.setup_config(tvp_config)
   config.tvp = nil
-  M.config_cache = config
+  config_cache = config
   add_commands()
 
   if in_disabled_mode() then
@@ -232,13 +245,13 @@ M.initialize_or_attach = function(config)
     return
   end
 
-  if not util.has_bins(M.metals_bin()) and vim.g.metals_use_global_executable then
+  if not util.has_bins(metals_bin()) and vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_but_cant_find)
     return true
-  elseif not util.has_bins(M.metals_bin()) then
+  elseif not util.has_bins(metals_bin()) then
     local heading = "Welcome to nvim-metals!\n"
 
-    local coursier_msg = (M.check_for_coursier() and "" or messages.coursier_not_installed)
+    local coursier_msg = (check_for_coursier() and "" or messages.coursier_not_installed)
 
     if coursier_msg ~= "" then
       log.error(coursier_msg)
@@ -255,7 +268,7 @@ M.initialize_or_attach = function(config)
 
   -- Check to see if Metals is already attatched, and if so attatch
   for _, buf in pairs(vim.fn.getbufinfo({ bufloaded = true })) do
-    if vim.tbl_contains(M.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
+    if vim.tbl_contains(scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
       local clients = lsp.buf_get_clients(buf.bufnr)
       for _, client in ipairs(clients) do
         if client.config.name == config.name then
@@ -266,7 +279,7 @@ M.initialize_or_attach = function(config)
     end
   end
 
-  config.cmd = { M.metals_bin() }
+  config.cmd = { metals_bin() }
 
   -- This is really the only not standard thing being passed into the config
   -- table, however, we'll still keep it to ensure that it's quite easy for
@@ -292,11 +305,11 @@ M.initialize_or_attach = function(config)
 
   if config.settings then
     for k, _ in pairs(config.settings) do
-      if not vim.tbl_contains(M.metals_settings, k) then
+      if not vim.tbl_contains(valid_metals_settings, k) then
         local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
         local valid_settings = string.format(
           "The following are valid settings %s",
-          table.concat(M.metals_settings, ", ")
+          table.concat(valid_metals_settings, ", ")
         )
         local err = heading .. "\n" .. valid_settings
         log.warn_and_show(err)
@@ -312,19 +325,19 @@ M.initialize_or_attach = function(config)
 
   settings.metals = config.settings or {}
   -- Just so we can access these in the info command
-  M.settings = settings.metals
+  settings_cache = settings.metals
 
   config.on_init = function(client, _)
     return client.notify("workspace/didChangeConfiguration", { settings = settings })
   end
 
   if not config.on_attach then
-    config.on_attach = M.auto_commands
+    config.on_attach = auto_commands
   else
     local user_on_attach = config.on_attach
     config.on_attach = function(client, _bufnr)
       user_on_attach(client, _bufnr)
-      M.auto_commands()
+      auto_commands()
     end
   end
 
@@ -336,22 +349,9 @@ M.initialize_or_attach = function(config)
   lsp.buf_attach_client(bufnr, client_id)
 end
 
---- auto commands necessary for `metals/didFocusTextDocument`.
---- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
---- auto commands also necessary for document highlight to work.
-M.auto_commands = function()
-  api.nvim_command([[augroup NvimMetals]])
-  api.nvim_command([[autocmd!]])
-  api.nvim_command([[autocmd BufEnter * lua require("metals").did_focus()]])
-  api.nvim_command([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
-  api.nvim_command([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
-  api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()]])
-  api.nvim_command([[augroup end]])
-end
-
 --- Setup function used to ensure that when using nvim-dap the
 --- metals.debug-adapter-start is called and the host correctly returned.
-M.setup_dap = function(execute_command)
+local function setup_dap(execute_command)
   local status, dap = pcall(require, "dap")
   if not status then
     log.error_and_show("Unable to find nvim-dap. Please make sure mfussenegger/nvim-dap is installed.")
@@ -396,4 +396,17 @@ M.setup_dap = function(execute_command)
   end
 end
 
-return M
+return {
+  bare_config = bare_config,
+  check_for_coursier = check_for_coursier,
+  config_cache = config_cache,
+  explicitly_enable = explicitly_enable,
+  initialize_or_attach = initialize_or_attach,
+  install_or_update = install_or_update,
+  metals_bin = metals_bin,
+  valid_metals_settings = valid_metals_settings,
+  reset_lsps = reset_lsps,
+  scala_file_types = scala_file_types,
+  settings_cache = settings_cache,
+  setup_dap = setup_dap,
+}

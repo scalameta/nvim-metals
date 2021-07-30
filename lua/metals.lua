@@ -163,10 +163,10 @@ M.info = function()
       table.insert(output, s)
     end
 
-    if setup.settings then
+    if setup.settings_cache then
       table.insert(output, "")
       table.insert(output, "## Current settings")
-      for s in vim.inspect(setup.settings):gmatch("[^\r\n]+") do
+      for s in vim.inspect(setup.settings_cache):gmatch("[^\r\n]+") do
         table.insert(output, s)
       end
     end
@@ -353,12 +353,12 @@ M.setup_dap = function()
 end
 
 M.toggle_setting = function(setting)
-  if not vim.tbl_contains(setup.metals_settings, setting) then
+  if not vim.tbl_contains(setup.valid_metals_settings, setting) then
     log.warn_and_show(string.format("%s is not a valid metals settings. Doing nothing.", setting))
   elseif not type(setting) == "boolean" then
     log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
   else
-    local settings = setup.settings
+    local settings = setup.settings_cache
     if settings[setting] == nil then
       settings[setting] = true
     else
