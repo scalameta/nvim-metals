@@ -313,7 +313,7 @@ M.restart_server = function()
 
   vim.defer_fn(function()
     setup.reset_lsps()
-    setup.initialize_or_attach(setup.config_cache)
+    setup.initialize_or_attach()
   end, 3000)
 end
 
@@ -321,7 +321,7 @@ M.start_server = function()
   if vim.g.metals_disabled_mode then
     setup.explicitly_enable()
   end
-  setup.initialize_or_attach(setup.config_cache)
+  setup.initialize_or_attach()
 end
 
 M.super_method_hierarchy = function()

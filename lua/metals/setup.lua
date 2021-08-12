@@ -220,6 +220,7 @@ end
 
 --- The main entrypoint into the plugin.
 local function initialize_or_attach(config)
+  config = config or config_cache
   if invalid_scala_file() then
     return
   end
@@ -399,7 +400,6 @@ end
 return {
   bare_config = bare_config,
   check_for_coursier = check_for_coursier,
-  config_cache = config_cache,
   explicitly_enable = explicitly_enable,
   initialize_or_attach = initialize_or_attach,
   install_or_update = install_or_update,
