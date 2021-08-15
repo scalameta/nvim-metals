@@ -163,10 +163,11 @@ M.info = function()
       table.insert(output, s)
     end
 
-    if setup.settings_cache then
+    local settings = setup.get_settings_cache()
+    if settings then
       table.insert(output, "")
       table.insert(output, "## Current settings")
-      for s in vim.inspect(setup.settings_cache):gmatch("[^\r\n]+") do
+      for s in vim.inspect(settings):gmatch("[^\r\n]+") do
         table.insert(output, s)
       end
     end
@@ -358,7 +359,7 @@ M.toggle_setting = function(setting)
   elseif not type(setting) == "boolean" then
     log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
   else
-    local settings = setup.settings_cache
+    local settings = setup.get_settings_cache()
     if settings[setting] == nil then
       settings[setting] = true
     else
