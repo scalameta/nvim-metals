@@ -192,15 +192,11 @@ local function add_commands()
 end
 
 --- auto commands necessary for `metals/didFocusTextDocument`.
---- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
---- auto commands also necessary for document highlight to work.
+--- https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
 local function auto_commands()
   api.nvim_command([[augroup NvimMetals]])
   api.nvim_command([[autocmd!]])
   api.nvim_command([[autocmd BufEnter * lua require("metals").did_focus()]])
-  api.nvim_command([[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]])
-  api.nvim_command([[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]])
-  api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()]])
   api.nvim_command([[augroup end]])
 end
 

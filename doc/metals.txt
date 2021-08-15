@@ -651,30 +651,18 @@ initialize_or_attach({config})
                           `metals` keyword. You can find more information
                           about how to set these in |metals-settings|.
 
-                          NOTE: This function also includes some autocommands
+                          NOTE: This function also includes some
+                          metals-specific autocommands
                           that are given to the `on_attach()` of the config.
-                          Those autocommands are below: >
 
-  api.nvim_command [[augroup NvimMetals]]
-  api.nvim_command [[autocmd!]]
-  api.nvim_command [[autocmd BufEnter * lua require("metals").did_focus()]]
-  api.nvim_command [[autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()]]
-  api.nvim_command [[autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()]]
-  api.nvim_command([[autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()]])
-  api.nvim_command [[augroup end]]
-<
-                          Notice that this adds in an autocmd for
-                          |vim.lsp.buf.document_highligh()| which is normally
-                          not enabled by default. There is also no default
-                          highlight group for this, so in order for you to
-                          actually see the highlights, you should include the
-                          following in your config, linked to the highlight of
-                          your choosing. >
-
-  vim.cmd [[hi! link LspReferenceText CursorColumn]]
-  vim.cmd [[hi! link LspReferenceRead CursorColumn]]
-  vim.cmd [[hi! link LspReferenceWrite CursorColumn]]
-<
+                          NOTE: Keep in mind that there are some other
+                          autocmds that you'll probbly want to set up locally
+                          that aren't set by default to esnure features like
+                          document highlighting and code lenses work. Make
+                          sure to check out
+                          |vim.lsp.buf.document_highlight()|,
+                          |vim.lsp.buf.clear_references()|, and
+                          |vim.lsp.codelens.refresh()|.
 
                                                            *install_or_update()*
 install_or_update()       Install Metals if it doesn't exist or update to the
