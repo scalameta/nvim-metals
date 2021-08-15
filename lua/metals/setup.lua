@@ -30,6 +30,10 @@ end
 local config_cache = nil
 local settings_cache = nil
 
+local get_settings_cache = function()
+  return settings_cache
+end
+
 local function explicitly_enable()
   explicity_enabled = true
 end
@@ -403,6 +407,6 @@ return {
   valid_metals_settings = valid_metals_settings,
   reset_lsps = reset_lsps,
   scala_file_types = scala_file_types,
-  settings_cache = settings_cache,
+  get_settings_cache = get_settings_cache,
   setup_dap = setup_dap,
 }
