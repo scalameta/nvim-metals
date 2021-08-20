@@ -102,12 +102,6 @@ following: >
 If no version is set, it defaults to the latest stable release. If a new
 release comes out or you change your |g:metals_server_version|, you can
 simply issue a |MetalsUpdate| command.
-
-If you believe that you have everything configured correctly, but do not see
-the message about installing Metals, ensure that you have removed `F` from
-`shortmess`. After this you should be able to execute a |MetalsInfo| to see the
-installed Metals version, the location of the install, and also the location
-of the `nvim-metals.log` file.
 ================================================================================
 SETTINGS                                                       *metals-settings*
 
