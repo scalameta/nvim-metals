@@ -29,11 +29,6 @@ integrations with other projects such as
     version of nvim, v.0.5.x.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.
-- Remove `F` from `shortmess`. `set shortmess-=F`
-    (for lua `vim.opt_global.shortmess:remove("F"):append("c")`)
-    _NOTE_: Without doing this,
-    autocommands that deal with filetypes prohibit messages from being shown...
-    and since we heavily rely on this, this _must_ be set.
 - Ensure that you have mappings created for functionality that you desire. By
     default methods for things like goto definition, find references, etc are
     there, but not automatically mapped. You can find a minimal example
