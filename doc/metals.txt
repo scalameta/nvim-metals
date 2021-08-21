@@ -143,6 +143,7 @@ All available settings:
   * |sbtScript|
   * |scalafixConfigPath|
   * |scalafmtConfigPath|
+  * |serverProperties|
   * |showImplicitArguments|
   * |showImplicitConversionsAndClasses|
   * |showInferredType|
@@ -320,6 +321,19 @@ Default: false ~
 
 When this option is enabled, each method that can have inferred types has them
 displayed as extra info in the hover.
+
+serverProperties                                              *serverProperties*
+
+Type: table ~
+Default: {} ~
+
+Table of properties to pass along to the Metals server. By default, the
+environment variable `JAVA_OPTS` and the `.jvmopts` file are respected.
+However, we care most about the proxy settings from those places, not
+necessarily the memory options since Metals has different requirements for
+example than sbt. So if you have proxy settings defined in `JAVA_OPTS`, then
+no need to define them here again. However, if you want to set some spefic
+memory settings for Metals, then this is the place. 
 
 superMethodLensesEnabled                              *superMethodLensesEnabled*
 

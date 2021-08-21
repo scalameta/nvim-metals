@@ -5,6 +5,7 @@ local uv = vim.loop
 
 local commands_table = require("metals.commands").commands_table
 local default_handlers = require("metals.handlers")
+local jvmopts = require("metals.jvmopts")
 local tvp = require("metals.tvp")
 local log = require("metals.log")
 local messages = require("metals.messages")
@@ -182,6 +183,7 @@ local valid_metals_settings = {
   "sbtScript",
   "scalafixConfigPath",
   "scalafmtConfigPath",
+  "serverProperties",
   "showImplicitArguments",
   "showImplicitConversionsAndClasses",
   "showInferredType",
@@ -280,8 +282,6 @@ local function initialize_or_attach(config)
     end
   end
 
-  config.cmd = { metals_bin() }
-
   -- This is really the only not standard thing being passed into the config
   -- table, however, we'll still keep it to ensure that it's quite easy for
   -- custom patters to be passed in without doing the entire root_dir logic
@@ -318,15 +318,44 @@ local function initialize_or_attach(config)
     end
   end
 
+  settings.metals = config.settings or {}
+
+  -- Just so we can access these in the info command
+  settings_cache = settings.metals
+
+  local java_opts = jvmopts.java_opts(config.root_dir)
+
+  -- We care most about enabling options like HTTP proxy settings.
+  -- We don't include memory options because Metals does not have the same
+  -- memory requirements as for example the sbt build.
+  local valid_java_opts = {}
+  for _, opt in ipairs(java_opts) do
+    if
+      not util.starts_with(opt, "-Xms")
+      and not util.starts_with(opt, "-Xmx")
+      and not util.starts_with(opt, "-Xss")
+      -- Do not alter stdout that we capture when using Coursier
+      and opt ~= "-XX:+PrintCommandLineFlags"
+    then
+      table.insert(valid_java_opts, opt)
+    end
+  end
+
+  local passed_in_options = config.settings.serverProperties or {}
+  local all_opts = util.merge_lists(passed_in_options, valid_java_opts)
+
+  for i, opt in ipairs(all_opts) do
+    -- In order to pass these options to coursier they need to be prefaced with `-J`
+    all_opts[i] = "-J" .. opt
+  end
+
+  config.cmd = util.merge_lists({ metals_bin() }, all_opts)
+
   -- This shouldn't really be needed as it doesn't do anything in core,
   -- however, I'm adding this in now for
   -- https://github.com/glepnir/lspsaga.nvim/issues/57 so if any users are using
   -- lspsaga it will still work as expected for the lsp_finder()
   config.filetypes = { "sbt", "scala" }
-
-  settings.metals = config.settings or {}
-  -- Just so we can access these in the info command
-  settings_cache = settings.metals
 
   config.on_init = function(client, _)
     return client.notify("workspace/didChangeConfiguration", { settings = settings })
