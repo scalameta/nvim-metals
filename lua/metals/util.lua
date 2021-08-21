@@ -229,4 +229,28 @@ M.camel_to_pascal = function(s)
   return pascal_string
 end
 
+M.merge_lists = function(a, b)
+  if b == nil then
+    if a == nil then
+      return {}
+    else
+      return a
+    end
+  else
+    local merged = vim.deepcopy(a)
+
+    for _, v in ipairs(b) do
+      if type(v) == "string" then
+        table.insert(merged, v)
+      end
+    end
+
+    return merged
+  end
+end
+
+M.starts_with = function(text, prefix)
+  return text:find(prefix, 1, true) == 1
+end
+
 return M
