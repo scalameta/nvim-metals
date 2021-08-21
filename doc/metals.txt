@@ -41,6 +41,13 @@ PREREQUISITES                                             *metals-prerequisites*
   just let nvim-metals handle Metals.
 - https://get-coursier.io/ - Metals uses coursier to manage the installation
   and updating of Metals.
+- Remove `F` from `shortmess`. `set shortmess-=F` (for lua
+  `vim.opt_global.shortmess:remove("F")`) NOTE: Without doing this,
+  autocommands that deal with filetypes prohibit messages from being shown, so
+  some of the messages we show to help users get started may not be shown.
+  If you're confident you don't need help setting up, then just remove this,
+  and `nvim-metals` will work fine, but any log messages won't actually be
+  shown to you if something goes wrong with `nvim-metals`.
 - Make sure you have your mappings for various LSP functionality configured.
   Neovim provides functions for things like goto-definition, find references,
   etc, but they need to be mapped.
