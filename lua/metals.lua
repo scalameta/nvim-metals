@@ -169,7 +169,7 @@ M.toggle_logs = function()
   end
 
   -- Only open them if a terminal isn't already open
-  api.nvim_command([[vsp term://tail -f .metals/metals.log]])
+  api.nvim_command([[vsp +set\ ft=log term://tail -f .metals/metals.log]])
   vim.b["metals_buf_purpose"] = "logs"
 end
 
