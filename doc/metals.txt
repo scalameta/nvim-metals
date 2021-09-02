@@ -365,6 +365,13 @@ changed you need to do a |:MetalsInstall| or |:MetalsUpdate| again to ensure
 that it is installed. If you need to check what version you're currently
 using, you can use the |MetalsInfo| command.
 
+                                                           *g:metals_server_org*
+Type: string ~
+Default: 'org.scalameta' ~
+
+Useful if you'd like to use a Metals that might be published under another org
+for whatever the reason.
+
                                                      *g:metals_decoration_color*
 Type: string ~
 Default: 'Conceal' ~

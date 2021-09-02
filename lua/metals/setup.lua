@@ -91,6 +91,7 @@ local function install_or_update()
   end
 
   local server_version = vim.g.metals_server_version or "latest.release"
+  local server_org = vim.g.metals_server_org or "org.scalameta"
 
   if not util.path.is_dir(util.nvim_metals_cache_dir) then
     os.execute("mkdir -p " .. util.nvim_metals_cache_dir)
@@ -124,7 +125,7 @@ local function install_or_update()
     "-Xss4m",
     "--java-opt",
     "-Xms100m",
-    string.format("org.scalameta:metals_2.12:%s", server_version),
+    string.format("%s:metals_2.12:%s", server_org, server_version),
     "-r",
     "bintray:scalacenter/releases",
     "-r",
