@@ -1,5 +1,4 @@
 local api = vim.api
-local fn = vim.fn
 local validate = vim.validate
 local uv = vim.loop
 
@@ -150,7 +149,7 @@ end)()
 -- is stolen from the nvim/nvim-lspconfig utils.
 M.has_bins = function(...)
   for i = 1, select("#", ...) do
-    if 0 == fn.executable((select(i, ...))) then
+    if 0 == vim.fn.executable((select(i, ...))) then
       return false
     end
   end
@@ -181,7 +180,7 @@ M.metals_status = function(text)
 end
 
 -- Location of any files or executables that nvim-metals will create on your system
-M.nvim_metals_cache_dir = M.path.join(fn.stdpath("cache"), "nvim-metals")
+M.nvim_metals_cache_dir = M.path.join(vim.fn.stdpath("cache"), "nvim-metals")
 
 --- Strip the leading and trailing spaces of a string
 --- @param s string the string you want to trim.
@@ -253,4 +252,25 @@ M.starts_with = function(text, prefix)
   return text:find(prefix, 1, true) == 1
 end
 
+-- Create an lsp handler compatible with the new handler signature and the old
+-- https://github.com/neovim/neovim/pull/15504/
+-- @param func function
+-- @return function
+function M.lsp_handler(fn)
+  return function(...)
+    local config_or_client_id = select(4, ...)
+    local is_new = type(config_or_client_id) ~= "number"
+    if is_new then
+      fn(...)
+    else
+      local err = select(1, ...)
+      local method = select(2, ...)
+      local result = select(3, ...)
+      local client_id = select(4, ...)
+      local bufnr = select(5, ...)
+      local config = select(6, ...)
+      fn(err, result, { method = method, client_id = client_id, bufnr = bufnr }, config)
+    end
+  end
+end
 return M
