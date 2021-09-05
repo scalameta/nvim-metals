@@ -30,7 +30,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Setup StyLua
       run: |
-        cargo install --version 0.9.3 stylua
+        cargo install --version 0.10.1 stylua
 
     - name: Run StyLua
       run: |
