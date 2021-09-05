@@ -16,13 +16,18 @@ local M = {}
 -- @param command_params (optional, table) Parameters to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
-  lsp.buf_request(0, "workspace/executeCommand", command_params, function(err, method, resp)
-    if callback then
-      callback(err, method, resp)
-    elseif err then
-      log.error_and_show(string.format("Could not execute command: %s", err.message))
-    end
-  end)
+  lsp.buf_request(
+    0,
+    "workspace/executeCommand",
+    command_params,
+    util.lsp_handler(function(err, result, ctx)
+      if callback then
+        callback(err, ctx.method, result)
+      elseif err then
+        log.error_and_show(string.format("Could not execute command: %s", err.message))
+      end
+    end)
+  )
 end
 
 M.analyze_stacktrace = function()

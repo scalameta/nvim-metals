@@ -14,10 +14,10 @@ local decoration_namespace = api.nvim_create_namespace("metals_decoration")
 
 -- Implementation of the `metals/quickPick` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
-M["metals/quickPick"] = function(_, _, resp)
+M["metals/quickPick"] = util.lsp_handler(function(_, result)
   local ids = {}
   local labels = {}
-  for i, item in pairs(resp.items) do
+  for i, item in pairs(result.items) do
     table.insert(ids, item.id)
     table.insert(labels, i .. " - " .. item.label)
   end
@@ -28,66 +28,66 @@ M["metals/quickPick"] = function(_, _, resp)
   else
     return { itemId = ids[choice] }
   end
-end
+end)
 
 -- Implementation of the `metals/inputBox` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
-M["metals/inputBox"] = function(_, _, resp)
-  local name = vim.fn.input(resp.prompt .. ": ")
+M["metals/inputBox"] = util.lsp_handler(function(_, result)
+  local name = vim.fn.input(result.prompt .. ": ")
 
   if name == "" then
     return { cancelled = true }
   else
     return { value = name }
   end
-end
+end)
 
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
-M["metals/executeClientCommand"] = function(_, _, resp)
-  if resp.command == "metals-goto-location" then
-    lsp.util.jump_to_location(resp.arguments[1])
-  elseif resp.command == "metals-doctor-run" then
-    local args = fn.json_decode(resp.arguments[1])
+M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
+  if result.command == "metals-goto-location" then
+    lsp.util.jump_to_location(result.arguments[1])
+  elseif result.command == "metals-doctor-run" then
+    local args = fn.json_decode(result.arguments[1])
     doctor.create(args)
-  elseif resp.command == "metals-doctor-reload" then
+  elseif result.command == "metals-doctor-reload" then
     if doctor.is_open() then
       doctor.close()
-      local args = fn.json_decode(resp.arguments[1])
+      local args = fn.json_decode(result.arguments[1])
       doctor.create(args)
     end
-  elseif resp.command == "metals-diagnostics-focus" then
+  elseif result.command == "metals-diagnostics-focus" then
     diagnostic.open_all_diagnostics()
   else
-    log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", resp.command))
+    log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end
-end
+end)
 
 -- Callback function to handle `metals/status`
 -- This simply sets a global variable `metals_status` which can be easily
 -- picked up and used in a statusline.
 -- Command and Tooltip are not covered from the spec.
 -- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
-M["metals/status"] = function(_, _, params)
-  if params.hide then
+M["metals/status"] = util.lsp_handler(function(_, result)
+  if result.hide then
     util.metals_status()
   else
-    util.metals_status(params.text)
+    util.metals_status(result.text)
   end
-end
+end)
 
 -- Function needed to implement the Decoration Protocol from Metals.
 -- - https://scalameta.org/metals/docs/integrations/decoration-protocol.html
-M["metals/publishDecorations"] = function(err, _, decorations)
+M["metals/publishDecorations"] = util.lsp_handler(function(err, result)
   if err then
     log.error_and_show("Server error while publishing decorations. Please see logs for details.")
     log.error(err.message)
   end
-  if not decorations then
+  if not result then
     return
   end
 
-  local uri = decorations.uri
+  local uri = result.uri
   local bufnr = vim.uri_to_bufnr(uri)
   if not bufnr then
     log.warn_and_show(string.format("Couldn't find buffer for %s while publishing decorations.", uri))
@@ -105,10 +105,10 @@ M["metals/publishDecorations"] = function(err, _, decorations)
   api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
   decoration.clear_hover_messages()
 
-  for _, deco in ipairs(decorations.options) do
+  for _, deco in ipairs(result.options) do
     decoration.set_decoration(bufnr, decoration_namespace, deco, decoration_color)
     decoration.store_hover_message(deco)
   end
-end
+end)
 
 return M
