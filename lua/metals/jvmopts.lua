@@ -19,6 +19,20 @@ local function exists(filename)
   return stat and stat.type or false
 end
 
+local function trim(s)
+  return s:match("^%s*(.-)%s*$")
+end
+
+local function clean(lines)
+  local cleaned = {}
+
+  for _, var in ipairs(lines) do
+    table.insert(cleaned, trim(var))
+  end
+
+  return cleaned
+end
+
 local function merge_lists(a, b)
   if b == nil then
     if a == nil then
@@ -64,11 +78,11 @@ local function read_from_file(file)
 end
 
 local function java_opts_from_env()
-  return parse_env_variable(os.getenv("JAVA_OPTS"))
+  return clean(parse_env_variable(os.getenv("JAVA_OPTS")))
 end
 
 local function java_flags_from_env()
-  return parse_env_variable(os.getenv("JAVA_FLAGS"))
+  return clean(parse_env_variable(os.getenv("JAVA_FLAGS")))
 end
 
 local function java_env()
@@ -78,8 +92,7 @@ end
 local function java_opts_from_file(workspace_root)
   if workspace_root ~= nil then
     local jvm_opts_file = path_join(workspace_root, ".jvmopts")
-    local lines = read_from_file(jvm_opts_file)
-    return lines
+    return clean(read_from_file(jvm_opts_file))
   else
     return {}
   end
