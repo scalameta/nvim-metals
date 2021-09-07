@@ -321,6 +321,11 @@ local function initialize_or_attach(config)
 
   settings.metals = config.settings or {}
 
+  -- We specifically want to enable this if a user has no preference on it.
+  if settings.metals.superMethodLensesEnabled == nil then
+    settings.metals.superMethodLensesEnabled = true
+  end
+
   -- Just so we can access these in the info command
   settings_cache = settings.metals
 
