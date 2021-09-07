@@ -345,11 +345,10 @@ memory settings for Metals, then this is the place.
 superMethodLensesEnabled                              *superMethodLensesEnabled*
 
 Type: boolean ~
-Default: false ~
+Default: true ~
 
 When enabled Metals will populate code lenses for you to navigate to the
-parent/super methods of members. This is off by default since it is expensive
-to populate.
+parent/super methods of members.
 
 ================================================================================
 OPTIONS                                                         *metals-options*
