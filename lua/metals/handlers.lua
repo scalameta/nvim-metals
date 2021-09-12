@@ -58,6 +58,22 @@ M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
     end
   elseif result.command == "metals-diagnostics-focus" then
     diagnostic.open_all_diagnostics()
+  elseif result.command == "metals-show-tasty" then
+    -- TODO see if there is a way to get structured output instead of just a string
+    local err_or_text = result.arguments[1]
+    if util.starts_with(err_or_text, "Error") then
+      log.warn_and_show("Can't find TASTy file for this file.")
+    else
+      local tasty_buffer = api.nvim_create_buf(true, true)
+      local lines = util.split_on(err_or_text, "\n")
+      api.nvim_buf_set_lines(tasty_buffer, 0, -1, false, lines)
+      -- TODO we don't have the original URI here so we just name it TASTY viewer..
+      -- not ideal but hopefully we can get the origianl URI sent with the payload to
+      -- better name the buffer and then also be able to find it again if need be.
+      api.nvim_buf_set_name(tasty_buffer, "TASTy viewer")
+      api.nvim_buf_set_option(tasty_buffer, "syntax", "scala")
+      api.nvim_win_set_buf(0, tasty_buffer)
+    end
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end
