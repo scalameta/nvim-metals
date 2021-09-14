@@ -2,6 +2,7 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
+local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
 local log = require("metals.log")
@@ -287,6 +288,60 @@ M.super_method_hierarchy = function()
     command = "metals.super-method-hierarchy",
     arguments = { { document = uri, position = text_doc_position.position } },
   })
+end
+
+M.show_semanticdb_compact = function()
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = decoder.metals_decode .. file_uri
+  local final_uri = metals_uri .. "?decoder=semanticdb&format=compact"
+  execute_command({
+    command = decoder.command,
+    arguments = { final_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder.semanticdb,
+    "compact"
+  ))
+end
+
+M.show_semanticdb_detailed = function()
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = decoder.metals_decode .. file_uri
+  local final_uri = metals_uri .. "?decoder=semanticdb"
+  execute_command({
+    command = decoder.command,
+    arguments = { final_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder.semanticdb
+  ))
+end
+
+M.show_javap = function()
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = decoder.metals_decode .. file_uri
+  local final_uri = metals_uri .. "?decoder=javap"
+  execute_command({
+    command = decoder.command,
+    arguments = { final_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder.javap
+  ))
+end
+
+M.show_javap_verbose = function()
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = decoder.metals_decode .. file_uri
+  local final_uri = metals_uri .. "?decoder=javap&verbose=true"
+  execute_command({
+    command = decoder.command,
+    arguments = { final_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder.javap,
+    "verbose"
+  ))
 end
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
