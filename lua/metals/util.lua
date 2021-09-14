@@ -273,4 +273,20 @@ function M.lsp_handler(fn)
     end
   end
 end
+
+-- So lsp_handler right above this seems to not work for some reason when I get
+-- a request. I don't really get why, but I only care about the `result` in
+-- those couple places so this is a quick fix until I truly understand what is
+-- going on there.
+function M.extract_handler_result(...)
+  local config_or_client_id = select(4, ...)
+  local is_new = type(config_or_client_id ~= "number")
+
+  if is_new then
+    return select(2, ...)
+  else
+    return select(3, ...)
+  end
+end
+
 return M
