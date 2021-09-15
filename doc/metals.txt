@@ -886,14 +886,14 @@ metals#status()           Able to be used in your statusline to show status
 
                                                                *metals#errors()*
 metals#errors()          Meant to be used with a statusline integration. This
-                         will re-use the existing |LspDiagnosticsErrorSign|
+                         will re-use the existing |LspDiagnosticsSignError|
                          and |lsp.util.buf_diagnostics_count("Error")| to
                          return a string of sign + count of errors in the
                          current buffer.
 
                                                              *metals#warnings()*
 metals#warnings()        Meant to be used with a statusline integration. This
-                         will re-use the existing |LspDiagnosticsWarningSign|
+                         will re-use the existing |LspDiagnosticsSignWarning|
                          and |lsp.util.buf_diagnostics_count("Warning")| to
                          return a string of sign + count of warnings in the
                          current buffer.
