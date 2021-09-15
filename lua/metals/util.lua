@@ -261,7 +261,7 @@ function M.lsp_handler(fn)
     local config_or_client_id = select(4, ...)
     local is_new = type(config_or_client_id) ~= "number"
     if is_new then
-      fn(...)
+      return fn(...)
     else
       local err = select(1, ...)
       local method = select(2, ...)
@@ -269,7 +269,7 @@ function M.lsp_handler(fn)
       local client_id = select(4, ...)
       local bufnr = select(5, ...)
       local config = select(6, ...)
-      fn(err, result, { method = method, client_id = client_id, bufnr = bufnr }, config)
+      return fn(err, result, { method = method, client_id = client_id, bufnr = bufnr }, config)
     end
   end
 end
