@@ -106,6 +106,11 @@ local commands_table = {
     hint = "Scan all workspace sources.",
   },
   {
+    id = "show_tasty",
+    label = "Show TASTy",
+    hint = "Show the TASTy representation of a file.",
+  },
+  {
     id = "start_ammonite",
     label = "Start Ammonite",
     hint = "Start the Ammonite build server.",

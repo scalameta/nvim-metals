@@ -58,6 +58,40 @@ M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
     end
   elseif result.command == "metals-diagnostics-focus" then
     diagnostic.open_all_diagnostics()
+  elseif result.command == "metals-show-tasty" then
+    local tasty = result.arguments[1]
+    if tasty.error then
+      log.error_and_show(tasty.error)
+    else
+      local uri_split = util.split_on(tasty.requestedUri, "/")
+      local name = uri_split[#uri_split] .. " TASTy viewer"
+      local cwd = fn.getcwd()
+
+      local exists = nil
+      local bufs = api.nvim_list_bufs()
+
+      for _, buf in pairs(bufs) do
+        local bufname = api.nvim_buf_get_name(buf)
+        local joined = util.path.join(cwd, name)
+        if bufname == joined then
+          exists = buf
+          break
+        end
+      end
+
+      local lines = util.split_on(tasty.tasty, "\n")
+
+      if exists then
+        api.nvim_buf_set_lines(exists, 0, -1, false, lines)
+        api.nvim_win_set_buf(0, exists)
+      else
+        local tasty_buffer = api.nvim_create_buf(true, true)
+        api.nvim_buf_set_lines(tasty_buffer, 0, -1, false, lines)
+        api.nvim_buf_set_name(tasty_buffer, name)
+        api.nvim_buf_set_option(tasty_buffer, "syntax", "scala")
+        api.nvim_win_set_buf(0, tasty_buffer)
+      end
+    end
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end

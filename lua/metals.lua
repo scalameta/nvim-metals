@@ -268,6 +268,11 @@ M.restart_server = function()
   end, 3000)
 end
 
+M.show_tasty = function()
+  local uri = vim.uri_from_bufnr(0)
+  execute_command({ command = "metals.show-tasty", arguments = { uri } })
+end
+
 M.start_server = function()
   if vim.g.metals_disabled_mode then
     setup.explicitly_enable()
