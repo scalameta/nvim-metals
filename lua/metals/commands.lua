@@ -41,6 +41,11 @@ local commands_table = {
     hint = "Disconnect from the current build server.",
   },
   {
+    id = "find_in_dependency_jars",
+    label = "Find in Dependency Jars",
+    hint = "Search config files in dependency jars.",
+  },
+  {
     id = "generate_bsp_config",
     label = "Generate BSP Config",
     hint = "Generate the BSP config for your build tool.",
