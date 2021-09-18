@@ -15,8 +15,8 @@ integrations with other projects such as
 [Telescope](https://github.com/nvim-telescope/telescope.nvim).
 
 <p align="center">
-    <a href="https://gitter.im/scalameta/metals-vim">
-        <img alt="link to gitter" src="https://img.shields.io/gitter/room/scalameta/metals-vim?style=flat-square">
+    <a href="https://discord.gg/FaVDrJegEh">
+        <img alt="link to discord" src="https://img.shields.io/discord/632642981228314653?style=flat-square">
     </a>
     <a href="https://github.com/scalameta/nvim-metals/blob/master/doc/metals.txt">
         <img alt="link to help docs" src="https://img.shields.io/badge/docs-%3Ah%20nvim--metals-blue?style=flat-square">
