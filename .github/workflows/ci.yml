@@ -28,10 +28,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Setup StyLua
-      run: |
-        cargo install --version 0.11.0 stylua
 
     - name: Run StyLua
-      run: |
-        make format-check
+      uses: JohnnyMorganz/stylua-action@1.0.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        version: 0.11.0
+        args: --check lua/
