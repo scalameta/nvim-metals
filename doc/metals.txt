@@ -16,8 +16,7 @@ CONTENTS                                                           *nvim-metals*
     6.  LUA API.............. |metals-lua-api|
     7.  TVP Module........... |metals-tvp-module|
     8.  Custom Handlers...... |metals-custom-handlers|
-    9.  Functions............ |metals-functions|
-    10. Integrations......... |metals-integrations|
+    9. Integrations.......... |metals-integrations|
 
 ================================================================================
 INTRODUCTION                                                *metals-introduction*
@@ -84,11 +83,10 @@ settings.
 NOTE: It's highly recommended to set your `statusBarProvider` to `on`. This
 enables `metals/status` and also other helpful messages that are shown to you.
 However, to enable this you _must_ have the metals status shown in your status
-bar somehow. This can be achieved by using the provided |metals#status()| function, or
-by just accessing it with Lua via `vim.g['metals_status']`. Everything will
-still work without this, but the status messages and feedback that you will
-get will be much less. You can enable the `statusBarProvider` like shown
-below: >
+bar somehow. This can be achieved by just accessing it with Lua via
+`vim.g['metals_status']`. Everything will still work without this, but the
+status messages and feedback that you will get will be much less. You can
+enable the `statusBarProvider` like shown below: >
 
   metals_config = require("metals").bare_config
   metals_config.init_options.statusBarProvider = "on"
@@ -870,33 +868,6 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsquickpick
 The spec for this can be found here:
 
 https://scalameta.org/metals/docs/integrations/new-editor/#metalsexecuteclientcommand
-
-================================================================================
-FUNCTIONS                                                     *metals-functions*
-
-nvim-metals provides a few functions that can be used in your statusline in
-order to show Errors, Warnings, and Metals status.
-
-                                                               *metals#status()*
-metals#status()           Able to be used in your statusline to show status
-                          messages from Metals. In order for this to be set,
-                          you need to ensure that |statusBarProvider| is set
-                          to |on|, and the |metals/status| callback is set to
-                          |metals_status|.
-
-                                                               *metals#errors()*
-metals#errors()          Meant to be used with a statusline integration. This
-                         will re-use the existing |LspDiagnosticsSignError|
-                         and |lsp.util.buf_diagnostics_count("Error")| to
-                         return a string of sign + count of errors in the
-                         current buffer.
-
-                                                             *metals#warnings()*
-metals#warnings()        Meant to be used with a statusline integration. This
-                         will re-use the existing |LspDiagnosticsSignWarning|
-                         and |lsp.util.buf_diagnostics_count("Warning")| to
-                         return a string of sign + count of warnings in the
-                         current buffer.
 
 ================================================================================
 INTEGRATIONS                                               *metals-integrations*
