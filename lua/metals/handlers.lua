@@ -79,7 +79,7 @@ M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
         end
       end
 
-      local lines = util.split_on(tasty.tasty, "\n")
+      local lines = util.split_on(tasty.value, "\n")
 
       if exists then
         api.nvim_buf_set_lines(exists, 0, -1, false, lines)

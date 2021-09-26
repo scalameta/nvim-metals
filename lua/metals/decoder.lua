@@ -46,6 +46,7 @@ local make_handler = function(uri, decoder, format)
           api.nvim_buf_set_lines(new_buffer, 0, -1, false, lines)
           api.nvim_buf_set_name(new_buffer, name)
           -- TODO do we want to set this for everything?
+          -- TODO if this is a javap decoder, maybe we should set it to java
           api.nvim_buf_set_option(new_buffer, "syntax", "scala")
           api.nvim_win_set_buf(0, new_buffer)
         end

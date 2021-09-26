@@ -270,8 +270,9 @@ M.restart_server = function()
 end
 
 M.show_tasty = function()
-  local uri = vim.uri_from_bufnr(0)
-  execute_command({ command = "metals.show-tasty", arguments = { uri } })
+  -- TODO don't send in URI, send in textDocumentPositionParams
+  local text_doc_position = lsp.util.make_position_params()
+  execute_command({ command = "metals.show-tasty", arguments = { text_doc_position } })
 end
 
 M.start_server = function()
