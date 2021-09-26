@@ -126,6 +126,11 @@ local commands_table = {
     hint = "Show detailed Semanticdb from current file.",
   },
   {
+    id = "show_semanticdb_proto",
+    label = "Show proto semanticdb",
+    hint = "Show proto Semanticdb from current file.",
+  },
+  {
     id = "show_tasty",
     label = "Show TASTy",
     hint = "Show the TASTy representation of a file.",

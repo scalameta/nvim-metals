@@ -24,7 +24,7 @@ local handle_decoder_response = function(result, uri, decoder, format)
     for _, buf in pairs(bufs) do
       local bufname = api.nvim_buf_get_name(buf)
       local joined = util.path.join(cwd, name)
-      if bufname == joined then
+      if bufname == joined and api.nvim_buf_is_loaded(buf) then
         exists = buf
         break
       end
@@ -40,9 +40,13 @@ local handle_decoder_response = function(result, uri, decoder, format)
       local new_buffer = api.nvim_create_buf(true, true)
       api.nvim_buf_set_lines(new_buffer, 0, -1, false, lines)
       api.nvim_buf_set_name(new_buffer, name)
-      -- TODO do we want to set this for everything?
-      -- TODO if this is a javap decoder, maybe we should set it to java
-      api.nvim_buf_set_option(new_buffer, "syntax", "scala")
+      -- TODO we should probably do something better for this case, but java is
+      -- a bit nicer syntax for these than scala
+      if decoder == "javap" then
+        api.nvim_buf_set_option(new_buffer, "syntax", "java")
+      else
+        api.nvim_buf_set_option(new_buffer, "syntax", "scala")
+      end
       api.nvim_win_set_buf(0, new_buffer)
     end
   end

@@ -291,31 +291,34 @@ M.super_method_hierarchy = function()
   })
 end
 
+local function show_semanticdb(format)
+  if format == nil then
+    log.error_and_show("Must provide a format to return semanticdb in")
+  else
+    local file_uri = vim.uri_from_bufnr(0)
+    local metals_uri = decoder.metals_decode .. file_uri
+    local final_uri = metals_uri .. "?decoder=semanticdb&format=" .. format
+    execute_command({
+      command = decoder.command,
+      arguments = { final_uri },
+    }, decoder.make_handler(
+      file_uri,
+      decoder.semanticdb,
+      format
+    ))
+  end
+end
+
 M.show_semanticdb_compact = function()
-  local file_uri = vim.uri_from_bufnr(0)
-  local metals_uri = decoder.metals_decode .. file_uri
-  local final_uri = metals_uri .. "?decoder=semanticdb&format=compact"
-  execute_command({
-    command = decoder.command,
-    arguments = { final_uri },
-  }, decoder.make_handler(
-    file_uri,
-    decoder.semanticdb,
-    "compact"
-  ))
+  show_semanticdb("compact")
 end
 
 M.show_semanticdb_detailed = function()
-  local file_uri = vim.uri_from_bufnr(0)
-  local metals_uri = decoder.metals_decode .. file_uri
-  local final_uri = metals_uri .. "?decoder=semanticdb"
-  execute_command({
-    command = decoder.command,
-    arguments = { final_uri },
-  }, decoder.make_handler(
-    file_uri,
-    decoder.semanticdb
-  ))
+  show_semanticdb("detailed")
+end
+
+M.show_semanticdb_proto = function()
+  show_semanticdb("proto")
 end
 
 M.show_javap = function()
@@ -327,7 +330,8 @@ M.show_javap = function()
     arguments = { final_uri },
   }, decoder.make_handler(
     file_uri,
-    decoder.javap
+    decoder.javap,
+    "compact"
   ))
 end
 
