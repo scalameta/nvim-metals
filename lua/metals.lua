@@ -2,6 +2,7 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
+local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
 local log = require("metals.log")
@@ -269,8 +270,9 @@ M.restart_server = function()
 end
 
 M.show_tasty = function()
-  local uri = vim.uri_from_bufnr(0)
-  execute_command({ command = "metals.show-tasty", arguments = { uri } })
+  -- TODO don't send in URI, send in textDocumentPositionParams
+  local text_doc_position = lsp.util.make_position_params()
+  execute_command({ command = "metals.show-tasty", arguments = { text_doc_position } })
 end
 
 M.start_server = function()
@@ -287,6 +289,64 @@ M.super_method_hierarchy = function()
     command = "metals.super-method-hierarchy",
     arguments = { { document = uri, position = text_doc_position.position } },
   })
+end
+
+local function show_semanticdb(format)
+  if format == nil then
+    log.error_and_show("Must provide a format to return semanticdb in")
+  else
+    local file_uri = vim.uri_from_bufnr(0)
+    local metals_uri = decoder.metals_decode .. file_uri
+    local final_uri = metals_uri .. "?decoder=semanticdb&format=" .. format
+    execute_command({
+      command = decoder.command,
+      arguments = { final_uri },
+    }, decoder.make_handler(
+      file_uri,
+      decoder.semanticdb,
+      format
+    ))
+  end
+end
+
+M.show_semanticdb_compact = function()
+  show_semanticdb("compact")
+end
+
+M.show_semanticdb_detailed = function()
+  show_semanticdb("detailed")
+end
+
+M.show_semanticdb_proto = function()
+  show_semanticdb("proto")
+end
+
+M.show_javap = function()
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = decoder.metals_decode .. file_uri
+  local final_uri = metals_uri .. "?decoder=javap"
+  execute_command({
+    command = decoder.command,
+    arguments = { final_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder.javap,
+    "compact"
+  ))
+end
+
+M.show_javap_verbose = function()
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = decoder.metals_decode .. file_uri
+  local final_uri = metals_uri .. "?decoder=javap&verbose=true"
+  execute_command({
+    command = decoder.command,
+    arguments = { final_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder.javap,
+    "verbose"
+  ))
 end
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's

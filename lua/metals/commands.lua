@@ -106,6 +106,31 @@ local commands_table = {
     hint = "Scan all workspace sources.",
   },
   {
+    id = "show_javap",
+    label = "Show decompiled",
+    hint = "Show file decompiled with javap.",
+  },
+  {
+    id = "show_javap_verbose",
+    label = "Show verbose decompiled",
+    hint = "Show file verbosely decompiled with javap.",
+  },
+  {
+    id = "show_semanticdb_compact",
+    label = "Show compact semanticdb",
+    hint = "Show compact Semanticdb from current file.",
+  },
+  {
+    id = "show_semanticdb_detailed",
+    label = "Show detailed semanticdb",
+    hint = "Show detailed Semanticdb from current file.",
+  },
+  {
+    id = "show_semanticdb_proto",
+    label = "Show proto semanticdb",
+    hint = "Show proto Semanticdb from current file.",
+  },
+  {
     id = "show_tasty",
     label = "Show TASTy",
     hint = "Show the TASTy representation of a file.",
