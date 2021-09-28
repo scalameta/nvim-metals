@@ -10,8 +10,12 @@ local function filename_from_uri(full_uri)
 end
 
 local handle_decoder_response = function(result, uri, decoder, format)
-  if result.error then
-    log.error_and_show(result.error)
+  -- NOTE: Sort of a temporary hack until this gets fixed. I
+  -- often get "Error: class not found" returned as a valid
+  -- result. Since that's not, we capture it and error on it.
+  if result.error or util.starts_with(result.value, "Error: class not found:") then
+    local err = result.err or result.value
+    log.error_and_show(err)
   else
     local filename = filename_from_uri(uri)
     local name = string.format("%s %s %s viewer", filename, format or "", decoder)
