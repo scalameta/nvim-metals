@@ -1,7 +1,12 @@
 local api = vim.api
 local lsp = vim.lsp
 
-local ui = require("metals.ui")
+local log = require("metals.log")
+local has_plenary, Float = pcall(require, "plenary.window.float")
+
+if not has_plenary then
+  log.warn_and_show("Some features won't work without plenary installed. Please install nvim-lua/plenary.nvim")
+end
 
 --- Module meant to control the Metals doctor.
 --- It doesn't do a whole lot except create the doctor, and only
@@ -62,9 +67,13 @@ Doctor.create = function(args)
     end
   end
 
-  local win_id = ui.make_float_with_borders(output, args.title)
-  doctor_win_id = win_id
-  vim.lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, win_id)
+  --local win_id = ui.make_float_with_borders(output, args.title)
+  --doctor_win_id = win_id
+
+  local float = Float.percentage_range_window(0.8, 0.6, {}, { title = args.title })
+  api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
+  doctor_win_id = float.win_id
+  vim.lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, float.win_id)
 end
 
 return Doctor

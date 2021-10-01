@@ -42,6 +42,9 @@ integrations with other projects such as
     there, but not automatically mapped. You can find a minimal example
     configuration
     [here](https://github.com/scalameta/nvim-metals/discussions/39).
+- This plugin relies on [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+    which you're more than likely already relying on for other plugins. However,
+    make sure to also have this installed.
 
 ## Installation
 
@@ -56,7 +59,7 @@ it.
 example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use({'scalameta/nvim-metals'})
+use({'scalameta/nvim-metals'}, requires = { "nvim-lua/plenary.nvim" })
 ```
 
 ## Getting started
