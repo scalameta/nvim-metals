@@ -45,6 +45,26 @@ install stylua`.
 
 After installed you can just use the commands in the Makefile to use them.
 
+## Other Libraries / Integrations
+
+`nvim-metals` utilizes
+[`nvim-lua/plenary.nvim`](https://github.com/nvim-lua/plenary.nvim) for a few
+things such as popups, jobs, and some utility methods. You can check out that
+project for _some_ documentation, but you'll need to dig into the code a bit to
+see what's going on.
+
+Debugging support in `nvim-metals` is provided by
+[`mfussenegger/nvim-dap`](https://github.com/mfussenegger/nvim-dap/blob/master/doc/dap.txt).
+Please read the docs over there if you are every working on debugging related
+stuff with as they are pretty thorough and insightful. Mathias does a great job
+at making sure his stuff is stable and documented.
+
+The metals commands are also available as a
+[telescope](https://github.com/nvim-telescope/telescope.nvim) extension. The
+code for this is pretty self contained and can be found in
+`https://github.com/scalameta/nvim-metals/tree/main/lua/telescope/_extensions`.
+
+
 ## Logging
 
 A helpful part of seeing what's going on when working on stuff is the various
