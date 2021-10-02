@@ -1,7 +1,6 @@
 local api = vim.api
 local lsp = vim.lsp
 local fn = vim.fn
-local uv = vim.loop
 
 local commands_table = require("metals.commands").commands_table
 local default_handlers = require("metals.handlers")
@@ -10,6 +9,12 @@ local tvp = require("metals.tvp")
 local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
+
+local has_plenary, Job = pcall(require, "plenary.job")
+
+if not has_plenary then
+  log.warn_and_show("Plenary is now required for nvim-metals. Please install nvim-lua/plenary.nvim")
+end
 
 local lsps = {}
 
@@ -98,26 +103,6 @@ local function install_or_update()
   end
 
   util.metals_status("Installing Metals...")
-  local stdin = uv.new_pipe(false)
-  local stdout = uv.new_pipe(false)
-  local stderr = uv.new_pipe(false)
-
-  local logOutAndError = vim.schedule_wrap(function(err, data)
-    if err then
-      log.error_and_show("Something went wrong with the Metals install. Please check the logs.")
-      log.error(err)
-    elseif data then
-      if data:find("Resolution error") then
-        Coursier_handle:close()
-        log.error_and_show("Unable to pull something down during the Metals install. Please check the logs.")
-        log.error(data)
-        util.metals_status()
-      else
-        log.info(data)
-        util.metals_status(data)
-      end
-    end
-  end)
 
   local args = {
     "bootstrap",
@@ -135,20 +120,36 @@ local function install_or_update()
     "-f",
   }
 
-  Coursier_handle = uv.spawn(
-    check_for_coursier(),
-    { args = args, stdio = { stdin, stdout, stderr } },
-    vim.schedule_wrap(function(code)
-      Coursier_handle:close()
-      if code == 0 then
-        util.metals_status("Metals installed!")
-        log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
-      end
-    end)
-  )
-
-  uv.read_start(stdout, logOutAndError)
-  uv.read_start(stderr, logOutAndError)
+  Job
+    :new({
+      command = coursier_exe,
+      args = args,
+      on_exit = vim.schedule_wrap(function(_, exit)
+        if exit == 0 then
+          util.metals_status("Metals installed!")
+          log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
+        else
+          log.error_and_show("Something went wrong with the Metals install. Please check the logs.")
+          util.metals_status("Install failed!")
+        end
+      end),
+      on_stdout = vim.schedule_wrap(function(err, data)
+        if err then
+          log.error_and_show(err)
+        else
+          util.metals_status(data)
+        end
+      end),
+      on_stderr = vim.schedule_wrap(function(err, data)
+        if err then
+          log.error_and_show(err)
+        else
+          util.metals_status(data)
+          log.info(data)
+        end
+      end),
+    })
+    :start()
 end
 
 -- A bare config to use to be passed into initialize_or_attach.
