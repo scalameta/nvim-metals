@@ -13,7 +13,7 @@ local util = require("metals.util")
 local has_plenary, Float = pcall(require, "plenary.window.float")
 
 if not has_plenary then
-  log.warn_and_show("Some features won't work without plenary installed. Please install nvim-lua/plenary.nvim")
+  log.warn_and_show("Plenary is now required for nvim-metals. Please install nvim-lua/plenary.nvim")
 end
 
 local M = {}
