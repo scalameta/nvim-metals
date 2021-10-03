@@ -370,6 +370,10 @@ M.show_javap_verbose = function()
   ))
 end
 
+M.type_of_range = function()
+  vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_given_range_params())
+end
+
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.bare_config = setup.bare_config
