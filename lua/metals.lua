@@ -290,10 +290,45 @@ M.restart_server = function()
   end, 3000)
 end
 
+local function show_decoded(decoder_type, format)
+  local _format = ""
+  if format then
+    _format = "-" .. format
+  end
+  local file_uri = vim.uri_from_bufnr(0)
+  local metals_uri = string.format("%s:%s.%s%s", decoder.metals_decode, file_uri, decoder_type, _format)
+  execute_command({
+    command = decoder.command,
+    arguments = { metals_uri },
+  }, decoder.make_handler(
+    file_uri,
+    decoder_type,
+    format
+  ))
+end
+
 M.show_tasty = function()
-  -- TODO don't send in URI, send in textDocumentPositionParams
-  local text_doc_position = lsp.util.make_position_params()
-  execute_command({ command = "metals.show-tasty", arguments = { text_doc_position } })
+  show_decoded(decoder.types.tasty, decoder.formats.detailed)
+end
+
+M.show_semanticdb_compact = function()
+  show_decoded(decoder.types.semanticdb, decoder.formats.compact)
+end
+
+M.show_semanticdb_detailed = function()
+  show_decoded(decoder.types.semanticdb, decoder.formats.detailed)
+end
+
+M.show_semanticdb_proto = function()
+  show_decoded(decoder.types.semanticdb, decoder.formats.proto)
+end
+
+M.show_javap = function()
+  show_decoded(decoder.types.javap)
+end
+
+M.show_javap_verbose = function()
+  show_decoded(decoder.types.javap, decoder.formats.verbose)
 end
 
 M.start_server = function()
@@ -310,64 +345,6 @@ M.super_method_hierarchy = function()
     command = "metals.super-method-hierarchy",
     arguments = { { document = uri, position = text_doc_position.position } },
   })
-end
-
-local function show_semanticdb(format)
-  if format == nil then
-    log.error_and_show("Must provide a format to return semanticdb in")
-  else
-    local file_uri = vim.uri_from_bufnr(0)
-    local metals_uri = decoder.metals_decode .. file_uri
-    local final_uri = metals_uri .. "?decoder=semanticdb&format=" .. format
-    execute_command({
-      command = decoder.command,
-      arguments = { final_uri },
-    }, decoder.make_handler(
-      file_uri,
-      decoder.semanticdb,
-      format
-    ))
-  end
-end
-
-M.show_semanticdb_compact = function()
-  show_semanticdb("compact")
-end
-
-M.show_semanticdb_detailed = function()
-  show_semanticdb("detailed")
-end
-
-M.show_semanticdb_proto = function()
-  show_semanticdb("proto")
-end
-
-M.show_javap = function()
-  local file_uri = vim.uri_from_bufnr(0)
-  local metals_uri = decoder.metals_decode .. file_uri
-  local final_uri = metals_uri .. "?decoder=javap"
-  execute_command({
-    command = decoder.command,
-    arguments = { final_uri },
-  }, decoder.make_handler(
-    file_uri,
-    decoder.javap,
-    "compact"
-  ))
-end
-
-M.show_javap_verbose = function()
-  local file_uri = vim.uri_from_bufnr(0)
-  local metals_uri = decoder.metals_decode .. file_uri
-  local final_uri = metals_uri .. "?decoder=javap&verbose=true"
-  execute_command({
-    command = decoder.command,
-    arguments = { final_uri },
-  }, decoder.make_handler(
-    file_uri,
-    decoder.javap,
-    "verbose"
-  ))
 end
 
 M.type_of_range = function()

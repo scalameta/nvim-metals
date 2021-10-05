@@ -10,11 +10,10 @@ local function filename_from_uri(full_uri)
 end
 
 local handle_decoder_response = function(result, uri, decoder, format)
-  -- NOTE: Sort of a temporary hack until this gets fixed. I
-  -- often get "Error: class not found" returned as a valid
-  -- result. Since that's not, we capture it and error on it.
+  -- There is a situation where javap can correctly run, but not find the
+  -- class. Just to catch that odd case we have this in here.
   if result.error or util.starts_with(result.value, "Error: class not found:") then
-    local err = result.err or result.value
+    local err = result.error or result.value
     log.error_and_show(err)
   else
     local filename = filename_from_uri(uri)
@@ -69,9 +68,19 @@ end
 
 return {
   command = "metals.file-decode",
-  javap = "javap",
+  formats = {
+    compact = "compact",
+    -- TODO do we really need to have both verbse and detailed on the client side?
+    detailed = "detailed",
+    proto = "proto",
+    verbose = "verbose",
+  },
   handle_decoder_response = handle_decoder_response,
   make_handler = make_handler,
-  metals_decode = "metalsDecode:",
-  semanticdb = "semanticdb",
+  metals_decode = "metalsDecode",
+  types = {
+    javap = "javap",
+    semanticdb = "semanticdb",
+    tasty = "tasty",
+  },
 }
