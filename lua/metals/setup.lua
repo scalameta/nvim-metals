@@ -348,7 +348,12 @@ local function initialize_or_attach(config)
     end
   end
 
-  local passed_in_options = config.settings.serverProperties or {}
+  local passed_in_options = {}
+
+  if config.settings and config.settings.serverProperties then
+    passed_in_options = config.settings.serverProperties
+  end
+
   local all_opts = util.merge_lists(passed_in_options, valid_java_opts)
 
   for i, opt in ipairs(all_opts) do
