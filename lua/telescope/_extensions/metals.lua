@@ -13,11 +13,11 @@ end
 
 local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
+local conf = require("telescope.config").values
 local entry_display = require("telescope.pickers.entry_display")
 local finders = require("telescope.finders")
 local themes = require("telescope.themes")
 local pickers = require("telescope.pickers")
-local sorters = require("telescope.sorters")
 
 local function execute_command(bufnr)
   local selection = action_state.get_selected_entry(bufnr)
@@ -81,7 +81,7 @@ local function commands(opts)
       results = commands_table,
       entry_maker = command_entry_maker(get_max_width(commands_table)),
     }),
-    sorter = sorters.get_generic_fuzzy_sorter(),
+    sorter = conf.generic_sorter(opts),
     attach_mappings = function(_, map)
       map("i", "<CR>", execute_command)
       map("n", "<CR>", execute_command)
