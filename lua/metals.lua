@@ -308,7 +308,7 @@ local function show_decoded(decoder_type, format)
 end
 
 M.show_tasty = function()
-  show_decoded(decoder.types.tasty, decoder.formats.detailed)
+  show_decoded(decoder.types.tasty, decoder.formats.decoded)
 end
 
 M.show_semanticdb_compact = function()

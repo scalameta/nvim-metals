@@ -70,7 +70,7 @@ return {
   command = "metals.file-decode",
   formats = {
     compact = "compact",
-    -- TODO do we really need to have both verbse and detailed on the client side?
+    decoded = "decoded",
     detailed = "detailed",
     proto = "proto",
     verbose = "verbose",
