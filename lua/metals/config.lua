@@ -167,6 +167,7 @@ local function validate_config(config, bufnr)
   end
 
   settings.metals = config.settings or {}
+  config.settings = settings
 
   -- We specifically want to enable this if a user has no preference on it.
   if settings.metals.superMethodLensesEnabled == nil then
@@ -236,6 +237,7 @@ return {
   get_config_cache = get_config_cache,
   get_settings_cache = get_settings_cache,
   metals_bin = metals_bin,
+  metals_init_options = metals_init_options,
   scala_file_types = scala_file_types,
   validate_config = validate_config,
   valid_metals_settings = valid_metals_settings,
