@@ -236,6 +236,19 @@ M.did_focus = function()
   end)
 end
 
+M.find_in_dependency_jars = function()
+  local mask = fn.input("File mask: ", ".conf")
+  local query = vim.fn.input("Query: ")
+  if not query or #query == 0 then
+    return
+  else
+    lsp.buf_request(0, "metals/findTextInDependencyJars", {
+      options = { include = mask },
+      query = { pattern = query },
+    })
+  end
+end
+
 M.organize_imports = function()
   local params = lsp.util.make_range_params()
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }

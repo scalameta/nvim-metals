@@ -115,4 +115,25 @@ M["metals/publishDecorations"] = util.lsp_handler(function(err, result)
   end
 end)
 
+M["metals/findTextInDependencyJars"] = util.lsp_handler(function(_, result, ctx, config)
+  if not result or vim.tbl_isempty(result) then
+    vim.notify("Nothing found in jars files.")
+  else
+    config = config or {}
+    if config.loclist then
+      vim.fn.setloclist(0, {}, " ", {
+        title = "Language Server",
+        items = lsp.util.locations_to_items(result, ctx.bufnr),
+      })
+      api.nvim_command("lopen")
+    else
+      vim.fn.setqflist({}, " ", {
+        title = "Language Server",
+        items = lsp.util.locations_to_items(result, ctx.bufnr),
+      })
+      api.nvim_command("copen")
+    end
+  end
+end)
+
 return M
