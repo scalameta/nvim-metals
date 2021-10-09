@@ -51,9 +51,9 @@ local commands_table = {
     hint = "Generate the BSP config for your build tool.",
   },
   {
-    id = "info",
-    label = "Info",
-    hint = "Open Metals info window.",
+    id = "import_build",
+    label = "Import Build",
+    hint = "Import the current build.",
   },
   {
     id = "install",
@@ -61,9 +61,9 @@ local commands_table = {
     hint = "Install Metals.",
   },
   {
-    id = "import_build",
-    label = "Import Build",
-    hint = "Import the current build.",
+    id = "info",
+    label = "Info",
+    hint = "Open Metals info window.",
   },
   {
     id = "new_scala_file",

@@ -417,10 +417,11 @@ The following commands are provided by nvim-metals:
   * |MetalsConnectBuild|
   * |MetalsCopyWorksheetOutput|
   * |MetalsDisconnectBuild|
+  * |MetalsFindInDependencyJars|
   * |MetalsGenerateBspConfig|
   * |MetalsImportBuild|
-  * |MetalsInfo|
   * |MetalsInstall|
+  * |MetalsInfo|
   * |MetalsNewScalaFile|
   * |MetalsNewScalaProject|
   * |MetalsOrganizeImports|
@@ -430,6 +431,12 @@ The following commands are provided by nvim-metals:
   * |MetalsRestartServer|
   * |MetalsRunDoctor|
   * |MetalsScanSources|
+  * |MetalsShowJavap|
+  * |MetalsShowJavapVerbose|
+  * |MetalsShowSemanticdbCompact|
+  * |MetalsShowSemanticdbDetailed|
+  * |MetalsShowSemanticdbProto|
+  * |MetalsShowTasty|
   * |MetalsStartAmmonite|
   * |MetalsStartServer|
   * |MetalsStopAmmonite|
@@ -469,6 +476,14 @@ MetalsCopyWorksheetOutput    Copy the contents of a worksheet to your local
                                                          *MetalsDisconnectBuild*
 MetalsDisconnectBuild        Manually disconnect from the build server without
                              reconnecting.
+
+                                                    *MetalsFindInDependencyJars*
+MetalsFindInDependencyJars  Used to find values in dependency jar files. Note
+                            that this differs from global symbol search in
+                            that it looks through a specific filetype given a
+                            mask. The default masks is `.conf`. This is useful
+                            to search through configuration files that your
+                            dependencies mayb be brining in.
 
                                                        *MetalsGenerateBspConfig*
 MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
@@ -541,6 +556,26 @@ MetalsRunDoctor                 Run Metals Doctor, which will open a floating
 
                                                              *MetalsScanSources*
 MetalsScanSources            Scan all workspaces sources.
+
+                                                               *MetalsShowJavap*
+MetalsShowJavap              Show the compact output of javap for the given
+                             file you're in.
+
+                                                        *MetalsShowJavapVerbose*
+MetalsShowJavapVerbose       Show the verbose output of javap for the given file
+                             you're in.
+
+                                                   *MetalsShowSemanticdbCompact*
+MetalsShowSemanticdbCompact  Show the compact SemanticDB of the given file you
+                             are in.
+
+                                                  *MetalsShowSemanticdbDetailed*
+MetalsShowSemanticdbDetailed Show the detailed SemanticDB of the given file you
+                             are in.
+
+                                                     *MetalsShowSemanticdbProto*
+MetalsShowSemanticdbProto    Show the proto SemanticDB of the given file you
+                             are in.
 
                                                            *MetalsStartAmmonite*
 MetalsStartAmmonite          Start the Ammonite BSP Server.
@@ -625,6 +660,10 @@ disconnect_build()        Use to execute a |metals.build-disconnect| command.
 
                                                          *generate_bsp_config()*
 generate_bsp_config()     Use to execute a |metals.generate-bsp-config| command.
+
+                                                     *find_in_dependency_jars()*
+find_in_dependency_jars() Use to send in a `meatls/findTextInDependencyJars`
+                          request to the server.
 
                                                              *hover_worksheet()*
 hover_worksheet()         Use to expand the decoration to show the full hover
