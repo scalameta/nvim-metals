@@ -16,10 +16,17 @@ off to make sure they aren't better there:
   - [ ] [Metals](https://github.com/scalameta/metals) - Something you may want
       may simply not exist in Metals yet, or the actual issue may not be with
       `nvim-metals`, but in Metals itself.
+  - [ ] [`scalacenter/scala-debug-adapter`](https://github.com/scalacenter/scala-debug-adapter) -
+      If the behavior you're seeing while debugging is unexpected, for example
+      an error while doing expression evaluation in the DAP REPL then this may
+      be an issue with `scala-debug-adapter`, which Metals uses indirectly from
+      the build servers that support DAP.
+  - [ ] [`mfussenegger/nvim-dap`](https://github.com/mfussenegger/nvim-dap) -
+      If you are looking for more functionality while debugging in
+      `nvim-metals`, this is implemented in `nvim-dap`, so the change might need
+      to be made there.
 
 ## Developing locally
-
-The process of developing nvim-metals locally should be pretty pain-free.
 
   - `git clone git@github.com:scalameta/nvim-metals.git`
   - Load up the plugin to test what you're doing. There are basically two ways
@@ -45,13 +52,21 @@ install stylua`.
 
 After installed you can just use the commands in the Makefile to use them.
 
+## Testing
+
+You can find the tests that exist for `nvim-metals` in the `tests/` directory.
+These are ran using the
+[`plenary.test_harness`](https://github.com/nvim-lua/plenary.nvim/tree/master#plenarytest_harness).
+It's useful to give the plenary page a read about this to better understand what
+is happening, but to run the tests you'll just need to `make test`.
+
 ## Other Libraries / Integrations
 
 `nvim-metals` utilizes
 [`nvim-lua/plenary.nvim`](https://github.com/nvim-lua/plenary.nvim) for a few
 things such as popups, jobs, and some utility methods. You can check out that
 project for _some_ documentation, but you'll need to dig into the code a bit to
-see what's going on.
+see what's going on. We also use this for testing.
 
 Debugging support in `nvim-metals` is provided by
 [`mfussenegger/nvim-dap`](https://github.com/mfussenegger/nvim-dap/blob/master/doc/dap.txt).

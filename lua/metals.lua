@@ -2,6 +2,7 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
+local conf = require("metals.config")
 local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
@@ -118,19 +119,19 @@ end
 -- Capture info about the currently installed Metals and display it in a
 -- floating window.
 M.info = function()
-  if not util.has_bins(setup.metals_bin()) and vim.g.metals_use_global_executable then
+  if not util.has_bins(conf.metals_bin()) and vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_but_cant_find)
-  elseif not util.has_bins(setup.metals_bin()) then
+  elseif not util.has_bins(conf.metals_bin()) then
     log.warn_and_show(messages.metals_not_installed)
   else
-    local metals_info = fn.system(setup.metals_bin() .. " --version")
+    local metals_info = fn.system(conf.metals_bin() .. " --version")
 
     local output = {}
     for s in metals_info:gmatch("[^\r\n]+") do
       table.insert(output, s)
     end
 
-    local settings = setup.get_settings_cache()
+    local settings = conf.get_settings_cache()
     if settings then
       table.insert(output, "")
       table.insert(output, "## Current settings")
@@ -146,7 +147,7 @@ M.info = function()
     if vim.g.metals_use_global_executable then
       table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
     else
-      table.insert(output, string.format("%s %s", loc_msg, setup.metals_bin()))
+      table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))
     end
     table.insert(output, "")
     table.insert(output, "## Helpful links")
@@ -273,7 +274,7 @@ end
 -- delay for 3 seconds, and then reconnect.
 M.restart_server = function()
   for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
-    if vim.tbl_contains(setup.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
+    if vim.tbl_contains(conf.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
       local clients = lsp.buf_get_clients(buf.bufnr)
       for _, client in ipairs(clients) do
         if client.config.name == "metals" then
@@ -384,12 +385,12 @@ M.setup_dap = function()
 end
 
 M.toggle_setting = function(setting)
-  if not vim.tbl_contains(setup.valid_metals_settings, setting) then
+  if not vim.tbl_contains(conf.valid_metals_settings, setting) then
     log.warn_and_show(string.format("%s is not a valid metals settings. Doing nothing.", setting))
   elseif not type(setting) == "boolean" then
     log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
   else
-    local settings = setup.get_settings_cache()
+    local settings = conf.get_settings_cache()
     if settings[setting] == nil then
       settings[setting] = true
     else
