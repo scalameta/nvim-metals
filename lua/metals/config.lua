@@ -150,31 +150,36 @@ local function validate_config(config, bufnr)
     config.init_options = vim.tbl_deep_extend("force", metals_init_options, config.init_options)
   end
 
-  local settings = { metals = {} }
-
-  if config.settings then
-    for k, _ in pairs(config.settings) do
-      if not vim.tbl_contains(valid_metals_settings, k) then
-        local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
-        local valid_settings = string.format(
-          "The following are valid settings %s",
-          table.concat(valid_metals_settings, ", ")
-        )
-        local err = heading .. "\n" .. valid_settings
-        log.warn_and_show(err)
+  if settings_cache then
+    -- In this scenario the settings have already been checked and the server has probably
+    -- been restarted meaning that the metals keys has been added the first time around.
+    -- So we skep the check here
+    config.settings = settings_cache
+  else
+    if config.settings then
+      for k, _ in pairs(config.settings) do
+        if not vim.tbl_contains(valid_metals_settings, k) then
+          local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
+          local valid_settings = string.format(
+            "The following are valid settings %s",
+            table.concat(valid_metals_settings, ", ")
+          )
+          local err = heading .. "\n" .. valid_settings
+          log.warn_and_show(err)
+        end
       end
     end
+
+    local settings = { metals = {} }
+    settings.metals = config.settings or {}
+    config.settings = settings
+
+    -- We specifically want to enable this if a user has no preference on it.
+    if settings.metals.superMethodLensesEnabled == nil then
+      settings.metals.superMethodLensesEnabled = true
+    end
+    settings_cache = settings.metals
   end
-
-  settings.metals = config.settings or {}
-  config.settings = settings
-
-  -- We specifically want to enable this if a user has no preference on it.
-  if settings.metals.superMethodLensesEnabled == nil then
-    settings.metals.superMethodLensesEnabled = true
-  end
-
-  settings_cache = settings.metals
 
   local java_opts = jvmopts.java_opts(config.root_dir)
 
@@ -216,7 +221,7 @@ local function validate_config(config, bufnr)
   config.filetypes = { "sbt", "scala" }
 
   config.on_init = function(client, _)
-    return client.notify("workspace/didChangeConfiguration", { settings = settings })
+    return client.notify("workspace/didChangeConfiguration", { settings = config.settings })
   end
 
   if not config.on_attach then

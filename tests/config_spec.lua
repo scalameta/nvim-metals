@@ -23,6 +23,7 @@ describe("config", function()
   local current_buf = api.nvim_get_current_buf()
   local config = require("metals.config")
   before_each(function()
+    package.loaded["metals.config"] = nil
     config = require("metals.config")
   end)
   it("should handle an empty table", function()
@@ -34,5 +35,19 @@ describe("config", function()
 
     local valid_config = config.validate_config(bare_config, current_buf)
     base_asserts(valid_config)
+  end)
+  it("should persist the config in cache", function()
+    local bare_config = require("metals.setup").bare_config
+    bare_config.settings = {
+      showImplicitArguments = true,
+    }
+
+    local valid_config = config.validate_config(bare_config, current_buf)
+
+    eq(valid_config.settings, { metals = { superMethodLensesEnabled = true, showImplicitArguments = true } })
+
+    local cache = config.get_config_cache()
+
+    eq(valid_config, cache)
   end)
 end)
