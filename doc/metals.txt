@@ -818,6 +818,17 @@ toggle_setting({setting})
     lua require("metals").toggle_setting("showImplicitArguments")
 <
 
+                                                               *type_of_range()*
+type_of_range()           Use to get the type of the selected range. NOTE that
+                          the mapping for this requires an `<Esc>` before the
+                          actual mapping to ensure that the last correct range
+                          is used.
+
+                          Example usage: >
+
+  api.nvim_set_keymap("v", "K", [[<Esc><cmd>lua require("metals").type_of_range()<CR>]])
+
+<
 
 ================================================================================
 METALS TVP MODULE                                            *metals-tvp-module*
