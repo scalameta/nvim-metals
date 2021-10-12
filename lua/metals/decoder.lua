@@ -10,12 +10,18 @@ local function filename_from_uri(full_uri)
 end
 
 local handle_decoder_response = function(result, uri, decoder, format)
-  -- There is a situation where javap can correctly run, but not find the
-  -- class. Just to catch that odd case we have this in here.
-  if result.error or util.starts_with(result.value, "Error: class not found:") then
+  if result.error then
     local err = result.error or result.value
     log.error_and_show(err)
-  else
+  elseif result.value and util.starts_with(result.value, "Error: class not found:") then
+    log.error(
+      string.format(
+        "It looks like we are still having issues finding classes. Happened while trying to find it for: %s",
+        result.requestedUri
+      )
+    )
+    log.error_and_show("This shouldn't happen. Please check the logs and report a bug that you saw this.")
+  elseif result.value then
     local filename = filename_from_uri(uri)
     local name = string.format("%s %s %s viewer", filename, format or "", decoder)
     local cwd = fn.getcwd()
@@ -53,6 +59,8 @@ local handle_decoder_response = function(result, uri, decoder, format)
       api.nvim_win_set_buf(0, new_buffer)
     end
   end
+  -- Don't worry about the final else here, it's the situation where the user
+  -- cancells the quickpick so we only return the uri, not result, no err.
 end
 
 local make_handler = function(uri, decoder, format)
