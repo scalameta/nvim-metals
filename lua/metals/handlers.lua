@@ -2,7 +2,6 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
-local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
 local doctor = require("metals.doctor")
@@ -59,9 +58,6 @@ M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
     end
   elseif result.command == "metals-diagnostics-focus" then
     diagnostic.open_all_diagnostics()
-  elseif result.command == "metals-show-tasty" then
-    local tasty = result.arguments[1]
-    decoder.handle_decoder_response(tasty, tasty.requestedUri, "TASTy")
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end

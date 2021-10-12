@@ -10,13 +10,18 @@ local function filename_from_uri(full_uri)
 end
 
 local handle_decoder_response = function(result, uri, decoder, format)
-  -- NOTE: Sort of a temporary hack until this gets fixed. I
-  -- often get "Error: class not found" returned as a valid
-  -- result. Since that's not, we capture it and error on it.
-  if result.error or util.starts_with(result.value, "Error: class not found:") then
-    local err = result.err or result.value
+  if result.error then
+    local err = result.error or result.value
     log.error_and_show(err)
-  else
+  elseif result.value and util.starts_with(result.value, "Error: class not found:") then
+    log.error(
+      string.format(
+        "It looks like we are still having issues finding classes. Happened while trying to find it for: %s",
+        result.requestedUri
+      )
+    )
+    log.error_and_show("This shouldn't happen. Please check the logs and report a bug that you saw this.")
+  elseif result.value then
     local filename = filename_from_uri(uri)
     local name = string.format("%s %s %s viewer", filename, format or "", decoder)
     local cwd = fn.getcwd()
@@ -54,6 +59,8 @@ local handle_decoder_response = function(result, uri, decoder, format)
       api.nvim_win_set_buf(0, new_buffer)
     end
   end
+  -- Don't worry about the final else here, it's the situation where the user
+  -- cancells the quickpick so we only return the uri, not result, no err.
 end
 
 local make_handler = function(uri, decoder, format)
@@ -69,9 +76,19 @@ end
 
 return {
   command = "metals.file-decode",
-  javap = "javap",
+  formats = {
+    compact = "compact",
+    decoded = "decoded",
+    detailed = "detailed",
+    proto = "proto",
+    verbose = "verbose",
+  },
   handle_decoder_response = handle_decoder_response,
   make_handler = make_handler,
-  metals_decode = "metalsDecode:",
-  semanticdb = "semanticdb",
+  metals_decode = "metalsDecode",
+  types = {
+    javap = "javap",
+    semanticdb = "semanticdb",
+    tasty = "tasty",
+  },
 }
