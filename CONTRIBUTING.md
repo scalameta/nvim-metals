@@ -1,6 +1,13 @@
 # Contributing to nvim-metals
 
-First off, thanks for taking the time to contribute!
+First off, thanks for taking the time to contribute! We like to keep it positive
+and friendly here in `nvim-metals`. As a wise man once said:
+
+> You know what, it doesn't matter who was last touching it, friendship is importanter
+
+- Anton aka @keynmol aka velvetbaldmime
+
+So welcome friends.
 
 Keep in mind that the issue you are trying to fix or feature you are trying to
 implement may actually live in another place. So before diving into something,
