@@ -63,4 +63,12 @@ describe("config", function()
 
     eq(#valid_config.cmd, 3)
   end)
+
+  it("should be able to handle tvp configs", function()
+    local bare_config = require("metals.setup").bare_config()
+    bare_config.tvp = { panel_width = 1000 }
+
+    local valid_config = config.validate_config(bare_config, current_buf)
+    eq(valid_config.tvp.panel_width, 1000)
+  end)
 end)
