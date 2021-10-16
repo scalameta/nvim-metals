@@ -25,8 +25,7 @@ integrations with other projects such as
 
 ## Prerequisites
 
-- Before you get started you need to ensure that you are using the latest stable
-    version of nvim, v.0.5.x.
+- Before you get started you need to ensure that you are using nvim >= v.0.5.0.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F`
@@ -45,6 +44,9 @@ integrations with other projects such as
 - This plugin relies on [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
     which you're more than likely already relying on for other plugins. However,
     make sure to also have this installed.
+- Subscribe to [this
+    discussion](https://github.com/scalameta/nvim-metals/discussions/253) which
+    will notify you of any breaking changes.
 
 ## Installation
 
