@@ -98,13 +98,9 @@ local function validate_config(config, bufnr)
     return
   end
 
-  local tvp_config = vim.deepcopy(config.tvp)
-  tvp.setup_config(tvp_config)
-
-  -- TODO this should probaly happen down below
-  config.tvp = nil
-
   config_cache = config
+
+  tvp.setup_config(config.tvp or {})
 
   if not util.has_bins(metals_bin()) and vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_but_cant_find)
