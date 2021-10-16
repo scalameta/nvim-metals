@@ -95,7 +95,7 @@ bar somehow. This can be achieved by just accessing it with Lua via
 status messages and feedback that you will get will be much less. You can
 enable the `statusBarProvider` like shown below: >
 
-  metals_config = require("metals").bare_config
+  metals_config = require("metals").bare_config()
   metals_config.init_options.statusBarProvider = "on"
 <
 
@@ -122,7 +122,7 @@ The following settings are able to be passed along with the config table to
 in a setting that is not a valid Metals setting. You can set these like the
 example below shows: >
 
-  metals_config = require("metals").bare_config
+  metals_config = require("metals").bare_config()
   metals_config.settings = {
     showImplicitArguments = true,
     excludePackages = {
@@ -638,10 +638,12 @@ That's why nvim-metals lua commands sometimes differ from metals commands.
                                                           *analyze_stacktrace()*
 analyze_stacktrace()      Use to execute a |metals.analyze-stacktrace| command.
 
-                                                                   *bare_config*
-bare_config
-                          An empty config table with empty tables also set for
-                          settings, handlers, and init_options.
+                                                                 *bare_config()*
+bare_config()
+                          Returns an empty config table with empty tables also
+                          set for settings, handlers, and init_options, and
+                          tvp settings. Use this when setting ups settings for
+                          `nvim-metals` to pass into |initialize_or_attach()|.
 
                                                               *compile_cancel()*
 compile_cancel()          Use to execute a |metals.compile-cancel| command.

@@ -116,7 +116,9 @@ end
 -- A bare config to use to be passed into initialize_or_attach.
 -- This is meant only to be used when a user is editing anything in the config
 -- just to ensure they don' thave to do a couple manual initialization of tables
-local bare_config = { handlers = {}, init_options = { compilerOptions = {} }, settings = {}, tvp = {} }
+local function bare_config()
+  return { handlers = {}, init_options = { compilerOptions = {} }, settings = {}, tvp = {} }
+end
 
 local function add_commands()
   for _, cmd in pairs(commands_table) do

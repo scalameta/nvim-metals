@@ -22,22 +22,26 @@ end
 describe("config", function()
   local current_buf = api.nvim_get_current_buf()
   local config = require("metals.config")
+
   before_each(function()
     package.loaded["metals.config"] = nil
     config = require("metals.config")
   end)
+
   it("should handle an empty table", function()
     local valid_config = config.validate_config({}, current_buf)
     base_asserts(valid_config)
   end)
+
   it("should handle a bare config", function()
-    local bare_config = require("metals.setup").bare_config
+    local bare_config = require("metals.setup").bare_config()
 
     local valid_config = config.validate_config(bare_config, current_buf)
     base_asserts(valid_config)
   end)
+
   it("should persist the config in cache", function()
-    local bare_config = require("metals.setup").bare_config
+    local bare_config = require("metals.setup").bare_config()
     bare_config.settings = {
       showImplicitArguments = true,
     }
@@ -49,5 +53,14 @@ describe("config", function()
     local cache = config.get_config_cache()
 
     eq(valid_config, cache)
+  end)
+
+  it("should strip out java_opts we don't want", function()
+    local bare_config = require("metals.setup").bare_config()
+    bare_config.settings.serverProperties = { "-Xmx", "XsomeCoolThing" }
+
+    local valid_config = config.validate_config(bare_config, current_buf)
+
+    eq(#valid_config.cmd, 3)
   end)
 end)
