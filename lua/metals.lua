@@ -131,7 +131,7 @@ M.info = function()
       table.insert(output, s)
     end
 
-    local settings = conf.get_settings_cache()
+    local settings = conf.get_config_cache().settings.metals
     if settings then
       table.insert(output, "")
       table.insert(output, "## Current settings")
@@ -371,12 +371,18 @@ M.toggle_setting = function(setting)
   elseif not type(setting) == "boolean" then
     log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
   else
-    local settings = conf.get_settings_cache()
+    local message
+    local settings = conf.get_config_cache().settings.metals
     if settings[setting] == nil then
+      message = string.format("Enabled %s", setting)
       settings[setting] = true
     else
+      local new_setting = not settings[setting]
+      message = string.format("%s is now %s", setting, new_setting)
       settings[setting] = not settings[setting]
     end
+    log.info_and_show(message)
+
     lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { metals = settings } })
   end
 end

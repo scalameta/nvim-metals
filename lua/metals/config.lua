@@ -10,13 +10,8 @@ local tvp = require("metals.tvp")
 local util = require("metals.util")
 
 local config_cache = nil
-local settings_cache = nil
 
 local metals_name = "metals"
-
-local get_settings_cache = function()
-  return settings_cache
-end
 
 local get_config_cache = function()
   return config_cache
@@ -100,12 +95,13 @@ local function validate_config(config, bufnr)
         .. "Your config must be a table.\n"
         .. "If you are just using the default, just use {}"
     )
-    return -- TODO do we want to go the nil route?
+    return
   end
 
   local tvp_config = vim.deepcopy(config.tvp)
   tvp.setup_config(tvp_config)
 
+  -- TODO this should probaly happen down below
   config.tvp = nil
 
   config_cache = config
@@ -150,12 +146,10 @@ local function validate_config(config, bufnr)
     config.init_options = vim.tbl_deep_extend("force", metals_init_options, config.init_options)
   end
 
-  if settings_cache then
-    -- In this scenario the settings have already been checked and the server has probably
-    -- been restarted meaning that the metals keys has been added the first time around.
-    -- So we skep the check here
-    config.settings = settings_cache
-  else
+  -- We want to fall into here if it's the first time processing settings,
+  -- however if the config.settings.metals exists, we know we've processed
+  -- already and skip the entire thing
+  if not config.settings or (config.settings and not config.settings.metals) then
     if config.settings then
       for k, _ in pairs(config.settings) do
         if not vim.tbl_contains(valid_metals_settings, k) then
@@ -174,18 +168,23 @@ local function validate_config(config, bufnr)
     settings.metals = config.settings or {}
     config.settings = settings
 
-    -- We specifically want to enable this if a user has no preference on it.
-    if settings.metals.superMethodLensesEnabled == nil then
-      settings.metals.superMethodLensesEnabled = true
+    -- We special case this here since we want it on by default
+    if config.settings.metals.superMethodLensesEnabled == nil then
+      config.settings.metals.superMethodLensesEnabled = true
     end
-    settings_cache = settings.metals
   end
+
+  -----------------------------------------------------------------------------
+  -- NOTE! If you access anyting related to settings after this point, you need
+  -- to remember you are now accessing config.setings.metals not just
+  -- config.settings.
+  -----------------------------------------------------------------------------
 
   local java_opts = jvmopts.java_opts(config.root_dir)
 
-  -- We care most about enabling options like HTTP proxy settings.
-  -- We don't include memory options because Metals does not have the same
-  -- memory requirements as for example the sbt build.
+  -- We care most about enabling options like HTTP proxy settings. We don't
+  -- include memory options because Metals does not have the same memory
+  -- requirements as for example the sbt build.
   local valid_java_opts = {}
   for _, opt in ipairs(java_opts) do
     if
@@ -199,11 +198,7 @@ local function validate_config(config, bufnr)
     end
   end
 
-  local passed_in_options = {}
-
-  if config.settings and config.settings.serverProperties then
-    passed_in_options = config.settings.serverProperties
-  end
+  local passed_in_options = config.settings.metals.serverProperties or {}
 
   local all_opts = util.merge_lists(passed_in_options, valid_java_opts)
 
@@ -240,7 +235,6 @@ end
 return {
   check_for_coursier = check_for_coursier,
   get_config_cache = get_config_cache,
-  get_settings_cache = get_settings_cache,
   metals_bin = metals_bin,
   metals_init_options = metals_init_options,
   scala_file_types = scala_file_types,
