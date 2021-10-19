@@ -3,6 +3,7 @@ local fn = vim.fn
 
 local log = require("metals.log")
 local util = require("metals.util")
+local Path = require("plenary.path")
 
 local function filename_from_uri(full_uri)
   local parts = util.split_on(full_uri, "/")
@@ -32,7 +33,7 @@ local handle_decoder_response = function(result, uri, decoder, format)
 
     for _, buf in pairs(bufs) do
       local bufname = api.nvim_buf_get_name(buf)
-      local joined = util.path.join(cwd, name)
+      local joined = Path:new(cwd, name).filename
       if bufname == joined and api.nvim_buf_is_loaded(buf) then
         exists = buf
         break

@@ -9,6 +9,8 @@ local messages = require("metals.messages")
 local tvp = require("metals.tvp")
 local util = require("metals.util")
 
+local Path = require("plenary.path")
+
 local config_cache = nil
 
 local metals_name = "metals"
@@ -18,6 +20,7 @@ local get_config_cache = function()
 end
 
 local scala_file_types = { "sbt", "scala" }
+
 --- Ultimately what will be passed to the config.cmd to initialize the LSP -
 --- connection. If a user is using g:metals_use_global_executable then we - just
 --- default to `metals`, if not we take control and construct the location - in
@@ -27,7 +30,7 @@ local function metals_bin()
   if vim.g.metals_use_global_executable then
     return metals_name
   else
-    return util.path.join(util.nvim_metals_cache_dir, metals_name)
+    return Path:new(util.nvim_metals_cache_dir, metals_name).filename
   end
 end
 
@@ -86,6 +89,41 @@ local function auto_commands()
   api.nvim_command([[augroup end]])
 end
 
+--- Checks to see if the default or passed in patterns for a root file are
+--- found or not for the given target level.
+local has_pattern = function(patterns, target)
+  for _, pattern in ipairs(patterns) do
+    local what_we_are_looking_for = Path:new(target, pattern)
+    if what_we_are_looking_for:exists() then
+      return true
+    end
+  end
+end
+
+--- NOTE: This only searches 2 levels deep to find nested build files.
+--- Given a situation like the below one where you have a root build.sbt
+--- and one in your module a, you want to ensure the root is correctly set as
+--- the root one, not the a one. This checks the parent dir to ensure this.
+--- build.sbt  <-- this is the root
+--- a/
+---  - build.sbt <- this is not
+---  - src/main/scala/Main.scala
+local basic_find_root_dir = function(patterns, startpath)
+  local path = Path:new(startpath)
+  -- TODO if we don't find it do we really want to search / probably not... add a check for this
+  for _, parent in ipairs(path:parents()) do
+    if has_pattern(patterns, parent) then
+      local grandparent = Path:new(parent):parent()
+      if has_pattern(patterns, grandparent) then
+        return grandparent.filename
+      else
+        return parent
+      end
+    end
+  end
+end
+
+-- Main function used to validate our config and spit out the valid one.
 local function validate_config(config, bufnr)
   if not config or type(config) ~= "table" then
     log.error_and_show(
@@ -128,7 +166,7 @@ local function validate_config(config, bufnr)
 
   local bufname = api.nvim_buf_get_name(bufnr)
 
-  local find_root_dir = config.find_root_dir or util.find_root_dir
+  local find_root_dir = config.find_root_dir or basic_find_root_dir
 
   config.root_dir = find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
 
