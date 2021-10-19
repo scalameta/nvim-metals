@@ -128,7 +128,9 @@ local function validate_config(config, bufnr)
 
   local bufname = api.nvim_buf_get_name(bufnr)
 
-  config.root_dir = util.find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
+  local find_root_dir = config.find_root_dir or util.find_root_dir
+
+  config.root_dir = find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
 
   local base_handlers = vim.tbl_extend("error", default_handlers, tvp.handlers)
 
