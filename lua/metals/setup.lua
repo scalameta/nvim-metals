@@ -59,8 +59,8 @@ local function install_or_update()
   local server_version = vim.g.metals_server_version or "latest.release"
   local server_org = vim.g.metals_server_org or "org.scalameta"
 
-  if not util.path.is_dir(util.nvim_metals_cache_dir) then
-    os.execute("mkdir -p " .. util.nvim_metals_cache_dir)
+  if not util.nvim_metals_cache_dir:exists() then
+    util.nvim_metals_cache_dir:mkdir()
   end
 
   util.metals_status("Installing Metals...")

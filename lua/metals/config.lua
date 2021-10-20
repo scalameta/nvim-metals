@@ -6,8 +6,10 @@ local log = require("metals.log")
 local default_handlers = require("metals.handlers")
 local jvmopts = require("metals.jvmopts")
 local messages = require("metals.messages")
+local root_dir = require("metals.rootdir")
 local tvp = require("metals.tvp")
 local util = require("metals.util")
+local Path = require("plenary.path")
 
 local config_cache = nil
 
@@ -18,6 +20,7 @@ local get_config_cache = function()
 end
 
 local scala_file_types = { "sbt", "scala" }
+
 --- Ultimately what will be passed to the config.cmd to initialize the LSP -
 --- connection. If a user is using g:metals_use_global_executable then we - just
 --- default to `metals`, if not we take control and construct the location - in
@@ -27,7 +30,7 @@ local function metals_bin()
   if vim.g.metals_use_global_executable then
     return metals_name
   else
-    return util.path.join(util.nvim_metals_cache_dir, metals_name)
+    return Path:new(util.nvim_metals_cache_dir, metals_name).filename
   end
 end
 
@@ -86,6 +89,7 @@ local function auto_commands()
   api.nvim_command([[augroup end]])
 end
 
+-- Main function used to validate our config and spit out the valid one.
 local function validate_config(config, bufnr)
   if not config or type(config) ~= "table" then
     log.error_and_show(
@@ -128,7 +132,7 @@ local function validate_config(config, bufnr)
 
   local bufname = api.nvim_buf_get_name(bufnr)
 
-  local find_root_dir = config.find_root_dir or util.find_root_dir
+  local find_root_dir = config.find_root_dir or root_dir.find_root_dir
 
   config.root_dir = find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
 
