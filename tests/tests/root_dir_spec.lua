@@ -21,7 +21,7 @@ local clone = function(repo)
         end
       end,
     })
-    :sync()
+    :start()
 end
 
 if not (multi_build_example:exists()) then
