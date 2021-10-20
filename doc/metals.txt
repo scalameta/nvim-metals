@@ -705,14 +705,22 @@ initialize_or_attach({config})
                           signature of the config.
 
                           There are a couple small differences with this
-                          config table.  The first is `root_patterns`, which
-                          is a short way to change the `root_dir` of the
-                          config. The default `root_patterns` are >
+                          config table. The first is `root_patterns`, which
+                          is a short way to change way the `root_dir` is
+                          detected by giving it new patterns. The default
+                          `root_patterns` are >
                              {'build.sbt', 'build.sc', 'build.gradle',
                              'pom.xml', '.git'}
 <
+                          If you need even more fine-grained control over
+                          finding your root-dir (in cases where you have very
+                          uncommon build layouts) you can also use the
+                          `find_root_dir` key in the config to provide your
+                          own custom funtion to find the root dir given a
+                          startig dir and root patterns. _You more than likely
+                          shouldn't need to do this_.
 
-                          The second small difference is the `settings` key.
+                          The other small difference is the `settings` key.
                           Since this is only the config for `nvim-metals` you
                           don't need to preface your settings object with the
                           `metals` keyword. You can find more information
