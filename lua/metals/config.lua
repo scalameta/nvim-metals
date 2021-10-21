@@ -19,6 +19,10 @@ local get_config_cache = function()
   return config_cache
 end
 
+local set_config_cache = function(config)
+  config_cache = config
+end
+
 local scala_file_types = { "sbt", "scala" }
 
 --- Ultimately what will be passed to the config.cmd to initialize the LSP -
@@ -240,6 +244,7 @@ return {
   metals_bin = metals_bin,
   metals_init_options = metals_init_options,
   scala_file_types = scala_file_types,
+  set_config_cache = set_config_cache,
   validate_config = validate_config,
   valid_metals_settings = valid_metals_settings,
 }
