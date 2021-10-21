@@ -6,6 +6,7 @@ local conf = require("metals.config")
 local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
 local diagnostic = require("metals.diagnostic")
+local install = require("metals.install")
 local log = require("metals.log")
 local messages = require("metals.messages")
 local setup = require("metals.setup")
@@ -356,8 +357,8 @@ end
 -- easy to set anything for users, we simply include them in here and then expose them.
 M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
-M.install = setup.install_or_update
-M.update = setup.install_or_update
+M.install = install.install_or_update
+M.update = install.install_or_update
 
 M.hover_worksheet = decoration.hover_worksheet
 
