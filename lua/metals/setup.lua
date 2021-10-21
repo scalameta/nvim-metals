@@ -157,6 +157,7 @@ local function initialize_or_attach(config)
   add_commands()
 
   if in_disabled_mode() then
+    conf.set_config_cache(config)
     return
   end
 
