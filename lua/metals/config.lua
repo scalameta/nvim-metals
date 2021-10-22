@@ -50,7 +50,7 @@ local function check_for_coursier()
 end
 
 local metals_init_options = {
-  compilerOptions = { snippetAutoIndent = false },
+  compilerOptions = {},
   decorationProvider = true,
   didFocusProvider = true,
   disableColorOutput = true,
