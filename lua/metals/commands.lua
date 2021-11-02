@@ -111,6 +111,11 @@ local commands_table = {
     hint = "Scan all workspace sources.",
   },
   {
+    id = "show_cfr",
+    label = "Show decompiled with cfr",
+    hint = "Show file decompiled with cfr.",
+  },
+  {
     id = "show_javap",
     label = "Show decompiled",
     hint = "Show file decompiled with javap.",

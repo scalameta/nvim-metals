@@ -325,6 +325,10 @@ M.show_semanticdb_proto = function()
   show_decoded(decoder.types.semanticdb, decoder.formats.proto)
 end
 
+M.show_cfr = function()
+  show_decoded(decoder.types.cfr)
+end
+
 M.show_javap = function()
   show_decoded(decoder.types.javap)
 end
