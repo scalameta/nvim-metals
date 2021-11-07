@@ -56,7 +56,7 @@ PREREQUISITES                                             *metals-prerequisites*
   more than likely already relying on for other plugins. However, make sure to
   also have this installed.
 - Subscribe to https://github.com/scalameta/nvim-metals/discussions/253 which
-  will list any breaking changes to `nvim-meatls`.
+  will list any breaking changes to `nvim-metals`.
 
 ================================================================================
 GETTING STARTED                                         *metals-getting-started*
@@ -999,7 +999,7 @@ types. >
       request = "launch",
       name = "Test File",
       metals = {
-        runType = "testFIle",
+        runType = "testFile",
       },
     },
     {
