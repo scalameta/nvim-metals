@@ -999,7 +999,7 @@ types. >
       request = "launch",
       name = "Test File",
       metals = {
-        runType = "testFIle",
+        runType = "testFile",
       },
     },
     {
