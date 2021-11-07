@@ -19,6 +19,9 @@ local clone = function(repo)
           print("Correctly cloned")
         end
       end,
+      on_start = function()
+        print("starting to clone " .. repo)
+      end,
     })
     :start()
 end
@@ -33,4 +36,17 @@ end
 
 if not (scala_cli:exists()) then
   clone("https://github.com/ckipp01/minimal-scala-cli-test.git")
+end
+
+-- what exactly is this? honestly I don't know, but if we do the repeat 500
+-- times, that should be more than enough to clone these down, so if we
+-- hit that fail.
+local count = 0
+while not (multi_build_example:exists()) or not (mill_minimal:exists()) or not (scala_cli:exists()) do
+  if count == 500 then
+    print("Something went wrong when trying to clone.")
+    return
+  end
+  count = count + 1
+  print("waiting for clones to finish...")
 end
