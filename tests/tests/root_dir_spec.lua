@@ -3,68 +3,47 @@ local eq = assert.are.same
 local root_dir = require("metals.rootdir")
 
 local Path = require("plenary.path")
-local Job = require("plenary.job")
 
 local multi_build_example = Path:new("multiple-build-file-example/")
 local mill_minimal = Path:new("mill-minimal/")
 local scala_cli = Path:new("minimal-scala-cli-test/")
 
-local clone = function(repo)
-  Job
-    :new({
-      command = "git",
-      args = { "clone", repo },
-      on_exit = function(_, status)
-        if not status == 0 then
-          print("Something went wrong cloning")
-        else
-          print("Correctly cloned")
-        end
-      end,
-    })
-    :start()
-end
-
-if not (multi_build_example:exists()) then
-  clone("https://github.com/ckipp01/multiple-build-file-example.git")
-end
-
-if not (mill_minimal:exists()) then
-  clone("https://github.com/ckipp01/mill-minimal.git")
-end
-
-if not (scala_cli:exists()) then
-  clone("https://github.com/ckipp01/minimal-scala-cli-test.git")
-end
-
-describe("The find root dir functionality", function()
-  it("should correctly fall back to the cwd if no build file", function()
-    eq(root_dir.find_root_dir({ "build.sbt" }, Path:new()._absolute), Path:new()._absolute)
+if not (multi_build_example:exists()) or not (mill_minimal:exists()) or not (scala_cli:exists()) then
+  describe("Should have the repos we need to test.", function()
+    it("Failing since you need to run `make test-setup` first", function()
+      eq(true, false)
+    end)
   end)
+else
+  describe("The find root dir functionality", function()
+    it("should correctly fall back to the cwd if no build file", function()
+      eq(root_dir.find_root_dir({ "build.sbt" }, Path:new()._absolute), Path:new()._absolute)
+    end)
 
-  it("should correctly find the root in a multi-build sbt project", function()
-    eq(
-      root_dir.find_root_dir(
-        { "build.sbt" },
-        Path:new(multi_build_example, "core", "src", "main", "scala", "example", "Hello.scala").filename
-      ),
-      multi_build_example._absolute
-    )
-  end)
+    it("should correctly find the root in a multi-build sbt project", function()
+      eq(
+        root_dir.find_root_dir(
+          { "build.sbt" },
+          Path:new(multi_build_example, "core", "src", "main", "scala", "example", "Hello.scala").filename
+        ),
+        multi_build_example._absolute
+      )
+    end)
 
-  it("should correctly find the root in a minimal mill build", function()
-    eq(
-      root_dir.find_root_dir({ "build.sc" }, Path:new(mill_minimal, "MillMinimal", "src", "example", "Hello.scala")),
-      mill_minimal._absolute
-    )
-  end)
+    it("should correctly find the root in a minimal mill build", function()
+      eq(
+        root_dir.find_root_dir({ "build.sc" }, Path:new(mill_minimal, "MillMinimal", "src", "example", "Hello.scala")),
+        mill_minimal._absolute
+      )
+    end)
 
-  -- .scala is a root pattern meaning src here should be the root, not the root
-  -- of the directorty that contains the .git
-  it("should correct pick up pattern instead of the .git root", function()
-    eq(
-      root_dir.find_root_dir({ ".scala", ".git" }, Path:new(scala_cli, "src", "Main.scala")),
-      Path:new(scala_cli, "src")._absolute
-    )
+    -- .scala is a root pattern meaning src here should be the root, not the root
+    -- of the directorty that contains the .git
+    it("should correct pick up pattern instead of the .git root", function()
+      eq(
+        root_dir.find_root_dir({ ".scala", ".git" }, Path:new(scala_cli, "src", "Main.scala")),
+        Path:new(scala_cli, "src")._absolute
+      )
+    end)
   end)
-end)
+end
