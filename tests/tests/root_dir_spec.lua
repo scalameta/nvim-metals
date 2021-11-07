@@ -7,6 +7,7 @@ local Job = require("plenary.job")
 
 local multi_build_example = Path:new("multiple-build-file-example/")
 local mill_minimal = Path:new("mill-minimal/")
+local scala_cli = Path:new("minimal-scala-cli-test/")
 
 local clone = function(repo)
   Job
@@ -32,6 +33,10 @@ if not (mill_minimal:exists()) then
   clone("https://github.com/ckipp01/mill-minimal.git")
 end
 
+if not (scala_cli:exists()) then
+  clone("https://github.com/ckipp01/minimal-scala-cli-test.git")
+end
+
 describe("The find root dir functionality", function()
   it("should correctly fall back to the cwd if no build file", function()
     eq(root_dir.find_root_dir({ "build.sbt" }, Path:new()._absolute), Path:new()._absolute)
@@ -51,6 +56,15 @@ describe("The find root dir functionality", function()
     eq(
       root_dir.find_root_dir({ "build.sc" }, Path:new(mill_minimal, "MillMinimal", "src", "example", "Hello.scala")),
       mill_minimal._absolute
+    )
+  end)
+
+  -- .scala is a root pattern meaning src here should be the root, not the root
+  -- of the directorty that contains the .git
+  it("should correct pick up pattern instead of the .git root", function()
+    eq(
+      root_dir.find_root_dir({ ".scala", ".git" }, Path:new(scala_cli, "src", "Main.scala")),
+      Path:new(scala_cli, "src")._absolute
     )
   end)
 end)
