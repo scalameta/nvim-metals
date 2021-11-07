@@ -6,7 +6,7 @@ local has_pattern = function(patterns, target)
   for _, pattern in ipairs(patterns) do
     local what_we_are_looking_for = Path:new(target, pattern)
     if what_we_are_looking_for:exists() then
-      return true
+      return pattern
     end
   end
 end
@@ -23,9 +23,14 @@ local find_root_dir = function(patterns, startpath)
   local path = Path:new(startpath)
   -- TODO if we don't find it do we really want to search / probably not... add a check for this
   for _, parent in ipairs(path:parents()) do
-    if has_pattern(patterns, parent) then
+    local pattern = has_pattern(patterns, parent)
+    if pattern then
       local grandparent = Path:new(parent):parent()
-      if has_pattern(patterns, grandparent) then
+      -- If the pattern is found, we don't check for all patterns anymore,
+      -- instead only the one that was found. This will ensure that we don't
+      -- find a buid.sc is src/build.sc and also a .git in ./ causing it to
+      -- default to that instead of src for the root.
+      if has_pattern({ pattern }, grandparent) then
         return grandparent.filename
       else
         return parent
