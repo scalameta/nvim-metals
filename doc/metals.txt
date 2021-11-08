@@ -435,6 +435,7 @@ The following commands are provided by nvim-metals:
   * |MetalsRestartServer|
   * |MetalsRunDoctor|
   * |MetalsScanSources|
+  * |MetalsShowCfr|
   * |MetalsShowJavap|
   * |MetalsShowJavapVerbose|
   * |MetalsShowSemanticdbCompact|
@@ -561,6 +562,10 @@ MetalsRunDoctor                 Run Metals Doctor, which will open a floating
                                                              *MetalsScanSources*
 MetalsScanSources            Scan all workspaces sources.
 
+                                                                 *MetalsShowCfr*
+MetalsShowCfr                Show the cfr output for the current file.
+                               - https://www.benf.org/other/cfr/
+
                                                                *MetalsShowJavap*
 MetalsShowJavap              Show the compact output of javap for the given
                              file you're in.
@@ -580,6 +585,10 @@ MetalsShowSemanticdbDetailed Show the detailed SemanticDB of the given file you
                                                      *MetalsShowSemanticdbProto*
 MetalsShowSemanticdbProto    Show the proto SemanticDB of the given file you
                              are in.
+
+                                                               *MetalsShowTasty*
+MetalsShowTasty              Show the TASTy representation of the current file.
+                             NOTE: This currently only works in Scala 3.
 
                                                            *MetalsStartAmmonite*
 MetalsStartAmmonite          Start the Ammonite BSP Server.
@@ -794,6 +803,31 @@ run_doctor()              Use to execute a |metals.doctor-run| command.
 
                                                                 *scan_sources()*
 scan_sources()            Use to execute a |metals.sources-scan| command.
+
+                                                                    *show_cfr()*
+show_cfr()                Show decompiled cfr of the current file.
+
+                                                                  *show_javap()*
+show_javap()              Show decompiled javap of the current file
+
+                                                          *show_javap_verbose()*
+show_javap_verbose()      Show verbose decompiled javap of the current file
+
+                                                     *show_semanticdb_compact()*
+show_semanticdb_compact() Show compact semanticdb representation of the
+                          current file.
+
+                                                    *show_semanticdb_detailed()*
+show_semanticdb_detailed() Show detailed semanticdb representation of the
+                          current file.
+
+                                                       *show_semanticdb_proto()*
+show_semanticdb_proto()   Show protobuf semanticdb representation of the
+                          current file.
+
+                                                                  *show_tasty()*
+show_tasty()              Show TASTy representation of the current file.
+                          NOTE: This only currently works with Scala 3.
 
                                                               *start_ammonite()*
 start_ammonite()          Use to execute a |metals.ammonite-start| command.
