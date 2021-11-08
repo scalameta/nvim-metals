@@ -88,6 +88,7 @@ return {
   make_handler = make_handler,
   metals_decode = "metalsDecode",
   types = {
+    cfr = "cfr",
     javap = "javap",
     semanticdb = "semanticdb",
     tasty = "tasty",
