@@ -61,7 +61,7 @@ it.
 example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use({'scalameta/nvim-metals'}, requires = { "nvim-lua/plenary.nvim" })
+use{'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }}
 ```
 
 ## Getting started
