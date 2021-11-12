@@ -423,6 +423,7 @@ The following commands are provided by nvim-metals:
   * |MetalsDisconnectBuild|
   * |MetalsFindInDependencyJars|
   * |MetalsGenerateBspConfig|
+  * |MetalsGotoSuperMethod|
   * |MetalsImportBuild|
   * |MetalsInstall|
   * |MetalsInfo|
@@ -499,6 +500,9 @@ MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
                              to generate the config. After the config is 
                              generated, Metals will attempt to auto-connect to
                              it.
+
+                                                         *MetalsGotoSuperMethod*
+MetalsGotoSuperMethod       Jump to the super method of the current symbol.
 
                                                              *MetalsImportBuild*
 MetalsImportBuild            Trigger an import for the current workspace.
@@ -675,6 +679,11 @@ disconnect_build()        Use to execute a |metals.build-disconnect| command.
 
                                                          *generate_bsp_config()*
 generate_bsp_config()     Use to execute a |metals.generate-bsp-config| command.
+
+                                                           *goto_super_method()*
+goto_super_method()       Use to execute a |metals.goto-super-method| command.
+                          This is the same as triggering the code lens on a
+                          symbol that is overriding another.
 
                                                      *find_in_dependency_jars()*
 find_in_dependency_jars() Use to send in a `meatls/findTextInDependencyJars`
