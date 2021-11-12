@@ -344,12 +344,19 @@ M.start_server = function()
   setup.initialize_or_attach()
 end
 
+M.goto_super_method = function()
+  local text_doc_position = lsp.util.make_position_params()
+  execute_command({
+    command = "metals.goto-super-method",
+    arguments = { text_doc_position },
+  })
+end
+
 M.super_method_hierarchy = function()
-  local uri = vim.uri_from_bufnr(0)
   local text_doc_position = lsp.util.make_position_params()
   execute_command({
     command = "metals.super-method-hierarchy",
-    arguments = { { document = uri, position = text_doc_position.position } },
+    arguments = { text_doc_position },
   })
 end
 

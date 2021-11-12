@@ -51,6 +51,11 @@ local commands_table = {
     hint = "Generate the BSP config for your build tool.",
   },
   {
+    id = "goto_super_method",
+    label = "Goto Super Method",
+    hint = "Goto the super method of this symbol.",
+  },
+  {
     id = "import_build",
     label = "Import Build",
     hint = "Import the current build.",
