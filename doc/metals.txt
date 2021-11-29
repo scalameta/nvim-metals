@@ -1022,6 +1022,8 @@ The following run types are valid for Metals.
     them)
   - `testTarget` (will discover all test classes in your current build target
     and test them)
+  - `runOrTestFile` (if there is a main method in the current file, it will
+    run it or if there are tests in the file, run those)
 
 Below you can see an example of 3 configurations, one for each of the run
 types. >
@@ -1051,6 +1053,14 @@ types. >
       name = "Test Target",
       metals = {
         runType = "testTarget",
+      },
+    },
+    {
+      type = "scala",
+      request = "launch",
+      name = "Run or Test Target",
+      metals = {
+        runType = "runOrTestFile",
       },
     },
   }
