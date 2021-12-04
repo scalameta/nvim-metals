@@ -39,7 +39,7 @@ PREREQUISITES                                             *metals-prerequisites*
   Metals. If you've used `neovim/nvim-lspconfig` before with Metals, make sure
   to remove metals setup for it as it will conflict with this plugin.  NOTE:
   that keeping the plugin installed for other LSP servers is totally fine,
-  just let nvim-metals handle Metals.
+  just let `nvim-metals` handle Metals.
 - https://get-coursier.io/ - Metals uses coursier to manage the installation
   and updating of Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F` (for lua
@@ -69,7 +69,8 @@ Once installed, the most basic setup is to have the following: >
   augroup end
 <
 
-Or simply as a |vim.cmd| if using a pure Lua setup. >
+Or as a |vim.cmd| if using a pure Lua setup. >
+
   cmd [[augroup lsp]]
   cmd [[au!]]
   cmd [[au FileType scala,sbt lua require("metals").initialize_or_attach({})]]
@@ -105,15 +106,19 @@ in `metals_config`.
 Once setup, the first time you open a Scala project you'll be prompted to
 install Metals. You can do this with the following command: |MetalsInstall|.
 
-In order to install the latest snapshot of metals, you'll need to have set the
-following: >
+In order to install the latest snapshot of metals, you can either use the
+helper `SNAPSHOT` as a version which will pull the latest snapshot, or
+explicitly set the snapshot version in your settings table: >
 
-  let g:metals_server_version = '0.10.4+146-b5f79053-SNAPSHOT'
+  metals_config = require("metals").bare_config()
+  Metals_config.settings = {
+    serverVersion = "SNAPSHOT"
+  }
 <
 
 If no version is set, it defaults to the latest stable release. If a new
-release comes out or you change your |g:metals_server_version|, you can
-simply issue a |MetalsUpdate| command.
+release comes out or you change your server version, you can issue a
+|MetalsUpdate| command to re-install it.
 ================================================================================
 SETTINGS                                                       *metals-settings*
 
@@ -131,17 +136,16 @@ example below shows: >
     }
   }
 <
-The following are all of the currently available settings. Note that this
-isn't necessarily all of the settings that Metals has, but all of the
-settings that can currently be used with nvim-metals. Ones that will have no
-effect are simply skipped for now.
 
-NOTE: keep in mind that for now, when settings are set, they are only sent
-once to the server with a `workspace/didChangeConfiguration` right after
-initialization. If you change your settings, you'll need to restart nvim for
-them to take effect.
+NOTE: there are two lists of settings below. They are all grouped under
+settings and set the same way just to make it easier for the user to not have
+to differentiate them, however they are handled differently internally. Some
+are actually sent to the server to use and others are kept in `nvim-metals` to
+set plugin related things.
 
 All available settings:
+
+_ones that are sent and used by the server_
   * |ammoniteJvmProperties|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
@@ -160,6 +164,11 @@ All available settings:
   * |showImplicitConversionsAndClasses|
   * |showInferredType|
   * |superMethodLensesEnabled|
+  *
+_ones that are used internally by `nvim-metals`_ 
+  * |serverOrg|
+  * |serverVersion|
+
 
 ammoniteJvmProperties                                    *ammoniteJvmProperties*
 
@@ -309,6 +318,21 @@ Default: '' ~
 Optional custom path to the .scalafmt.conf file. Should be an absolute path
 and use forward slashes / for file separators (even on Windows).
 
+                                                                     *serverOrg*
+Type: string ~
+Default: 'org.scalameta' ~
+
+Useful if you'd like to use a Metals that might be published under another
+org.
+
+                                                                 *serverVersion*
+Type: string ~
+Default: 'latest.stable' ~
+
+Targeted server version that you'd like to install. Note that if this is
+changed you need to do a |:MetalsInstall| or |:MetalsUpdate| again to ensure
+that it is installed. If you need to check what version you're currently
+using, you can use the |MetalsInfo| command.
 
 showImplicitArguments                                    *showImplicitArguments*
 
@@ -358,23 +382,7 @@ parent/super methods of members.
 ================================================================================
 OPTIONS                                                         *metals-options*
 
-The following options are provided by nvim-metals.
-
-                                                       *g:metals_server_version*
-Type: string ~
-Default: 'latest.stable' ~
-
-Targeted server version that you'd like to install. Note that if this is
-changed you need to do a |:MetalsInstall| or |:MetalsUpdate| again to ensure
-that it is installed. If you need to check what version you're currently
-using, you can use the |MetalsInfo| command.
-
-                                                           *g:metals_server_org*
-Type: string ~
-Default: 'org.scalameta' ~
-
-Useful if you'd like to use a Metals that might be published under another org
-for whatever the reason.
+The following options are provided by `nvim-metals`.
 
                                                      *g:metals_decoration_color*
 Type: string ~
@@ -406,14 +414,14 @@ Default: false ~
 For all you crazy Nix kids out there, or if you are want to re-use the same
 executable for multiple clients, this is for you. Please NOTE that by doing
 this, you are fully taking control of updating and installing Metals. Unless
-there is a specific reason that you want to manage your own version and install
-manually, then I'd recommend not using this setting and just letting nvim-metals
-handle it.
+there is a specific reason that you want to manage your own version and
+install manually, then I'd recommend not using this setting and just letting
+`nvim-metals` handle it.
 
 ================================================================================
 COMMANDS                                                       *metals-commands*
 
-The following commands are provided by nvim-metals:
+The following commands are provided by `nvim-metals`:
   * |MetalsAnalyzeStacktrace|
   * |MetalsCompileCancel|
   * |MetalsCompileCascade|
@@ -646,7 +654,7 @@ the mapping would be: >
 Note: Most of these that are just executing a command have commands that you
 can find above in |metals-commands| with more details. Please keep in mind
 that here we are trying to unify command names with verb followed by noun.
-That's why nvim-metals lua commands sometimes differ from metals commands.
+That's why `nvim-metals` lua commands sometimes differ from metals commands.
 
                                                           *analyze_stacktrace()*
 analyze_stacktrace()      Use to execute a |metals.analyze-stacktrace| command.
@@ -698,7 +706,7 @@ import_build()            Use to execute a |metals.build-import| command.
 
                                                                         *info()*
 info()                    Give info about the currently installed version of
-                          Metals that will be used by nvim-metals, the
+                          Metals that will be used by `nvim-metals`, the
                           location of the installed Metals, and the location
                           of the `nvim-metals.log` file.
 
@@ -706,7 +714,7 @@ info()                    Give info about the currently installed version of
 initialize_or_attach({config})    
                   
                           This is the main entrypoint into the plugin, and the
-                          way to set up nvim-metals. This would be used in
+                          way to set up `nvim-metals`. This would be used in
                           the following way: >
 
   if has('nvim-0.5')
@@ -890,7 +898,7 @@ type_of_range()           Use to get the type of the selected range. NOTE that
 ================================================================================
 METALS TVP MODULE                                            *metals-tvp-module*
 
-nvim-metals implements part of the Metals Tree View Protocol:
+`nvim-metals` implements part of the Metals Tree View Protocol:
   https://scalameta.org/metals/docs/integrations/tree-view-protocol.html
 
 The following configuration values are available to be passed into
@@ -922,9 +930,9 @@ toggle_tree_view()           This will toggle your tree view panel open and
 ================================================================================
 CUSTOM HANDLERS                                         *metals-custom-handlers*
 
-The following are extra handlers that nvim-metals implements. More than likely
+The following are extra handlers that `nvim-metals` implements. More than likely
 you'll never directly use these, but they are more of a reference of the extra
-things that nvim-metals is providing you.
+things that `nvim-metals` is providing you.
 
                                                              *['metals/status']*
 ['metals/status']({err}, {method}, {result})
@@ -982,7 +990,7 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsexecuteclientco
 ================================================================================
 INTEGRATIONS                                               *metals-integrations*
 
-Other plugins that nvim-metals integrates with for various extra features.
+Other plugins that `nvim-metals` integrates with for various extra features.
 
                                                                *metals-nvim-dap*
 In order for you to utilize Metals to run, test, and debug code, a simple

@@ -12,7 +12,7 @@ It looks like you don't have Metals installed yet.
 
 You can do this using `:MetalsInstall`.
 
-If you need to set a specific version, you can use `g:metals_server_version`.]]
+If you need to set a specific version, you can set it in your settings table.]]
 
 M.metals_not_installed = [[
 You need to install Metals first before using `:MetalsInfo`.
@@ -29,5 +29,14 @@ M.use_global_set_so_cant_update = [[
 You have `g:metals_use_global` set to true, so nvim-metals can't install or
 update your Metals executable. If you'd like nvim-metals to handle this for
 you, remove the `g:metals_use_global_executable` setting and try again.]]
+
+M.server_version_setting_deprecated = [[
+Setting the server version via vim.g.metals_server_version is deprecated, please use config settings instead.
+]]
+
+M.cant_use_snapshot_setting_with_custom_org = [[
+Cannont use the SNAPSHOT feature with another server org.
+
+You need to set an explicit version or remove the setting.]]
 
 return M
