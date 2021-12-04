@@ -4,12 +4,13 @@ local lsp = require("vim.lsp")
 local M = {}
 
 local hover_messages = {}
+local hover_color = "Conceal"
 
-M.set_decoration = function(bufnr, decoration_ns, decoration, color)
+M.set_decoration = function(bufnr, decoration_ns, decoration)
   local line = decoration.range["end"].line
   local text = decoration.renderOptions.after.contentText
   local virt_texts = {}
-  table.insert(virt_texts, { text, color })
+  table.insert(virt_texts, { text, hover_color })
   api.nvim_buf_set_virtual_text(bufnr, decoration_ns, line, virt_texts, {})
 end
 
@@ -35,6 +36,15 @@ end
 
 M.clear_hover_messages = function()
   hover_messages = {}
+end
+
+-- Little weird to have this, but if we include config in here to pull the
+-- config cache we end up with a cyclical dependency. So instead in config we
+-- just call this setup.
+M.set_color = function(color)
+  if color then
+    hover_color = color
+  end
 end
 
 return M

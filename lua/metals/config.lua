@@ -3,6 +3,7 @@ local fn = vim.fn
 local lsp = vim.lsp
 
 local log = require("metals.log")
+local decoration = require("metals.decoration")
 local default_handlers = require("metals.handlers")
 local jvmopts = require("metals.jvmopts")
 local messages = require("metals.messages")
@@ -91,6 +92,8 @@ local valid_metals_settings = {
 -- but having multiple ways to set "settings" for metals may confuse the user
 -- even more, so it's a risk I think is worth it.
 local valid_nvim_metals_settings = {
+  "decorationColor",
+  "serverOrg",
   "serverVersion",
 }
 
@@ -156,6 +159,7 @@ local function validate_config(config, bufnr)
   -- config.settings.
   -----------------------------------------------------------------------------
 
+  decoration.set_color(config.settings.metals.decorationColor or vim.g.metals_decoration_color)
   tvp.setup_config(config.tvp or {})
 
   if not util.has_bins(metals_bin()) and vim.g.metals_use_global_executable then

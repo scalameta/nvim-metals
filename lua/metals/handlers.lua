@@ -100,13 +100,11 @@ M["metals/publishDecorations"] = util.lsp_handler(function(err, result)
     return
   end
 
-  local decoration_color = vim.g.metals_decoration_color or "Conceal"
-
   api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
   decoration.clear_hover_messages()
 
   for _, deco in ipairs(result.options) do
-    decoration.set_decoration(bufnr, decoration_namespace, deco, decoration_color)
+    decoration.set_decoration(bufnr, decoration_namespace, deco)
     decoration.store_hover_message(deco)
   end
 end)
