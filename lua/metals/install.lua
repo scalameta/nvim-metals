@@ -10,12 +10,13 @@ local Job = require("plenary.job")
 -- executes `:MetalsInstall` it will just install the latest or install what they
 -- have set no matter what. If there is an exesiting Metals there, it is simply
 -- overwritten by the bootstrap command.
--- NOTE: that if a user has g:metals_use_global_executable set, this will just
--- throw an error at them since they can't use this in that case.
+-- NOTE: that if a user has useGlobalExecutable set, this will just throw an
+-- error at them since they can't use this in that case.
 -- @param sync (boolean) really only used for testing. If you are running test-setup
 -- then set this to true, else just let it be.
 local function install_or_update(sync)
-  if vim.g.metals_use_global_executable then
+  local config = conf.get_config_cache()
+  if config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable then
     log.error_and_show(messages.use_global_set_so_cant_update)
     return true
   end
@@ -25,8 +26,6 @@ local function install_or_update(sync)
     log.error_and_show(messages.coursier_installed)
     return true
   end
-
-  local config = conf.get_config_cache()
 
   local server_version = "latest.release"
 

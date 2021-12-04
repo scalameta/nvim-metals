@@ -13,8 +13,16 @@ local lsps = {}
 -- attach in a workspace that MetalsStartServer was called on.
 local explicity_enabled = false
 
-local function in_disabled_mode()
-  if vim.g.metals_disabled_mode and not explicity_enabled then
+local function in_disabled_mode(config)
+  -- TODO make a function in config that can just check if disabledMode is set
+  -- instead of this madness
+  if
+    (
+      (config.settings and config.settings.disabledMode)
+      or (config.settings and config.settings.metals and config.settings.metals.disabledMode)
+      or vim.g.metals_disabled_mode
+    ) and not explicity_enabled
+  then
     return true
   else
     return false
@@ -74,7 +82,7 @@ local function initialize_or_attach(config)
   -- disabled mode.
   add_commands()
 
-  if in_disabled_mode() then
+  if in_disabled_mode(config) then
     conf.set_config_cache(config)
     return
   end

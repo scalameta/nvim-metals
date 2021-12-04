@@ -20,19 +20,19 @@ You need to install Metals first before using `:MetalsInfo`.
 To install, use `:MetalsInstall`]]
 
 M.use_global_set_but_cant_find = [[
-You have `g:metals_use_global_executable` set to true, but nvim-metals is unable
-to find your executable Metals. Make sure `metals` is on your $PATH. If you
-want nvim-metals to install Metals for you, remove the
-`g:metals_use_global_executable` setting.]]
+You have `useGlobalExecutable` set to true, but nvim-metals is unable to find
+your executable Metals. Make sure `metals` is on your $PATH. If you want
+nvim-metals to install Metals for you, remove the `useGlobalExecutable`
+setting.]]
 
 M.use_global_set_so_cant_update = [[
-You have `g:metals_use_global` set to true, so nvim-metals can't install or
+You have `useGlobalExecutable` set to true, so nvim-metals can't install or
 update your Metals executable. If you'd like nvim-metals to handle this for
-you, remove the `g:metals_use_global_executable` setting and try again.]]
+you, remove the `useGlobalExecutable` setting and try again.]]
 
 M.server_version_setting_deprecated = [[
-Setting the server version via vim.g.metals_server_version is deprecated, please use config settings instead.
-]]
+Setting the server version via vim.g.metals_server_version is deprecated,
+please use config settings instead.]]
 
 M.cant_use_snapshot_setting_with_custom_org = [[
 Cannont use the SNAPSHOT feature with another server org.
