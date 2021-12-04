@@ -62,7 +62,8 @@ local metals_init_options = {
   treeViewProvider = true,
 }
 
--- Currently available settings.
+-- Currently available settings. These are settings used by the metals server,
+-- so they are just passed along.
 local valid_metals_settings = {
   "ammoniteJvmProperties",
   "bloopSbtAlreadyInstalled",
@@ -82,6 +83,15 @@ local valid_metals_settings = {
   "showImplicitConversionsAndClasses",
   "showInferredType",
   "superMethodLensesEnabled",
+}
+
+-- We keep these seperated from the `valid_metals_settings` just for clarity.
+-- The above are valide for the server, whereas these settings here are _only_
+-- being used by this plugin. It's bitter sweet, as we mix settings here a bit,
+-- but having multiple ways to set "settings" for metals may confuse the user
+-- even more, so it's a risk I think is worth it.
+local valid_nvim_metals_settings = {
+  "serverVersion",
 }
 
 --- auto commands necessary for `metals/didFocusTextDocument`.
@@ -107,6 +117,44 @@ local function validate_config(config, bufnr)
   end
 
   config_cache = config
+
+  -- NOTE: This happens so early since we want to as quickly as possibly get
+  -- the settings under the metals key so that other parts of the plugin that
+  -- read the settings don't need to worry about where exactly the settings are.
+  --
+  -- We want to fall into here if it's the first time processing settings,
+  -- however if the config.settings.metals exists, we know we've processed
+  -- already and skip the entire thing
+  if not config.settings or (config.settings and not config.settings.metals) then
+    if config.settings then
+      for k, _ in pairs(config.settings) do
+        if not vim.tbl_contains(valid_metals_settings, k) and not (vim.tbl_contains(valid_nvim_metals_settings, k)) then
+          local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
+          local valid_settings = string.format(
+            "The following are valid settings %s",
+            table.concat(valid_metals_settings, ", ")
+          )
+          local err = heading .. "\n" .. valid_settings
+          log.warn_and_show(err)
+        end
+      end
+    end
+
+    local settings = { metals = {} }
+    settings.metals = config.settings or {}
+    config.settings = settings
+
+    -- We special case this here since we want it on by default
+    if config.settings.metals.superMethodLensesEnabled == nil then
+      config.settings.metals.superMethodLensesEnabled = true
+    end
+  end
+
+  -----------------------------------------------------------------------------
+  -- NOTE! If you access anyting related to settings after this point, you need
+  -- to remember you are now accessing config.setings.metals not just
+  -- config.settings.
+  -----------------------------------------------------------------------------
 
   tvp.setup_config(config.tvp or {})
 
@@ -152,40 +200,6 @@ local function validate_config(config, bufnr)
   else
     config.init_options = vim.tbl_deep_extend("force", metals_init_options, config.init_options)
   end
-
-  -- We want to fall into here if it's the first time processing settings,
-  -- however if the config.settings.metals exists, we know we've processed
-  -- already and skip the entire thing
-  if not config.settings or (config.settings and not config.settings.metals) then
-    if config.settings then
-      for k, _ in pairs(config.settings) do
-        if not vim.tbl_contains(valid_metals_settings, k) then
-          local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
-          local valid_settings = string.format(
-            "The following are valid settings %s",
-            table.concat(valid_metals_settings, ", ")
-          )
-          local err = heading .. "\n" .. valid_settings
-          log.warn_and_show(err)
-        end
-      end
-    end
-
-    local settings = { metals = {} }
-    settings.metals = config.settings or {}
-    config.settings = settings
-
-    -- We special case this here since we want it on by default
-    if config.settings.metals.superMethodLensesEnabled == nil then
-      config.settings.metals.superMethodLensesEnabled = true
-    end
-  end
-
-  -----------------------------------------------------------------------------
-  -- NOTE! If you access anyting related to settings after this point, you need
-  -- to remember you are now accessing config.setings.metals not just
-  -- config.settings.
-  -----------------------------------------------------------------------------
 
   local java_opts = jvmopts.java_opts(config.root_dir)
 
