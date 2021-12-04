@@ -121,7 +121,11 @@ end
 -- Capture info about the currently installed Metals and display it in a
 -- floating window.
 M.info = function()
-  if not util.has_bins(conf.metals_bin()) and vim.g.metals_use_global_executable then
+  local config = conf.get_config_cache()
+  if
+    not util.has_bins(conf.metals_bin())
+    and (config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable)
+  then
     log.error_and_show(messages.use_global_set_but_cant_find)
   elseif not util.has_bins(conf.metals_bin()) then
     log.warn_and_show(messages.metals_not_installed)
@@ -133,11 +137,10 @@ M.info = function()
       table.insert(output, s)
     end
 
-    local settings = conf.get_config_cache().settings.metals
-    if settings then
+    if config.settings.metals then
       table.insert(output, "")
       table.insert(output, "## Current settings")
-      for s in vim.inspect(settings):gmatch("[^\r\n]+") do
+      for s in vim.inspect(config.settings.metals):gmatch("[^\r\n]+") do
         table.insert(output, s)
       end
     end
@@ -146,7 +149,7 @@ M.info = function()
     table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
     table.insert(output, string.format("  - nvim lsp log file: %s", Path:new(fn.stdpath("cache"), "lsp.log").filename))
     local loc_msg = "  - metals install location:"
-    if vim.g.metals_use_global_executable then
+    if config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable then
       table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
     else
       table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))
@@ -338,7 +341,12 @@ M.show_javap_verbose = function()
 end
 
 M.start_server = function()
-  if vim.g.metals_disabled_mode then
+  local config = conf.get_config_cache()
+  if
+    config.settings.disabledMode
+    or (config.settings.metals and config.settings.metals.disabledMode)
+    or vim.g.metals_disabled_mode
+  then
     setup.explicitly_enable()
   end
   setup.initialize_or_attach()

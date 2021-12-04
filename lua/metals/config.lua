@@ -26,13 +26,13 @@ end
 
 local scala_file_types = { "sbt", "scala" }
 
---- Ultimately what will be passed to the config.cmd to initialize the LSP -
---- connection. If a user is using g:metals_use_global_executable then we - just
---- default to `metals`, if not we take control and construct the location - in
---- the cache dir.
+--- Ultimately what will be passed to the config.cmd to initialize the LSP
+--- connection. If a user is using useGlobalExecutable then we just default
+--- to `metals`, if not we take control and construct the location in the
+--- cache dir.
 --- @return string executable
 local function metals_bin()
-  if vim.g.metals_use_global_executable then
+  if (config_cache and config_cache.settings.metals.useGlobalExecutable) or vim.g.metals_use_global_executable then
     return metals_name
   else
     return Path:new(util.nvim_metals_cache_dir, metals_name).filename
@@ -93,8 +93,10 @@ local valid_metals_settings = {
 -- even more, so it's a risk I think is worth it.
 local valid_nvim_metals_settings = {
   "decorationColor",
+  "disabledMode",
   "serverOrg",
   "serverVersion",
+  "useGlobalExecutable",
 }
 
 --- auto commands necessary for `metals/didFocusTextDocument`.
@@ -134,8 +136,9 @@ local function validate_config(config, bufnr)
         if not vim.tbl_contains(valid_metals_settings, k) and not (vim.tbl_contains(valid_nvim_metals_settings, k)) then
           local heading = string.format('"%s" is not a valid setting. It will be ignored.', k)
           local valid_settings = string.format(
-            "The following are valid settings %s",
-            table.concat(valid_metals_settings, ", ")
+            "The following are valid settings %s and %s",
+            table.concat(valid_metals_settings, ", "),
+            table.concat(valid_nvim_metals_settings, ", ")
           )
           local err = heading .. "\n" .. valid_settings
           log.warn_and_show(err)
@@ -162,7 +165,10 @@ local function validate_config(config, bufnr)
   decoration.set_color(config.settings.metals.decorationColor or vim.g.metals_decoration_color)
   tvp.setup_config(config.tvp or {})
 
-  if not util.has_bins(metals_bin()) and vim.g.metals_use_global_executable then
+  if
+    not util.has_bins(metals_bin())
+    and (config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable)
+  then
     log.error_and_show(messages.use_global_set_but_cant_find)
     return
   elseif not util.has_bins(metals_bin()) then

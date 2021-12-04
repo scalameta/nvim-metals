@@ -11,12 +11,11 @@ CONTENTS                                                           *nvim-metals*
     1. Prerequisites........ |metals-prerequisites|
     2. Getting Started...... |metals-getting-started|
     3. Settings............. |metals-settings|
-    4. Options.............. |metals-options|
-    5. Commands............. |metals-commands|
-    6. LUA API.............. |metals-lua-api|
-    7. TVP Module........... |metals-tvp-module|
-    8. Custom Handlers...... |metals-custom-handlers|
-    9. Integrations......... |metals-integrations|
+    4. Commands............. |metals-commands|
+    5. LUA API.............. |metals-lua-api|
+    6. TVP Module........... |metals-tvp-module|
+    7. Custom Handlers...... |metals-custom-handlers|
+    8. Integrations......... |metals-integrations|
 
 ================================================================================
 INTRODUCTION                                                *metals-introduction*
@@ -166,9 +165,11 @@ _ones that are sent and used by the server_
   * |superMethodLensesEnabled|
   *
 _ones that are used internally by `nvim-metals`_ 
+  * |disabledMode|
   * |decorationColor|
   * |serverOrg|
   * |serverVersion|
+  * |useGlobalExecutable|
 
 
 ammoniteJvmProperties                                    *ammoniteJvmProperties*
@@ -207,6 +208,21 @@ Default: 'Conceal' ~
 The highlight group that will be used to show decorations. For example, this
 will change the way worksheet evaluations are displayed in `*.worksheet.sc`
 file.
+
+                                                                  *disabledMode*
+Type: boolean ~
+Default: false ~
+
+Used in the situation where you don't want Metals to start by default when you
+enter a Scala workspace. WARNING: Use this with caution though as it may be
+confusing why Metals isn't starting when you're in a workspace and you forgot
+you have this set. If using this, once you'd like to use Metals in a specific
+workspace you'll need to manually start the server via |MetalsStartServer| or
+via a mapping with |start_server()|. Then it will continue to work in that
+workspace until you close it. NOTE: The choice isn't persisted, so you need to
+continually do this every time you want to use it even in the same workspace.
+If people _actually_ use this setting and want that, submit a feature request,
+if not it's not worth the extra work.
 
 excludedPackages                                              *excludedPackages*
 
@@ -388,27 +404,7 @@ Default: true ~
 When enabled Metals will populate code lenses for you to navigate to the
 parent/super methods of members.
 
-================================================================================
-OPTIONS                                                         *metals-options*
-
-The following options are provided by `nvim-metals`.
-
-                                                        *g:metals_disabled_mode*
-Type: boolean ~
-Default: false ~
-
-Used in the situation where you don't want Metals to start by default when you
-enter a Scala workspace. WARNING: Use this with caution though as it may be
-confusing why Metals isn't starting when you're in a workspace and you forgot
-you have this set. If using this, once you'd like to use Metals in a specific
-workspace you'll need to manually start the server via |MetalsStartServer| or
-via a mapping with |start_server()|. Then it will continue to work in that
-workspace until you close it. NOTE: The choice isn't persisted, so you need to
-continually do this every time you want to use it even in the same workspace.
-If people _actually_ use this setting and want that, submit a feature request,
-if not it's not worth the extra work.
-
-                                                *g:metals_use_global_executable*
+                                                           *useGlobalExecutable*
 Type: boolean ~
 Default: false ~
 
