@@ -243,16 +243,31 @@ M.did_focus = function()
 end
 
 M.find_in_dependency_jars = function()
-  local mask = fn.input("File mask: ", ".conf")
-  local query = vim.fn.input("Query: ")
-  if not query or #query == 0 then
-    return
-  else
+  local function send_request(mask, query)
     lsp.buf_request(0, "metals/findTextInDependencyJars", {
       options = { include = mask },
       query = { pattern = query },
     })
   end
+
+  local function get_query_and_send(mask)
+    vim.ui.input({
+      prompt = "Query: ",
+    }, function(query)
+      if query ~= nil then
+        send_request(mask, query)
+      end
+    end)
+  end
+
+  vim.ui.input({
+    prompt = "File mask: ",
+    default = ".conf",
+  }, function(mask)
+    if mask ~= nil then
+      get_query_and_send(mask)
+    end
+  end)
 end
 
 M.organize_imports = function()

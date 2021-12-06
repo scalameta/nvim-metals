@@ -33,13 +33,17 @@ end)
 -- Implementation of the `metals/inputBox` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
 M["metals/inputBox"] = util.lsp_handler(function(_, result)
-  local name = vim.fn.input(result.prompt .. ": ")
+  local response = { cancelled = true }
 
-  if name == "" then
-    return { cancelled = true }
-  else
-    return { value = name }
-  end
+  vim.ui.input({
+    prompt = result.prompt .. ": ",
+  }, function(input)
+    if input ~= nil then
+      response = { value = input }
+    end
+  end)
+
+  return response
 end)
 
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
