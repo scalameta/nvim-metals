@@ -39,4 +39,12 @@ Cannont use the SNAPSHOT feature with another server org.
 
 You need to set an explicit version or remove the setting.]]
 
+M.disabled_mode_global_deprecated = [[
+Using g:metals_disabled_mode is deprecated.
+
+Please use disabledMode in the metals settings config instead.
+
+https://github.com/scalameta/nvim-metals/discussions/253#discussioncomment-1749475
+]]
+
 return M

@@ -342,11 +342,7 @@ end
 
 M.start_server = function()
   local config = conf.get_config_cache()
-  if
-    config.settings.disabledMode
-    or (config.settings.metals and config.settings.metals.disabledMode)
-    or vim.g.metals_disabled_mode
-  then
+  if conf.in_disabled_mode(config) then
     setup.explicitly_enable()
   end
   setup.initialize_or_attach()

@@ -16,13 +16,7 @@ local explicity_enabled = false
 local function in_disabled_mode(config)
   -- TODO make a function in config that can just check if disabledMode is set
   -- instead of this madness
-  if
-    (
-      (config.settings and config.settings.disabledMode)
-      or (config.settings and config.settings.metals and config.settings.metals.disabledMode)
-      or vim.g.metals_disabled_mode
-    ) and not explicity_enabled
-  then
+  if conf.in_disabled_mode(config) and not explicity_enabled then
     return true
   else
     return false
