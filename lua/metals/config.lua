@@ -26,6 +26,22 @@ end
 
 local scala_file_types = { "sbt", "scala" }
 
+-- Used to check if the config table has disabledMode set. We have to do a
+-- couple different checks since this is check right away when the plugin
+-- is called in order to not start anything, therefore the config may not
+-- be process yet meaning it doesn't exist or it's not under the metals key
+-- yet.
+local function in_disabled_mode(config)
+  local disabled = (config.settings and config.settings.disabledMode)
+    or (config.settings and config.settings.metals and config.settings.metals.disabledMode)
+
+  if vim.g.metals_disabled_mode then
+    log.warn_and_show(messages.disabled_mode_global_deprecated)
+    disabled = true
+  end
+  return disabled
+end
+
 --- Ultimately what will be passed to the config.cmd to initialize the LSP
 --- connection. If a user is using useGlobalExecutable then we just default
 --- to `metals`, if not we take control and construct the location in the
@@ -265,6 +281,7 @@ end
 
 return {
   check_for_coursier = check_for_coursier,
+  in_disabled_mode = in_disabled_mode,
   get_config_cache = get_config_cache,
   metals_bin = metals_bin,
   metals_init_options = metals_init_options,
