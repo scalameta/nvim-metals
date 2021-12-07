@@ -14,7 +14,7 @@ local decoration_namespace = api.nvim_create_namespace("metals_decoration")
 
 -- Implementation of the `metals/quickPick` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
-M["metals/quickPick"] = util.lsp_handler(function(_, result)
+M["metals/quickPick"] = function(_, result)
   local opts = {
     format_item = function(item)
       return item.label
@@ -32,11 +32,11 @@ M["metals/quickPick"] = util.lsp_handler(function(_, result)
 
   vim.ui.select(result.items, opts, cb)
   return choice
-end)
+end
 
 -- Implementation of the `metals/inputBox` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
-M["metals/inputBox"] = util.lsp_handler(function(_, result)
+M["metals/inputBox"] = function(_, result)
   local response = { cancelled = true }
 
   vim.ui.input({
@@ -48,11 +48,11 @@ M["metals/inputBox"] = util.lsp_handler(function(_, result)
   end)
 
   return response
-end)
+end
 
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
-M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
+M["metals/executeClientCommand"] = function(_, result)
   if result.command == "metals-goto-location" then
     lsp.util.jump_to_location(result.arguments[1])
   elseif result.command == "metals-doctor-run" then
@@ -69,24 +69,24 @@ M["metals/executeClientCommand"] = util.lsp_handler(function(_, result)
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end
-end)
+end
 
 -- Callback function to handle `metals/status`
 -- This simply sets a global variable `metals_status` which can be easily
 -- picked up and used in a statusline.
 -- Command and Tooltip are not covered from the spec.
 -- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
-M["metals/status"] = util.lsp_handler(function(_, result)
+M["metals/status"] = function(_, result)
   if result.hide then
     util.metals_status()
   else
     util.metals_status(result.text)
   end
-end)
+end
 
 -- Function needed to implement the Decoration Protocol from Metals.
 -- - https://scalameta.org/metals/docs/integrations/decoration-protocol.html
-M["metals/publishDecorations"] = util.lsp_handler(function(err, result)
+M["metals/publishDecorations"] = function(err, result)
   if err then
     log.error_and_show("Server error while publishing decorations. Please see logs for details.")
     log.error(err.message)
@@ -115,9 +115,9 @@ M["metals/publishDecorations"] = util.lsp_handler(function(err, result)
     decoration.set_decoration(bufnr, decoration_namespace, deco)
     decoration.store_hover_message(deco)
   end
-end)
+end
 
-M["metals/findTextInDependencyJars"] = util.lsp_handler(function(_, result, ctx, config)
+M["metals/findTextInDependencyJars"] = function(_, result, ctx, config)
   if not result or vim.tbl_isempty(result) then
     vim.notify("Nothing found in jars files.")
   else
@@ -136,6 +136,6 @@ M["metals/findTextInDependencyJars"] = util.lsp_handler(function(_, result, ctx,
       api.nvim_command("copen")
     end
   end
-end)
+end
 
 return M
