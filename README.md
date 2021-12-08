@@ -72,7 +72,12 @@ To get started with `nvim-metals`, _please read_ [`:help
 nvim-metals`](https://github.com/scalameta/nvim-metals/blob/main/doc/metals.txt).
 This will give you a thorough overview of the setup and settings.
 
-## Settings, Commands, and Options
+## Features
+
+To see a full list of features, check out the [Features
+List](https://github.com/scalameta/nvim-metals/discussions/279).
+
+## Settings and Commands
 
 To view all of the available commands, check out `:help metals-commands` in the
 help docs. Similarly, to see the available configuration options, check out

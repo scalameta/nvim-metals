@@ -63,7 +63,7 @@ M["metals/executeClientCommand"] = function(_, result)
 end
 
 -- Callback function to handle `metals/status`
--- This simply sets a global variable `metals_status` which can be easily
+-- This sets a global variable `metals_status` which can be easily
 -- picked up and used in a statusline.
 -- Command and Tooltip are not covered from the spec.
 -- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
