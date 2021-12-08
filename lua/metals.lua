@@ -25,18 +25,13 @@ local M = {}
 -- @param command_params (optional, table) Parameters to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
-  lsp.buf_request(
-    0,
-    "workspace/executeCommand",
-    command_params,
-    util.lsp_handler(function(err, result, ctx)
-      if callback then
-        callback(err, ctx.method, result)
-      elseif err then
-        log.error_and_show(string.format("Could not execute command: %s", err.message))
-      end
-    end)
-  )
+  lsp.buf_request(0, "workspace/executeCommand", command_params, function(err, result, ctx)
+    if callback then
+      callback(err, ctx.method, result)
+    elseif err then
+      log.error_and_show(string.format("Could not execute command: %s", err.message))
+    end
+  end)
 end
 
 M.analyze_stacktrace = function()
@@ -243,16 +238,31 @@ M.did_focus = function()
 end
 
 M.find_in_dependency_jars = function()
-  local mask = fn.input("File mask: ", ".conf")
-  local query = vim.fn.input("Query: ")
-  if not query or #query == 0 then
-    return
-  else
+  local function send_request(mask, query)
     lsp.buf_request(0, "metals/findTextInDependencyJars", {
       options = { include = mask },
       query = { pattern = query },
     })
   end
+
+  local function get_query_and_send(mask)
+    vim.ui.input({
+      prompt = "Query: ",
+    }, function(query)
+      if query ~= nil then
+        send_request(mask, query)
+      end
+    end)
+  end
+
+  vim.ui.input({
+    prompt = "File mask: ",
+    default = ".conf",
+  }, function(mask)
+    if mask ~= nil then
+      get_query_and_send(mask)
+    end
+  end)
 end
 
 M.organize_imports = function()

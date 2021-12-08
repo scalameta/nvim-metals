@@ -141,65 +141,60 @@ function Tree:tree_view_children(opts)
   if opts.parent_uri ~= nil then
     tree_view_children_params["nodeUri"] = opts.parent_uri
   end
-  vim.lsp.buf_request(
-    valid_metals_buffer(),
-    "metals/treeViewChildren",
-    tree_view_children_params,
-    util.lsp_handler(function(err, result)
-      if err then
-        log.error(err)
-        log.error_and_show("Something went wrong while requesting tvp children. More info in logs.")
+  vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewChildren", tree_view_children_params, function(err, result)
+    if err then
+      log.error(err)
+      log.error_and_show("Something went wrong while requesting tvp children. More info in logs.")
+    else
+      local new_nodes = {}
+      for _, node in pairs(result.nodes) do
+        table.insert(new_nodes, Node:new(node))
+      end
+      if opts.parent_uri == nil then
+        self.children = new_nodes
       else
-        local new_nodes = {}
-        for _, node in pairs(result.nodes) do
-          table.insert(new_nodes, Node:new(node))
+        self:update(opts.parent_uri, new_nodes)
+      end
+      -- NOTE: Not ideal to have to iterate over these again, but we want the
+      -- update to happen before we call this or else we'll have issues adding the
+      -- children to a node that doesn't yet exist.
+      for _, node in pairs(new_nodes) do
+        if node.collapse_state == collapse_state.expanded then
+          self:tree_view_children({ view_id = metals_packages, parent_uri = node.node_uri })
         end
-        if opts.parent_uri == nil then
-          self.children = new_nodes
-        else
-          self:update(opts.parent_uri, new_nodes)
+      end
+      if opts.expand then
+        local node = self:find(opts.parent_uri)
+        if node and node.collapse_state and node.collapse_state == collapse_state.collapsed then
+          node:expand(valid_metals_buffer())
         end
-        -- NOTE: Not ideal to have to iterate over these again, but we want the
-        -- update to happen before we call this or else we'll have issues adding the
-        -- children to a node that doesn't yet exist.
-        for _, node in pairs(new_nodes) do
-          if node.collapse_state == collapse_state.expanded then
-            self:tree_view_children({ view_id = metals_packages, parent_uri = node.node_uri })
-          end
+      end
+      local additionals = opts.additionals
+      if additionals then
+        local head = table.remove(additionals, 1)
+        local additional_params = {
+          view_id = view_id,
+          parent_uri = head,
+          expand = opts.expand,
+          focus = opts.focus,
+        }
+        if #additionals > 1 then
+          additional_params.additionals = additionals
         end
-        if opts.expand then
-          local node = self:find(opts.parent_uri)
-          if node and node.collapse_state and node.collapse_state == collapse_state.collapsed then
-            node:expand(valid_metals_buffer())
-          end
-        end
-        local additionals = opts.additionals
-        if additionals then
-          local head = table.remove(additionals, 1)
-          local additional_params = {
-            view_id = view_id,
-            parent_uri = head,
-            expand = opts.expand,
-            focus = opts.focus,
-          }
-          if #additionals > 1 then
-            additional_params.additionals = additionals
-          end
-          self:tree_view_children(additional_params)
-        end
+        self:tree_view_children(additional_params)
+      end
 
-        self:reload_and_show()
-        if opts.focus and not opts.additionals then
-          for line, node in pairs(self.lookup) do
-            if node.node_uri == opts.parent_uri then
-              api.nvim_win_set_cursor(self.win_id, { line, 0 })
-              break
-            end
+      self:reload_and_show()
+      if opts.focus and not opts.additionals then
+        for line, node in pairs(self.lookup) do
+          if node.node_uri == opts.parent_uri then
+            api.nvim_win_set_cursor(self.win_id, { line, 0 })
+            break
           end
         end
       end
-    end)
-  )
+    end
+  end)
 end
 
 function Tree:cache()
@@ -357,7 +352,7 @@ function Tree:find(uri)
   return found_node
 end
 
-handlers["metals/treeViewDidChange"] = util.lsp_handler(function(_, result)
+handlers["metals/treeViewDidChange"] = function(_, result)
   if not state.tvp_tree then
     Tree:new():cache()
   else
@@ -376,7 +371,7 @@ handlers["metals/treeViewDidChange"] = util.lsp_handler(function(_, result)
       end
     end
   end
-end)
+end
 
 local function ensure_tree_exists_then(fn)
   if not state.tvp_tree then
@@ -408,35 +403,30 @@ local function reveal_in_tree()
     end
     local params = lsp.util.make_position_params()
 
-    vim.lsp.buf_request(
-      valid_metals_buffer(),
-      "metals/treeViewReveal",
-      params,
-      util.lsp_handler(function(err, result, ctx)
-        if err then
-          log.error_and_show(string.format("Unable to execute command: %s.", ctx.method))
-        else
-          if result and result.viewId == metals_packages then
-            if api.nvim_get_current_win() ~= state.tvp_tree.win_id then
-              vim.fn.win_gotoid(state.tvp_tree.win_id)
-            end
-
-            util.reverse(result.uriChain)
-            local head = table.remove(result.uriChain, 1)
-
-            state.tvp_tree:tree_view_children({
-              view_id = result.viewId,
-              parent_uri = head,
-              additionals = result.uriChain,
-              expand = true,
-              focus = true,
-            })
-          else
-            log.warn_and_show("You recieved a node for a view nvim-metals doesn't support")
+    vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, result, ctx)
+      if err then
+        log.error_and_show(string.format("Unable to execute command: %s.", ctx.method))
+      else
+        if result and result.viewId == metals_packages then
+          if api.nvim_get_current_win() ~= state.tvp_tree.win_id then
+            vim.fn.win_gotoid(state.tvp_tree.win_id)
           end
+
+          util.reverse(result.uriChain)
+          local head = table.remove(result.uriChain, 1)
+
+          state.tvp_tree:tree_view_children({
+            view_id = result.viewId,
+            parent_uri = head,
+            additionals = result.uriChain,
+            expand = true,
+            focus = true,
+          })
+        else
+          log.warn_and_show("You recieved a node for a view nvim-metals doesn't support")
         end
-      end)
-    )
+      end
+    end)
   end)
 end
 

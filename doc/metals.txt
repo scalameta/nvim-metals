@@ -31,9 +31,9 @@ the correct `init_options`.
 ================================================================================
 PREREQUISITES                                             *metals-prerequisites*
 
-- Ensure you're using at least Neovim v0.5.0. While `nvim-metals`
-  will aim to always work with the latest stable version of Neovim, there is
-  not guarantee of compatibility with older versions.
+- Ensure you're using at least Neovim v0.6.0. While `nvim-metals` will aim to
+  always work with the latest stable version of Neovim, there is no guarantee
+  of compatibility with older versions.
 - *DO NOT* use this plugin for Metals and also `neovim/nvim-lspconfig` for
   Metals. If you've used `neovim/nvim-lspconfig` before with Metals, make sure
   to remove metals setup for it as it will conflict with this plugin.  NOTE:
