@@ -56,6 +56,9 @@ PREREQUISITES                                             *metals-prerequisites*
   also have this installed.
 - Subscribe to https://github.com/scalameta/nvim-metals/discussions/253 which
   will list any breaking changes to `nvim-metals`.
+- Check out the features list in
+  https://github.com/scalameta/nvim-metals/discussions/279. New features will
+  always be added there.
 
 ================================================================================
 GETTING STARTED                                         *metals-getting-started*

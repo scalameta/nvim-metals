@@ -379,7 +379,7 @@ M.type_of_range = function()
 end
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
--- easy to set anything for users, we simply include them in here and then expose them.
+-- easy to set anything for users, we include them in here and then expose them.
 M.bare_config = setup.bare_config
 M.initialize_or_attach = setup.initialize_or_attach
 M.install = install.install_or_update

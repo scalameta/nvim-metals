@@ -67,7 +67,7 @@ These are ran using the
 It's useful to give the plenary page a read about this to better understand what
 is happening. However, before running the tests make sure to run `make
 test-setup` which will clone some repos used for testing. After this you can
-simply use `make test`.
+use `make test`.
 
 ## Other Libraries / Integrations
 

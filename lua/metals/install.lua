@@ -8,7 +8,7 @@ local Job = require("plenary.job")
 
 -- There is absolutely no difference with installing or updating, so if a user
 -- executes `:MetalsInstall` it will just install the latest or install what they
--- have set no matter what. If there is an exesiting Metals there, it is simply
+-- have set no matter what. If there is an existing Metals there, it is then
 -- overwritten by the bootstrap command.
 -- NOTE: that if a user has useGlobalExecutable set, this will just throw an
 -- error at them since they can't use this in that case.
