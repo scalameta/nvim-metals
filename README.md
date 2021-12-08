@@ -2,12 +2,12 @@
 
 # nvim-metals
 
-nvim-metals is a Lua plugin built to provide a better experience while using
+`nvim-metals` is a Lua plugin built to provide a better experience while using
 Metals, the Scala Language Server, with Neovim's built-in [LSP
 support](https://neovim.io/doc/user/lsp.html). This plugin provides the
 necessary commands you'll need to develop with nvim and Metals. This extension
-also implements many of the custom Metals LSP extensions that will give you a
-much richer experience than just using Metals with the default
+also implements the custom Metals LSP extensions that will give you a much
+richer experience than just using Metals with the default
 [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) setup, as well as
 automatically setting all of the correct `init_options`, and offering some
 integrations with other projects such as
@@ -25,7 +25,8 @@ integrations with other projects such as
 
 ## Prerequisites
 
-- Before you get started you need to ensure that you are using nvim >= v.0.5.0.
+- Before you get started you need to ensure that you are using nvim v.0.6.0 or
+    newer.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.
 - Remove `F` from `shortmess`. `set shortmess-=F`
@@ -61,7 +62,8 @@ it.
 example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
-use{'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }}
+use({'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }})
+
 ```
 
 ## Getting started
