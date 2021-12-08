@@ -15,39 +15,30 @@ local decoration_namespace = api.nvim_create_namespace("metals_decoration")
 -- Implementation of the `metals/quickPick` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
 M["metals/quickPick"] = function(_, result)
-  local opts = {
-    format_item = function(item)
-      return item.label
-    end,
-    prompt = result.placeHolder,
-  }
-
-  local choice = { cancelled = true }
-
-  local cb = function(item, _)
-    if item ~= nil then
-      choice = { itemId = item.id }
-    end
+  local ids = {}
+  local labels = {}
+  for i, item in pairs(result.items) do
+    table.insert(ids, item.id)
+    table.insert(labels, i .. " - " .. item.label)
   end
-
-  vim.ui.select(result.items, opts, cb)
-  return choice
+  local choice = vim.fn.inputlist(labels)
+  if choice == 0 then
+    return { cancelled = true }
+  else
+    return { itemId = ids[choice] }
+  end
 end
 
 -- Implementation of the `metals/inputBox` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
 M["metals/inputBox"] = function(_, result)
-  local response = { cancelled = true }
+  local name = vim.fn.input(result.prompt .. ": ")
 
-  vim.ui.input({
-    prompt = result.prompt .. ": ",
-  }, function(input)
-    if input ~= nil then
-      response = { value = input }
-    end
-  end)
-
-  return response
+  if name == "" then
+    return { cancelled = true }
+  else
+    return { value = name }
+  end
 end
 
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
