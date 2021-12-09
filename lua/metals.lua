@@ -315,11 +315,7 @@ local function show_decoded(decoder_type, format)
   execute_command({
     command = decoder.command,
     arguments = { metals_uri },
-  }, decoder.make_handler(
-    file_uri,
-    decoder_type,
-    format
-  ))
+  }, decoder.make_handler(file_uri, decoder_type, format))
 end
 
 M.show_tasty = function()
