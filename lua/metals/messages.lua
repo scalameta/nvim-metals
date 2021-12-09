@@ -34,11 +34,6 @@ M.server_version_setting_deprecated = [[
 Setting the server version via vim.g.metals_server_version is deprecated,
 please use config settings instead.]]
 
-M.cant_use_snapshot_setting_with_custom_org = [[
-Cannont use the SNAPSHOT feature with another server org.
-
-You need to set an explicit version or remove the setting.]]
-
 M.disabled_mode_global_deprecated = [[
 Using g:metals_disabled_mode is deprecated.
 
