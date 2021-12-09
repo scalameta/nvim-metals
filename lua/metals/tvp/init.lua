@@ -398,14 +398,15 @@ end
 
 local function reveal_in_tree()
   ensure_tree_exists_then(function()
+    local params = lsp.util.make_position_params()
+
     if not tvp_panel_is_open(state.tvp_tree.win_id) then
       state.tvp_tree:open()
     end
-    local params = lsp.util.make_position_params()
 
     vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, result, ctx)
       if err then
-        log.error_and_show(string.format("Unable to execute command: %s.", ctx.method))
+        log.error_and_show(string.format("Error when executing: %s. Check the metals logs for more info.", ctx.method))
       else
         if result and result.viewId == metals_packages then
           if api.nvim_get_current_win() ~= state.tvp_tree.win_id then
