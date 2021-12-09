@@ -1,5 +1,4 @@
 local api = vim.api
-local lsp = require("vim.lsp")
 
 local M = {}
 
@@ -9,25 +8,23 @@ local function get_all_lsp_diagnostics_as_qfitems()
   -- Temporary array for warnings, so they are appended after errors
   local warnings = {}
 
-  local all_diags = lsp.diagnostic.get_all()
+  local all_diags = vim.diagnostic.get()
 
-  for bufnr, diagnostics in pairs(all_diags) do
-    local uri = vim.uri_from_bufnr(bufnr)
-    for _, d in ipairs(diagnostics) do
-      local item = {
-        bufrn = bufnr,
-        filename = vim.uri_to_fname(uri),
-        text = d.message,
-        lnum = d.range.start.line + 1,
-        col = d.range.start.character + 1,
-      }
-      if d.severity == 1 then
-        item.type = "E"
-        qfitems[#qfitems + 1] = item
-      elseif d.severity == 2 then
-        item.type = "W"
-        warnings[#warnings + 1] = item
-      end
+  for _, d in ipairs(all_diags) do
+    local uri = vim.uri_from_bufnr(d.bufnr)
+    local item = {
+      bufrn = d.bufnr,
+      filename = vim.uri_to_fname(uri),
+      text = d.message,
+      lnum = d.lnum,
+      col = d.col,
+    }
+    if d.severity == 1 then
+      item.type = "E"
+      qfitems[#qfitems + 1] = item
+    elseif d.severity == 2 then
+      item.type = "W"
+      warnings[#warnings + 1] = item
     end
   end
 
@@ -46,7 +43,7 @@ end
 M.open_all_diagnostics = function()
   local all_diagnostics = get_all_lsp_diagnostics_as_qfitems()
   if #all_diagnostics > 0 then
-    lsp.util.set_qflist(all_diagnostics)
+    vim.diagnostic.setqflist(all_diagnostics)
     api.nvim_command("copen")
     api.nvim_command("wincmd p")
   else
