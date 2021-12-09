@@ -108,13 +108,12 @@ in `metals_config`.
 Once setup, the first time you open a Scala project you'll be prompted to
 install Metals. You can do this with the following command: |MetalsInstall|.
 
-In order to install the latest snapshot of metals, you can either use the
-helper `SNAPSHOT` as a version which will pull the latest snapshot, or
-explicitly set the snapshot version in your settings table: >
+In order to install the latest snapshot of metals you can explicitly set the
+snapshot version in your settings table: >
 
   metals_config = require("metals").bare_config()
   Metals_config.settings = {
-    serverVersion = "SNAPSHOT"
+    serverVersion = "0.10.9+131-30f6a57b-SNAPSHOT"
   }
 <
 

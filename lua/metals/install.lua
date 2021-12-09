@@ -2,7 +2,6 @@ local conf = require("metals.config")
 local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
-local version = require("metals.version")
 
 local Job = require("plenary.job")
 
@@ -31,19 +30,11 @@ local function install_or_update(sync)
 
   local server_org = config.settings.metals.serverOrg or vim.g.metals_server_org or "org.scalameta"
 
-  if config.settings.metals.serverVersion then
-    local desired = config.settings.metals.serverVersion
-    if desired == "SNAPSHOT" and server_org ~= "org.scalameta" then
-      log.warn_and_show(messages.cant_use_snapshot_setting_with_custom_org)
-    elseif desired == "SNAPSHOT" then
-      local latest = version.get_latest_snapshot()
-      server_version = latest or server_version
-    else
-      server_version = desired
-    end
-  elseif vim.g.metals_server_version then
+  if vim.g.metals_server_version then
     log.warn_and_show(messages.server_version_setting_deprecated)
     server_version = vim.g.metals_server_version
+  elseif config.settings.metals.serverVersion then
+    server_version = config.settings.metals.serverVersion
   end
 
   if not util.nvim_metals_cache_dir:exists() then
