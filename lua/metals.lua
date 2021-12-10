@@ -5,7 +5,6 @@ local lsp = vim.lsp
 local conf = require("metals.config")
 local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
-local diagnostic = require("metals.diagnostic")
 local install = require("metals.install")
 local log = require("metals.log")
 local messages = require("metals.messages")
@@ -383,7 +382,6 @@ M.update = install.install_or_update
 
 M.hover_worksheet = decoration.hover_worksheet
 
-M.open_all_diagnostics = diagnostic.open_all_diagnostics
 M.setup_dap = function()
   setup.setup_dap(execute_command)
 end
