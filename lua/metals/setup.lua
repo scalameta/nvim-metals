@@ -143,6 +143,10 @@ local function setup_dap(execute_command)
           type = "server",
           host = "127.0.0.1",
           port = port,
+          options = {
+            -- The default in nvim-dap is 4, which is too short for Metals.
+            initialize_timeout_sec = 10,
+          },
           enrich_config = function(_config, on_config)
             local final_config = vim.deepcopy(_config)
             -- Just in case strip this out since it's metals-specific
