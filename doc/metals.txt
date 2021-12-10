@@ -789,14 +789,6 @@ new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
                                                            *new_scala_project()*
 new_scala_project()       Use to execute a |metals.new-scala-project| command.
 
-                                                        *open_all_diagnostics()*
-open_all_diagnostics()    Fills the quickfix list with the LSP diagnostics
-                          for all buffers and opens it.
-                          WARNING: Automatic updates in the quickfix for new
-                          diagnostics are not yet implemented.
-                          After opening the quickfix, in order to refresh
-                          diagnostics the function must be called again.
-
                                                             *organize_imports()*
 organize_imports()        Use a code action request to get edits from Metals
                           to organize imports for the current buffer.
