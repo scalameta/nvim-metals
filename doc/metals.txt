@@ -1024,8 +1024,8 @@ The following run types are valid for Metals.
   - `runOrTestFile` (if there is a main method in the current file, it will
     run it or if there are tests in the file, run those)
 
-Below you can see an example of 3 configurations, one for each of the run
-types. >
+Below you can see an example of configurations, one for running or testing the
+current file and the other for testing the entire target. >
 
   local dap = require("dap")
 
@@ -1033,17 +1033,9 @@ types. >
     {
       type = "scala",
       request = "launch",
-      name = "Run",
+      name = "Run or Test Target",
       metals = {
-        runType = "run",
-      },
-    },
-    {
-      type = "scala",
-      request = "launch",
-      name = "Test File",
-      metals = {
-        runType = "testFile",
+        runType = "runOrTestFile",
       },
     },
     {
@@ -1052,14 +1044,6 @@ types. >
       name = "Test Target",
       metals = {
         runType = "testTarget",
-      },
-    },
-    {
-      type = "scala",
-      request = "launch",
-      name = "Run or Test Target",
-      metals = {
-        runType = "runOrTestFile",
       },
     },
   }
