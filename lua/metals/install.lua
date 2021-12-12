@@ -48,7 +48,7 @@ local function install_or_update(sync)
     "-r",
     "sonatype:snapshots",
     "-o",
-    conf.metals_filename(),
+    conf.metals_install_name(),
     "-f",
   }
 

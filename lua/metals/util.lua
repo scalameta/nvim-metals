@@ -112,4 +112,11 @@ M.starts_with = function(text, prefix)
   return text:find(prefix, 1, true) == 1
 end
 
+-- borrowed from packer
+if jit ~= nil then
+  M.is_windows = jit.os == "Windows"
+else
+  M.is_windows = package.config:sub(1, 1) == "\\"
+end
+
 return M
