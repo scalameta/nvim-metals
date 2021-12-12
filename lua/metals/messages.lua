@@ -30,16 +30,4 @@ You have `useGlobalExecutable` set to true, so nvim-metals can't install or
 update your Metals executable. If you'd like nvim-metals to handle this for
 you, remove the `useGlobalExecutable` setting and try again.]]
 
-M.server_version_setting_deprecated = [[
-Setting the server version via vim.g.metals_server_version is deprecated,
-please use config settings instead.]]
-
-M.disabled_mode_global_deprecated = [[
-Using g:metals_disabled_mode is deprecated.
-
-Please use disabledMode in the metals settings config instead.
-
-https://github.com/scalameta/nvim-metals/discussions/253#discussioncomment-1749475
-]]
-
 return M

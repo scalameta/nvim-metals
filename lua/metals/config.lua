@@ -34,11 +34,6 @@ local scala_file_types = { "sbt", "scala" }
 local function in_disabled_mode(config)
   local disabled = (config.settings and config.settings.disabledMode)
     or (config.settings and config.settings.metals and config.settings.metals.disabledMode)
-
-  if vim.g.metals_disabled_mode then
-    log.warn_and_show(messages.disabled_mode_global_deprecated)
-    disabled = true
-  end
   return disabled
 end
 
@@ -48,7 +43,7 @@ end
 --- cache dir.
 --- @return string executable
 local function metals_bin()
-  if (config_cache and config_cache.settings.metals.useGlobalExecutable) or vim.g.metals_use_global_executable then
+  if config_cache and config_cache.settings.metals.useGlobalExecutable then
     return metals_name
   else
     return Path:new(util.nvim_metals_cache_dir, metals_name).filename
@@ -178,13 +173,10 @@ local function validate_config(config, bufnr)
   -- config.settings.
   -----------------------------------------------------------------------------
 
-  decoration.set_color(config.settings.metals.decorationColor or vim.g.metals_decoration_color)
+  decoration.set_color(config.settings.metals.decorationColor)
   tvp.setup_config(config.tvp or {})
 
-  if
-    not util.has_bins(metals_bin())
-    and (config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable)
-  then
+  if not util.has_bins(metals_bin()) and config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_but_cant_find)
     return
   elseif not util.has_bins(metals_bin()) then

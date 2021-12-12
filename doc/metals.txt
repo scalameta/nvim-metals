@@ -634,8 +634,10 @@ MetalsToggleLogs             Opens the embedded Nvim terminal tailing the
 
                                                                   *MetalsUpdate*
 MetalsUpdate                 Update to the latest stable version of Metals or
-                             change versions to the new version you added in
-                             |metals_server_version|.
+                             change versions to the new version you have
+                             defined in your settings table under
+                             `serverVersion`.
+
                              NOTE that behind the scenes this calls the same
                              function as |MetalsInstall|.
 
@@ -766,8 +768,8 @@ initialize_or_attach({config})
 
                                                            *install_or_update()*
 install_or_update()       Install Metals if it doesn't exist or update to the
-                          latest stable version or version set if
-                          |g.metals_server_version| is set.
+                          latest stable version or version set if you have a
+                          `serverVersion` entry in your config table.
 
                                                               *new_scala_file()*
 new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
