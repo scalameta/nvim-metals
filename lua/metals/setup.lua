@@ -14,8 +14,6 @@ local lsps = {}
 local explicity_enabled = false
 
 local function in_disabled_mode(config)
-  -- TODO make a function in config that can just check if disabledMode is set
-  -- instead of this madness
   if conf.in_disabled_mode(config) and not explicity_enabled then
     return true
   else

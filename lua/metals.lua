@@ -116,10 +116,7 @@ end
 -- floating window.
 M.info = function()
   local config = conf.get_config_cache()
-  if
-    not util.has_bins(conf.metals_bin())
-    and (config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable)
-  then
+  if not util.has_bins(conf.metals_bin()) and config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_but_cant_find)
   elseif not util.has_bins(conf.metals_bin()) then
     log.warn_and_show(messages.metals_not_installed)
@@ -143,7 +140,7 @@ M.info = function()
     table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
     table.insert(output, string.format("  - nvim lsp log file: %s", Path:new(fn.stdpath("cache"), "lsp.log").filename))
     local loc_msg = "  - metals install location:"
-    if config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable then
+    if config.settings.metals.useGlobalExecutable then
       table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
     else
       table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))

@@ -15,7 +15,7 @@ local Job = require("plenary.job")
 -- then set this to true, else just let it be.
 local function install_or_update(sync)
   local config = conf.get_config_cache()
-  if config.settings.metals.useGlobalExecutable or vim.g.metals_use_global_executable then
+  if config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_so_cant_update)
     return true
   end
@@ -26,16 +26,9 @@ local function install_or_update(sync)
     return true
   end
 
-  local server_version = "latest.release"
+  local server_version = config.settings.metals.serverVersion or "latest.release"
 
-  local server_org = config.settings.metals.serverOrg or vim.g.metals_server_org or "org.scalameta"
-
-  if vim.g.metals_server_version then
-    log.warn_and_show(messages.server_version_setting_deprecated)
-    server_version = vim.g.metals_server_version
-  elseif config.settings.metals.serverVersion then
-    server_version = config.settings.metals.serverVersion
-  end
+  local server_org = config.settings.metals.serverOrg or "org.scalameta"
 
   if not util.nvim_metals_cache_dir:exists() then
     util.nvim_metals_cache_dir:mkdir()
