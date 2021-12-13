@@ -56,6 +56,8 @@ M["metals/executeClientCommand"] = function(_, result)
     end
   elseif result.command == "metals-diagnostics-focus" then
     vim.diagnostic.setqflist({ severity = "E" })
+  elseif result.command == "metals-model-refresh" then
+    lsp.codelens.refresh()
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end

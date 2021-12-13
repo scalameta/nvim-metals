@@ -1,9 +1,11 @@
--- NOTE that we don't include the command here, but instead wait
+-- NOTE: that we don't include the command here, but instead wait
 -- to construct that inside of telescope/_extensions/metals.lua.
 -- The main reason is that we don't want to require("metals") in here
 -- since we also want to require this table in setup as well to re-use
 -- the ids to create commands there as well. So to avoid a cyclical dependency
 -- issue we wait.
+-- Also NOTE that these are not client commands in the LSP sense, but rather
+-- just editor commands mapped to functions that a user can trigger.
 local commands_table = {
   {
     id = "analyze_stacktrace",

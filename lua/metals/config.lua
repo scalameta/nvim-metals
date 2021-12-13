@@ -12,6 +12,8 @@ local tvp = require("metals.tvp")
 local util = require("metals.util")
 local Path = require("plenary.path")
 
+local dap_available, dap = pcall(require, "dap")
+
 local config_cache = nil
 
 local metals_name = "metals"
@@ -61,8 +63,15 @@ local function check_for_coursier()
   end
 end
 
+local debugging_provider = false
+
+if dap_available then
+  debugging_provider = true
+end
+
 local metals_init_options = {
   compilerOptions = {},
+  debuggingProvider = debugging_provider,
   decorationProvider = true,
   didFocusProvider = true,
   disableColorOutput = true,
@@ -118,6 +127,26 @@ local function auto_commands()
   api.nvim_command([[autocmd BufEnter * lua require("metals").did_focus()]])
   api.nvim_command([[augroup end]])
 end
+
+local commands = {}
+
+local function debug_start_command(no_debug)
+  -- we are naming this from_lens since this is the only place dap will be
+  -- called this way. Then we know later on by checking the name that we can
+  -- simply forward on the arguments
+  return function(cmd, _)
+    dap.run({
+      type = "scala",
+      request = "launch",
+      name = "from_lens",
+      noDebug = no_debug,
+      metals = cmd.arguments,
+    })
+  end
+end
+
+commands["metals-run-session-start"] = debug_start_command(true)
+commands["metals-debug-session-start"] = debug_start_command(false)
 
 -- Main function used to validate our config and spit out the valid one.
 local function validate_config(config, bufnr)
@@ -210,6 +239,8 @@ local function validate_config(config, bufnr)
   local base_handlers = vim.tbl_extend("error", default_handlers, tvp.handlers)
 
   config.handlers = util.check_exists_and_merge(base_handlers, config.handlers)
+
+  config.commands = util.check_exists_and_merge(commands, config.commands)
 
   config.capabilities = util.check_exists_and_merge(lsp.protocol.make_client_capabilities(), config.capabilities)
 
