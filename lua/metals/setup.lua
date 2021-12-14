@@ -117,6 +117,7 @@ local function setup_dap(execute_command)
 
   dap.adapters.scala = function(callback, config)
     local uri = vim.uri_from_bufnr(0)
+    -- luacheck: ignore
     local arguments = {}
 
     if config.name == "from_lens" then
