@@ -67,10 +67,23 @@ Doctor.create = function(args)
     end
   end
 
-  --local win_id = ui.make_float_with_borders(output, args.title)
-  --doctor_win_id = win_id
-
-  local float = Float.percentage_range_window(0.8, 0.6, {}, { title = args.title })
+  local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
+    title = args.title,
+    titlehighlight = "MetalsTitle",
+    topleft = "┌",
+    topright = "┐",
+    top = "─",
+    left = "│",
+    right = "│",
+    botleft = "└",
+    botright = "┘",
+    bot = "─",
+  })
+  -- It's seemingly impossibly to get the hl to work for me with Float, so we
+  -- just manually set them here.
+  api.nvim_win_set_option(float.win_id, "winhl", "NormalFloat:Normal")
+  api.nvim_win_set_option(float.border_win_id, "winhl", "NormalFloat:Normal")
+  api.nvim_buf_set_option(float.bufnr, "filetype", "markdown")
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
   doctor_win_id = float.win_id
   vim.lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, float.win_id)
