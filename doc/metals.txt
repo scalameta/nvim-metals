@@ -986,12 +986,12 @@ INTEGRATIONS                                               *metals-integrations*
 Other plugins that `nvim-metals` integrates with for various extra features.
 
                                                                *metals-nvim-dap*
-In order for you to utilize Metals to run, test, and debug code, a simple
+In order for you to utilize Metals to run, test, and debug code, an
 integration with https://github.com/mfussenegger/nvim-dap is provided offering
 great DAP support. Before getting starting it's best to read the |dap.txt| to
 get an understanding of how to both setup and use nvim-dap as you'll need to
 ensure you have mappings defined and the correct configurations. To get
-started, you'll want ensure that nvim-dap is installed and then extend your
+started, you'll want ensure that `nvim-dap` is installed and then extend your
 metals configuration with the following `on_attach` function. >
 
   Metals_config.on_attach = function(client, bufnr)
@@ -1000,10 +1000,19 @@ metals configuration with the following `on_attach` function. >
 <
 
 This will ensure that the correct |dap-adapter| is configured for Scala.
-You'll also then want to ensure you have configurations setup for Scala. These
-configurations are the configurations explained in |dap-configuration| with a
-metals-specific table added under the `metals` key. The valid keys in the
-metals table are as follows: >
+
+From here, there are 2 main ways you can interact with `nvim-dap`. The first
+requires no further setup and relies on code lenses. You'll notice that you
+will have `run` and `debug` code lenses on your main methods and `test` and
+`testDebug` code lenses on your test classes. By triggering these behind the
+scenes everything should just work. However, if you're making usage of
+`jvmOptions`, `args` and even an `envFile` you'll want to make some
+|dap-configuration|s, which will give you finer grain control. 
+
+These configurations are the configurations explained in |dap-configuration|
+with a metals-specific table added under the `metals` key. The valid keys in
+the metals table are as follows: >
+
   metals = {
     runType = "run",
     args = { "foo", "bar" },
@@ -1013,8 +1022,13 @@ metals table are as follows: >
   }
 <
 
-You can also read about the various keys and their meaning here in the Metals
-docs https://scalameta.org/metals/docs/integrations/debug-adapter-protocol.html
+NOTE: Keep in mind that if you are defining these configurations you'll want
+to trigger them with your dap mappings, not the code lenses.
+
+You can also read about the various keys and their meanings here in the Metals
+docs:
+
+https://scalameta.org/metals/docs/integrations/debug-adapter-protocol.html.
 
 The following run types are valid for Metals.
   - `run` (automatically discovers the main method and runs it for the current

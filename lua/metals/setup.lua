@@ -117,9 +117,14 @@ local function setup_dap(execute_command)
 
   dap.adapters.scala = function(callback, config)
     local uri = vim.uri_from_bufnr(0)
-    local metals_dap_settings = config.metals or {}
-    execute_command({
-      command = "metals.debug-adapter-start",
+    -- luacheck: ignore
+    local arguments = {}
+
+    if config.name == "from_lens" then
+      arguments = config.metals
+    else
+      local metals_dap_settings = config.metals or {}
+
       arguments = {
         path = uri,
         runType = metals_dap_settings.runType or "run",
@@ -127,7 +132,12 @@ local function setup_dap(execute_command)
         jvmOptions = metals_dap_settings.jvmOptions,
         env = metals_dap_settings.env,
         envFile = metals_dap_settings.envFile,
-      },
+      }
+    end
+
+    execute_command({
+      command = "metals.debug-adapter-start",
+      arguments = arguments,
     }, function(_, _, res)
       -- In metals we throw various exceptions when handling
       -- debug-adapter-start but they are all handled and status messages are
