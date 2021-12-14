@@ -153,7 +153,22 @@ M.info = function()
 
     output = lsp.util._trim(output)
 
-    local float = Float.percentage_range_window(0.8, 0.6, {}, { title = "Metals Info" })
+    local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
+      title = "Metals Info",
+      titlehighlight = "MetalsTitle",
+      topleft = "┌",
+      topright = "┐",
+      top = "─",
+      left = "│",
+      right = "│",
+      botleft = "└",
+      botright = "┘",
+      bot = "─",
+    })
+    -- It's seemingly impossibly to get the hl to work for me with Float, so we
+    -- just manually set them here.
+    api.nvim_win_set_option(float.win_id, "winhl", "NormalFloat:Normal")
+    api.nvim_win_set_option(float.border_win_id, "winhl", "NormalFloat:Normal")
     api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
     lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, float.win_id)
   end
