@@ -86,7 +86,6 @@ Doctor.create = function(args)
   api.nvim_buf_set_option(float.bufnr, "filetype", "markdown")
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
   doctor_win_id = float.win_id
-  vim.lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, float.win_id)
 end
 
 return Doctor
