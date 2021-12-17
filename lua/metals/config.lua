@@ -39,12 +39,9 @@ local function in_disabled_mode(config)
   return disabled
 end
 
---- Ultimately what will be passed to the config.cmd to initialize the LSP
---- connection. If a user is using useGlobalExecutable then we just default
---- to `metals`, if not we take control and construct the location in the
---- cache dir.
---- @return string executable
-local function metals_bin()
+--- Used to generate Metals installation file name depending on configuration
+--- @return string fileame
+local function metals_install_name()
   if config_cache and config_cache.settings.metals.useGlobalExecutable then
     return metals_name
   else
@@ -52,14 +49,39 @@ local function metals_bin()
   end
 end
 
+--- Ultimately what will be passed to the config.cmd to initialize the LSP
+--- connection. If a user is using useGlobalExecutable then we just default
+--- to `metals`, if not we take control and construct the location in the
+--- cache dir.
+--- @return string executable
+local function metals_bin()
+  local metals_filename = metals_name
+  -- Coursier will install both a "metals" and "metals.bat", on Windows we should use "metals.bat" as exe
+
+  if util.is_windows then
+    metals_filename = metals_name .. ".bat"
+  end
+
+  if config_cache and config_cache.settings.metals.useGlobalExecutable then
+    return metals_filename
+  else
+    return Path:new(util.nvim_metals_cache_dir, metals_filename).filename
+  end
+end
+
 --- Check to see if coursier is installed. This method favors the native cs. So if
 --- cs is installed, that will be returned, if not, then coursier will be returned.
---- @return string 'cs', 'coursier', or nil
+--- @return string 'cs', 'cs.bat', 'coursier', or nil
 local function check_for_coursier()
-  if util.has_bins("cs") then
-    return "cs"
-  elseif util.has_bins("coursier") then
-    return "coursier"
+  -- this must be first the second "cs" is also found as binary but we should be more specific on Windows
+  if util.is_windows then
+    return "cs.bat"
+  else
+    if util.has_bins("cs") then
+      return "cs"
+    elseif util.has_bins("coursier") then
+      return "coursier"
+    end
   end
 end
 
@@ -307,6 +329,7 @@ return {
   in_disabled_mode = in_disabled_mode,
   get_config_cache = get_config_cache,
   metals_bin = metals_bin,
+  metals_install_name = metals_install_name,
   metals_init_options = metals_init_options,
   scala_file_types = scala_file_types,
   set_config_cache = set_config_cache,
