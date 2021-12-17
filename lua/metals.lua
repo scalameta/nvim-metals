@@ -170,7 +170,6 @@ M.info = function()
     api.nvim_win_set_option(float.win_id, "winhl", "NormalFloat:Normal")
     api.nvim_win_set_option(float.border_win_id, "winhl", "NormalFloat:Normal")
     api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
-    lsp.util.close_preview_autocmd({ "BufHidden", "BufLeave" }, float.win_id)
   end
 end
 
