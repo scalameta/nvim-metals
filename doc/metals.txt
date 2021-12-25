@@ -34,7 +34,7 @@ PREREQUISITES                                             *metals-prerequisites*
 - Ensure you're using at least Neovim v0.6.0. While `nvim-metals` will aim to
   always work with the latest stable version of Neovim, there is no guarantee
   of compatibility with older versions.
-- *DO NOT* use this plugin for Metals and also `neovim/nvim-lspconfig` for
+- WARNING: use this plugin for Metals and also `neovim/nvim-lspconfig` for
   Metals. If you've used `neovim/nvim-lspconfig` before with Metals, make sure
   to remove metals setup for it as it will conflict with this plugin.  NOTE:
   that keeping the plugin installed for other LSP servers is totally fine,
@@ -153,6 +153,8 @@ _ones that are sent and used by the server_
   * |excludedPackages|
   * |fallbackScalaVersion|
   * |gradleScript|
+  * |javaFormat.eclipseConfigPath|
+  * |javaFormat.eclipseProfile|
   * |javaHome|
   * |mavenScript|
   * |millScript|
@@ -280,6 +282,21 @@ and Ammonite scripts.
 Note: Setting this to a higher version than Metals currently supports won't
 work and you'll just get a warning. So don't be cheeky and think you can bump
 faster that Metals can be using this.
+
+javaFormat.eclipseConfigPath                      *javaFormat.eclipseConfigPath*
+
+Type: string ~
+Default: '' ~
+
+Optional custom path to the eclipse-formatter.xml file. Should be an absolute
+path and use forward slashes `/` for file separators (even on Windows).
+
+javaFormat.eclipseProfile                            *javaFormat.eclipseProfile*
+
+Type: string ~
+Default: '' ~
+
+Optional Eclipse format profile to use.
 
 javaHome                                                              *javaHome*
 
@@ -770,6 +787,23 @@ initialize_or_attach({config})
 install_or_update()       Install Metals if it doesn't exist or update to the
                           latest stable version or version set if you have a
                           `serverVersion` entry in your config table.
+
+                                                               *new_java_file()*
+new_java_file({directory_uri_opt}, {name_opt}, {file_type_option})
+
+                          Use to execute a |metals.new-java-file| command. All
+                          of the parameters are optional. If they are not
+                          provided you will be prompted for them.
+
+                          Parameters:
+                          {directory_uri_opt} (string) directory that you'd
+                          like the new file to be created in.
+
+                          {name_opt} (string) name you'd like to be given to 
+                          the file.
+
+                          {file_type_option} (string) the type of Scala file
+                          that you'd like to be created.
 
                                                               *new_scala_file()*
 new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
