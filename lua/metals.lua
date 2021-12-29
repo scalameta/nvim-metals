@@ -197,24 +197,38 @@ M.toggle_logs = function()
   vim.b["metals_buf_purpose"] = "logs"
 end
 
--- Implements the new-scala-file feature.
 -- https://scalameta.org/metals/docs/integrations/new-editor/#create-new-scala-file
+-- https://scalameta.org/metals/docs/integrations/new-editor/#create-new-java-file
 --
+-- @param language Either scala or java
 -- @param directory_uri_opt Path URI for the new file. e.g. 'file:///home/...'
 -- @param name_opt Name for the scala file. e.g.: 'MyNewClass'. If nil, it's asked in an input box.
 -- @param file_type_opt Type of file. e.g.: 'worksheet'
+local new_file = function(language, directory_uri_opt, name_opt, file_type_opt)
+  if language ~= "scala" and language ~= "java" then
+    log.warn_and_show("Unsupported language given for new file. Only scala and java are supported.")
+  else
+    local command = string.format("metals.new-%s-file", language)
+    directory_uri_opt = directory_uri_opt or vim.NIL
+    name_opt = name_opt or vim.NIL
+    file_type_opt = file_type_opt or vim.NIL
+
+    local args_string_array = {}
+
+    table.insert(args_string_array, 1, directory_uri_opt)
+    table.insert(args_string_array, 2, name_opt)
+    table.insert(args_string_array, 3, file_type_opt)
+
+    execute_command({ command = command, arguments = args_string_array })
+  end
+end
+
 M.new_scala_file = function(directory_uri_opt, name_opt, file_type_opt)
-  directory_uri_opt = directory_uri_opt or vim.NIL
-  name_opt = name_opt or vim.NIL
-  file_type_opt = file_type_opt or vim.NIL
+  new_file("scala", directory_uri_opt, name_opt, file_type_opt)
+end
 
-  local args_string_array = {}
-
-  table.insert(args_string_array, 1, directory_uri_opt)
-  table.insert(args_string_array, 2, name_opt)
-  table.insert(args_string_array, 3, file_type_opt)
-
-  execute_command({ command = "metals.new-scala-file", arguments = args_string_array })
+M.new_java_file = function(directory_uri_opt, name_opt, file_type_opt)
+  new_file("java", directory_uri_opt, name_opt, file_type_opt)
 end
 
 M.new_scala_project = function()

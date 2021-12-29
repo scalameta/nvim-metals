@@ -73,6 +73,11 @@ local commands_table = {
     hint = "Open Metals info window.",
   },
   {
+    id = "new_java_file",
+    label = "New Java File",
+    hint = "Create a new Java file",
+  },
+  {
     id = "new_scala_file",
     label = "New Scala File",
     hint = "Create a new Scala file.",

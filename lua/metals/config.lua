@@ -114,6 +114,8 @@ local valid_metals_settings = {
   "excludedPackages",
   "fallbackScalaVersion",
   "gradleScript",
+  "javaFormat.eclipseConfigPath",
+  "javaFormat.eclipseProfile",
   "javaHome",
   "mavenScript",
   "millScript",
