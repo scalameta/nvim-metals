@@ -67,7 +67,7 @@ Once installed, the most basic setup is to have the following: >
 
   augroup lsp
     au!
-    au FileType scala,sbt lua require("metals").initialize_or_attach({})
+    au FileType java,scala,sbt lua require("metals").initialize_or_attach({})
   augroup end
 <
 
@@ -75,7 +75,7 @@ Or as a |vim.cmd| if using a pure Lua setup. >
 
   cmd [[augroup lsp]]
   cmd [[au!]]
-  cmd [[au FileType scala,sbt lua require("metals").initialize_or_attach({})]]
+  cmd [[au FileType java,scala,sbt lua require("metals").initialize_or_attach({})]]
   cmd [[augroup end]]
 <
 
@@ -89,6 +89,14 @@ You can read more about the other config parameters in
 |vim.lsp.start_client()|. This is the primary way to edit your
 `init_options`, change or add any custom `handlers`, and set any configuration
 settings.
+
+WARNING: Metals offers basic Java support, but not nearly to the level of the
+Java language server, so while we do have `java` in the FileType autocmd, you
+may not want this if you're using something like `nvim-jdtls` for more Java
+heavy projects. Since then you'd be triggering two different servers to
+connect here, which you probably don't want. However, if you're primarily
+using Scala and also have _some_ Java to deal with, then ensuring that `java`
+is listed here is important or else Metals won't attatch on Java files.
 
 NOTE: It's highly recommended to set your `statusBarProvider` to `on`. This
 enables `metals/status` and also other helpful messages that are shown to you.
