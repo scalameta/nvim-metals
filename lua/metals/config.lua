@@ -75,7 +75,13 @@ end
 local function check_for_coursier()
   -- this must be first the second "cs" is also found as binary but we should be more specific on Windows
   if util.is_windows then
-    return "cs.bat"
+    if util.has_bins("cs.bat") then
+      return "cs.bat"
+    else
+      log.error_and_show("Warning:Could not find cs.bat in PATH")
+      log.error_and_show("Installation instructions for Coursier https://get-coursier.io/docs/cli-installation#windows")
+      log.error_and_show("Make sure to run cs.exe once to install Coursier and add C:/Users/YOURNAME/AppData/Coursier/data/bin to your path.")
+    end
   else
     if util.has_bins("cs") then
       return "cs"

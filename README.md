@@ -29,6 +29,10 @@ integrations with other projects such as
     newer.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.
+    _NOTE_: On Windows, you should run `coursier` or `cs.exe` once from the command
+    line as this is how it will install itself. Once this is done you should 
+    add `C:\Users\YOURNAME\AppData\Coursier\data\bin` to your path. To verify
+    that it is properly installed you can run `cs --help` from a new shell.
 - Remove `F` from `shortmess`. `set shortmess-=F`
     (for lua `vim.opt_global.shortmess:remove("F")`)
     _NOTE_: Without doing this, autocommands that deal with filetypes prohibit
