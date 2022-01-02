@@ -73,19 +73,14 @@ end
 --- cs is installed, that will be returned, if not, then coursier will be returned.
 --- @return string 'cs', 'cs.bat', 'coursier', or nil
 local function check_for_coursier()
-  -- this must be first the second "cs" is also found as binary but we should be more specific on Windows
-  if util.is_windows then
-    if util.has_bins("cs.bat") then
-      return "cs.bat"
-    else
-      log.error_and_show(messages.coursier_not_installed_windows)
-    end
-  else
-    if util.has_bins("cs") then
-      return "cs"
-    elseif util.has_bins("coursier") then
-      return "coursier"
-    end
+  -- this must be first the second "cs" is also found as binary but we should
+  -- be more specific on Windows
+  if util.is_windows and util.has_bins("cs.bat") then
+    return "cs.bat"
+  elseif util.has_bins("cs") then
+    return "cs"
+  elseif util.has_bins("coursier") then
+    return "coursier"
   end
 end
 
@@ -239,10 +234,14 @@ local function validate_config(config, bufnr)
   elseif not util.has_bins(metals_bin()) then
     local heading = "Welcome to nvim-metals!\n"
 
-    local coursier_msg = (check_for_coursier() and "" or messages.coursier_not_installed)
+    local coursier_msg = ""
 
-    if coursier_msg ~= "" then
-      log.error(coursier_msg)
+    if not check_for_coursier() then
+      if util.is_windows then
+        coursier_msg = messages.coursier_not_installed_windows
+      else
+        coursier_msg = messages.coursier_not_installed
+      end
     end
 
     log.warn_and_show(heading .. coursier_msg .. messages.install_message)
