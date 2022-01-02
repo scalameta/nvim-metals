@@ -75,7 +75,11 @@ end
 local function check_for_coursier()
   -- this must be first the second "cs" is also found as binary but we should be more specific on Windows
   if util.is_windows then
-    return "cs.bat"
+    if util.has_bins("cs.bat") then
+      return "cs.bat"
+    else
+      log.error_and_show(messages.coursier_not_installed_windows)
+    end
   else
     if util.has_bins("cs") then
       return "cs"
