@@ -6,6 +6,12 @@ It looks like you don't have Coursier installed, which you need to install Metal
 
 You can find instructions on how to install it here: https://get-coursier.io/docs/cli-installation]]
 
+M.coursier_not_installed_windows = [[
+Warning: Could not find cs.bat in PATH
+You can find instructions on how to install it here: https://get-coursier.io/docs/cli-installation#windows
+Make sure to run cs.exe once to install Coursier and add it's installation directory to your path.
+See the note in the Readme.]]
+
 -- TODO figure out a way to just prompt this and do the install
 M.install_message = [[
 It looks like you don't have Metals installed yet.

@@ -78,9 +78,7 @@ local function check_for_coursier()
     if util.has_bins("cs.bat") then
       return "cs.bat"
     else
-      log.error_and_show("Warning:Could not find cs.bat in PATH")
-      log.error_and_show("Installation instructions for Coursier https://get-coursier.io/docs/cli-installation#windows")
-      log.error_and_show("Make sure to run cs.exe once to install Coursier and add C:/Users/YOURNAME/AppData/Coursier/data/bin to your path.")
+      log.error_and_show(messages.coursier_not_installed_windows)
     end
   else
     if util.has_bins("cs") then
