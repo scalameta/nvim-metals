@@ -125,15 +125,24 @@ M.info = function()
 
     local output = {}
     for s in metals_info:gmatch("[^\r\n]+") do
-      table.insert(output, s)
+      -- A little hacky but the version output is weird and we want to coerce
+      -- it to markdown, so we give the verstion line a # and then strip the
+      -- other lines of their #
+      if util.starts_with(s, "#") then
+        table.insert(output, s:sub(2))
+      else
+        table.insert(output, "# " .. s)
+      end
     end
 
     if config.settings.metals then
       table.insert(output, "")
       table.insert(output, "## Current settings")
+      table.insert(output, "```json")
       for s in vim.inspect(config.settings.metals):gmatch("[^\r\n]+") do
         table.insert(output, s)
       end
+      table.insert(output, "```")
     end
     table.insert(output, "")
     table.insert(output, "## Useful locations")
@@ -169,6 +178,7 @@ M.info = function()
     -- just manually set them here.
     api.nvim_win_set_option(float.win_id, "winhl", "NormalFloat:Normal")
     api.nvim_win_set_option(float.border_win_id, "winhl", "NormalFloat:Normal")
+    api.nvim_buf_set_option(float.bufnr, "filetype", "markdown")
     api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
   end
 end
