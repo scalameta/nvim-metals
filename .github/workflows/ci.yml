@@ -41,50 +41,34 @@ jobs:
 
   test:
     name: Run tests
-    strategy:
-      matrix:
-        neovim_branch: ['v0.6.0', 'master']
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        neovim_version: ['v0.6.1', 'nightly']
+
     env:
       NEOVIM_BRANCH: ${{ matrix.neovim_branch }}
 
     steps:
       - uses: actions/checkout@v2
 
+      - run: date +%F > todays-date
+      - name: Restore cache for today's nightly.
+        uses: actions/cache@v2
+        with:
+          path: _neovim
+          key: ${{ runner.os }}-x64-${{ hashFiles('todays-date') }}
+
       - uses: coursier/setup-action@v1
         with:
           jvm: adopt:11
 
-      # Copied/adapted from wbthomason/packer.nvim
-      - name: Setup build dependencies
-        run: |
-          sudo apt update &&
-          sudo apt install -y \
-            autoconf \
-            automake \
-            cmake \
-            g++ \
-            gettext \
-            gperf \
-            libjemalloc-dev \
-            libluajit-5.1-dev \
-            libmsgpack-dev \
-            libtermkey-dev \
-            libtool \
-            libtool-bin \
-            libunibilium-dev \
-            libvterm-dev \
-            lua-bitop \
-            lua-lpeg \
-            lua-mpack \
-            ninja-build \
-            pkg-config \
-            unzip
-
-      - name: Build Neovim
-        run: |
-          git clone --depth 1 https://github.com/neovim/neovim --branch ${{env.NEOVIM_BRANCH}}
-          make -C neovim
+      - name: Setup neovim
+        uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim_version }}
 
       - name: Prepare plenary
         run: |
@@ -92,13 +76,7 @@ jobs:
           ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
 
       - name: Run setup tests
-        run: |
-          export PATH="neovim/build/bin:${PATH}"
-          export VIM="neovim/runtime"
-          make test-setup
+        run: make test-setup
 
       - name: Run tests
-        run: |
-          export PATH="neovim/build/bin:${PATH}"
-          export VIM="neovim/runtime"
-          make test
+        run: make test
