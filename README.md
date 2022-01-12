@@ -84,8 +84,8 @@ List](https://github.com/scalameta/nvim-metals/discussions/279).
 ## Settings and Commands
 
 To view all of the available commands, check out `:help metals-commands` in the
-help docs. Similarly, to see the available configuration options, check out
-`:help metals-options`, and `:help metals-settings` for settings.
+help docs. Similarly, to see the available configuration settings check out
+`:help metals-settings`.
 
 _NOTE_: You can find an example of a minimal configuration showing how to set
 various settings and options
