@@ -52,18 +52,42 @@ Doctor.create = function(args)
   else
     table.insert(output, "## Build Targets")
 
-    for _, target in ipairs(args.targets) do
-      table.insert(output, "")
-      table.insert(output, string.format("### %s", target.buildTarget))
-      table.insert(output, string.format("  - scala version: %s", target.scalaVersion))
-      table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
-      table.insert(output, string.format("  - goto definition: %s", target.gotoDefinition))
-      table.insert(output, string.format("  - completions: %s", target.completions))
-      table.insert(output, string.format("  - find references: %s", target.findReferences))
-      if target.recommendation ~= "" then
-        table.insert(output, string.format("  - recommendation: %s", target.recommendation))
+    if args.version then
+      for _, target in ipairs(args.targets) do
+        table.insert(output, "")
+        table.insert(output, string.format("### %s", target.buildTarget))
+        table.insert(output, string.format("  - target type: %s", target.targetType))
+        table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
+        table.insert(output, string.format("  - interactive: %s", target.interactive))
+        table.insert(output, string.format("  - semanticdb: %s", target.semanticdb))
+        table.insert(output, string.format("  - debugging: %s", target.debugging))
+        table.insert(output, string.format("  - java: %s", target.java))
+        if target.recommendation ~= "" then
+          table.insert(output, string.format("  - recommendation: %s", target.recommendation))
+        end
       end
       table.insert(output, "")
+      table.insert(output, "## Explanations")
+      for _, explanation in ipairs(args.explanations) do
+        table.insert(output, "")
+        table.insert(output, string.format("### %s", explanation.title))
+        for _, deep_explanation in ipairs(explanation.explanations) do
+          table.insert(output, string.format("%s", deep_explanation))
+        end
+      end
+    else
+      for _, target in ipairs(args.targets) do
+        table.insert(output, "")
+        table.insert(output, string.format("### %s", target.buildTarget))
+        table.insert(output, string.format("  - scala version: %s", target.scalaVersion))
+        table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
+        table.insert(output, string.format("  - goto definition: %s", target.gotoDefinition))
+        table.insert(output, string.format("  - completions: %s", target.completions))
+        table.insert(output, string.format("  - find references: %s", target.findReferences))
+        if target.recommendation ~= "" then
+          table.insert(output, string.format("  - recommendation: %s", target.recommendation))
+        end
+      end
     end
   end
 
