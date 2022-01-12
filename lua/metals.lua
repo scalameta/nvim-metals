@@ -248,7 +248,7 @@ end
 M.quick_worksheet = function()
   local dir = "file://" .. fn.expand("%:p:h")
   local name = fn.expand("%:p:h:t")
-  M.new_scala_file(dir, name, "worksheet")
+  M.new_scala_file(dir, name, "scala-worksheet")
 end
 
 M.scan_sources = function()
