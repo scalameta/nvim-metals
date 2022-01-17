@@ -1,0 +1,53 @@
+name: 🐛 Bug Report
+description: Create a bug report
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Describe the bug
+      description: A clear and concise description of what the bug is.
+      placeholder: |
+        Description ...
+
+        Reproduction steps
+        1. Go to ...
+        2. Click on ...
+        3. Scroll down to ...
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      description: What OS are you using?
+      options:
+        - macOS
+        - Windows
+        - Linux
+        - Other (note only the above 3 are officially supported)
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version of Metals
+      placeholder: v0.11.1
+    validations:
+      required: true
+
+  - type: input
+    id: nvim-metals-version
+    attributes:
+      label: Commit of nvim-metals
+      placeholder: 30f4716932dc91e735085d700962d92e9d92e216
+    validations:
+      required: true

@@ -1,0 +1,10 @@
+name: Task
+description: General task that needs to be completed for nvim-metals
+body:
+  - type: textarea
+    id: task 
+    attributes:
+      label: Task
+      description: Describe the task that needs to be completed
+    validations:
+      required: true
