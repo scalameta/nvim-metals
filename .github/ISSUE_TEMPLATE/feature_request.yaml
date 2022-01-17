@@ -1,0 +1,16 @@
+name: 🚀 Feature request
+description: Suggest a feature you'd like to see implemented
+body:
+  - type: textarea
+    id: feature
+    attributes:
+      label: Describe the feature
+      description: A clear and concise description of what the feature is.
+    validations:
+      required: true
+
+  - type: textarea
+    id: how
+    attributes:
+      label: Potential ways to implement
+      description: Have you thought about how this may be implemented?
