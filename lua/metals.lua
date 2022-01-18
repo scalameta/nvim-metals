@@ -311,7 +311,7 @@ M.organize_imports = function()
   for _, response in pairs(resp) do
     for _, result in pairs(response.result or {}) do
       if result.edit then
-        lsp.util.apply_workspace_edit(result.edit, 'utf-16')
+        lsp.util.apply_workspace_edit(result.edit, "utf-16")
       else
         lsp.buf.execute_command(result.command)
       end
@@ -349,7 +349,11 @@ local function show_decoded(decoder_type, format)
   execute_command({
     command = decoder.command,
     arguments = { metals_uri },
-  }, decoder.make_handler(file_uri, decoder_type, format))
+  }, decoder.make_handler(
+    file_uri,
+    decoder_type,
+    format
+  ))
 end
 
 M.show_tasty = function()
