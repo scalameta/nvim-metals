@@ -44,7 +44,7 @@ end
 -- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
 M["metals/executeClientCommand"] = function(_, result)
   if result.command == "metals-goto-location" then
-    lsp.util.jump_to_location(result.arguments[1])
+    lsp.util.jump_to_location(result.arguments[1], "utf-16")
   elseif result.command == "metals-doctor-run" then
     local args = fn.json_decode(result.arguments[1])
     doctor.create(args)
