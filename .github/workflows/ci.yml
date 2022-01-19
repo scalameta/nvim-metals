@@ -63,6 +63,7 @@ jobs:
       - uses: coursier/setup-action@v1
         with:
           jvm: adopt:11
+          apps: ""
 
       - name: Setup neovim
         uses: rhysd/action-setup-vim@v1
