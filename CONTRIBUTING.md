@@ -43,6 +43,8 @@ off to make sure they aren't better there:
           the docs. This will basically just be `use '~/your-path-to/nvim-metals'`.
       2. You can also just manually add the plugin to your `runtimepath` with an
          alias. For example you could have something like `nvim --cmd 'set rtp+=/your-path-to/nvim-metals`.
+  - Make sure to branch off main to send in your changes. This allows the
+      maintainers to push another commit on top of your changes if they need to.
 
 Then you should be able to just make changes and restart Neovim and see them
 right away.
@@ -55,7 +57,8 @@ this locally via luarocks: `luarocks install luacheck`. I also use
 [`StyLua`](https://github.com/JohnnyMorganz/StyLua) for formatting. Please also
 use this as it gets rid of any need to discuss formatting. You can install it in
 various ways found on the github page, but the easiest is with cargo via `cargo
-install stylua`.
+install stylua`. You can check the version that is being used by looking in the
+`./.github/workflows/ci.yml` file.
 
 After installed you can just use the commands in the Makefile to use them.
 
