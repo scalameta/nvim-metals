@@ -81,7 +81,7 @@ local function install_or_update(sync)
     end),
   })
   if sync then
-    job:sync()
+    job:sync(10000)
   else
     job:start()
   end
