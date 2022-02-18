@@ -352,6 +352,38 @@ local function show_decoded(decoder_type, format)
   }, decoder.make_handler(file_uri, decoder_type, format))
 end
 
+M.show_build_target_info = function()
+  local choose_and_decode = function(err, method, resp)
+    if err then
+      log.error_and_show(string.format("Unable to retrieve build targets", method))
+      log.error(err)
+    elseif resp then
+      vim.ui.select(resp, {
+        prompt = "Choose build target to view:",
+      }, function(choice)
+        if choice ~= nil then
+          local root = conf.get_config_cache().root_dir
+
+          local metals_uri = string.format(
+            "%s:file:///%s/%s.%s",
+            decoder.metals_decode,
+            root,
+            choice,
+            decoder.types.build_target
+          )
+          execute_command({
+            command = decoder.command,
+            arguments = { metals_uri },
+          }, decoder.make_handler(root, decoder.types.build_target))
+        end
+      end)
+    else
+      log.warn_and_show("Metals returned no info for build target.")
+    end
+  end
+  execute_command({ command = "metals.list-build-targets" }, choose_and_decode)
+end
+
 M.show_tasty = function()
   show_decoded(decoder.types.tasty, decoder.formats.decoded)
 end

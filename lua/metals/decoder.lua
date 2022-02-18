@@ -5,6 +5,22 @@ local log = require("metals.log")
 local util = require("metals.util")
 local Path = require("plenary.path")
 
+local formats = {
+  compact = "compact",
+  decoded = "decoded",
+  detailed = "detailed",
+  proto = "proto",
+  verbose = "verbose",
+}
+
+local types = {
+  build_target = "metals-buildtarget",
+  cfr = "cfr",
+  javap = "javap",
+  semanticdb = "semanticdb",
+  tasty = "tasty",
+}
+
 local function filename_from_uri(full_uri)
   local parts = util.split_on(full_uri, "/")
   return parts[#parts]
@@ -52,8 +68,10 @@ local handle_decoder_response = function(result, uri, decoder, format)
       api.nvim_buf_set_name(new_buffer, name)
       -- TODO we should probably do something better for this case, but java is
       -- a bit nicer syntax for these than scala
-      if decoder == "javap" then
+      if decoder == types.javap then
         api.nvim_buf_set_option(new_buffer, "syntax", "java")
+      elseif decoder == types.build_target then
+        api.nvim_buf_set_option(new_buffer, "syntax", "txt")
       else
         api.nvim_buf_set_option(new_buffer, "syntax", "scala")
       end
@@ -77,20 +95,9 @@ end
 
 return {
   command = "metals.file-decode",
-  formats = {
-    compact = "compact",
-    decoded = "decoded",
-    detailed = "detailed",
-    proto = "proto",
-    verbose = "verbose",
-  },
+  formats = formats,
   handle_decoder_response = handle_decoder_response,
   make_handler = make_handler,
   metals_decode = "metalsDecode",
-  types = {
-    cfr = "cfr",
-    javap = "javap",
-    semanticdb = "semanticdb",
-    tasty = "tasty",
-  },
+  types = types,
 }
