@@ -468,6 +468,7 @@ The following commands are provided by `nvim-metals`:
   * |MetalsRestartServer|
   * |MetalsRunDoctor|
   * |MetalsScanSources|
+  * |MetalsShowBuildTargetInfo|
   * |MetalsShowCfr|
   * |MetalsShowJavap|
   * |MetalsShowJavapVerbose|
@@ -597,6 +598,13 @@ MetalsRunDoctor                 Run Metals Doctor, which will open a floating
 
                                                              *MetalsScanSources*
 MetalsScanSources            Scan all workspaces sources.
+
+                                                     *MetalsShowBuildTargetInfo*
+MetalsShowBuildTargetInfo    Will return a list of all the build targets in
+                             your build that you can choose from. Once chosen it
+                             will display all sorts of information about your
+                             build target such as the scalacOptions, the
+                             classpath, etc.
 
                                                                  *MetalsShowCfr*
 MetalsShowCfr                Show the cfr output for the current file.
@@ -855,6 +863,10 @@ run_doctor()              Use to execute a |metals.doctor-run| command.
 
                                                                 *scan_sources()*
 scan_sources()            Use to execute a |metals.sources-scan| command.
+
+                                                      *show_build_target_info()*
+show_build_target_info() Show info for a build target that you will choose
+                         when you execute this.
 
                                                                     *show_cfr()*
 show_cfr()                Show decompiled cfr of the current file.
