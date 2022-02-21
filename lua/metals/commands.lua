@@ -123,6 +123,11 @@ local commands_table = {
     hint = "Scan all workspace sources.",
   },
   {
+    id = "show_build_target_info",
+    label = "Show build target info",
+    hint = "Show the info of a specific build target.",
+  },
+  {
     id = "show_cfr",
     label = "Show decompiled with cfr",
     hint = "Show file decompiled with cfr.",
