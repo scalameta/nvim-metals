@@ -26,7 +26,14 @@ local function install_or_update(sync)
     return true
   end
 
-  local server_version = config.settings.metals.serverVersion or "latest.release"
+  local latestStable = "latest.release"
+  local server_version = config.settings.metals.serverVersion or latestStable
+  local binary_version = "2.12"
+  -- TODO When we release 0.11.3 we need to change this to:
+  -- if server_version == latestStable or server_version > "0.11.2" then
+  if server_version ~= latestStable and server_version > "0.11.2" then
+    binary_version = "2.13"
+  end
 
   local server_org = config.settings.metals.serverOrg or "org.scalameta"
 
@@ -42,7 +49,7 @@ local function install_or_update(sync)
     "-Xss4m",
     "--java-opt",
     "-Xms100m",
-    string.format("%s:metals_2.12:%s", server_org, server_version),
+    string.format("%s:metals_%s:%s", server_org, binary_version, server_version),
     "-r",
     "bintray:scalacenter/releases",
     "-r",
