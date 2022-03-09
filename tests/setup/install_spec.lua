@@ -22,9 +22,19 @@ describe("install", function()
     eq(path:exists(), true)
   end)
 
-  it("should be able to install with a snapshot", function()
+  it("should be able to install with an old 2.12 snapshot", function()
     local bare_config = require("metals.setup").bare_config()
     bare_config.settings = { serverVersion = "0.10.9+131-30f6a57b-SNAPSHOT" }
+    config.validate_config(bare_config, vim.api.nvim_get_current_buf())
+
+    eq(path:exists(), false)
+    install.install_or_update(true)
+    eq(path:exists(), true)
+  end)
+
+  it("should be able to install with a new 2.13 snapshot", function()
+    local bare_config = require("metals.setup").bare_config()
+    bare_config.settings = { serverVersion = "0.11.2+3-105f3501-SNAPSHOT" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path:exists(), false)
