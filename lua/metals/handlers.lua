@@ -5,7 +5,6 @@ local lsp = vim.lsp
 local decoration = require("metals.decoration")
 local doctor = require("metals.doctor")
 local log = require("metals.log")
-local util = require("metals.util")
 
 local M = {}
 
@@ -68,11 +67,40 @@ end
 -- picked up and used in a statusline.
 -- Command and Tooltip are not covered from the spec.
 -- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
-M["metals/status"] = function(_, result)
-  if result.hide then
-    util.metals_status()
+M["metals/status"] = function(_, status, ctx)
+  if status.hide then
+    api.nvim_set_var("metals_status", "")
   else
-    util.metals_status(result.text)
+    if status.text then
+      api.nvim_set_var("metals_status", status.text)
+    end
+
+    if status.command and status.tooltip then
+      vim.ui.select({ "yes", "no" }, {
+        prompt = string.format(
+          "%s\nThere is a %s command attatched to this, would you like to execute it?",
+          status.tooltip,
+          status.command
+        ),
+      }, function(choice)
+        if choice == "yes" then
+          local client = vim.lsp.get_client_by_id(ctx.client_id)
+          local fn = client.commands[status.command]
+          if fn then
+            fn(status.command, { bufnr = ctx.bufnr, client_id = ctx.client_id })
+          else
+            log.error_and_show(
+              string.format(
+                "It seems we don't implement %s as a client command. We should, tell Chris to fix this.",
+                status.command
+              )
+            )
+          end
+        end
+      end)
+    elseif status.tooltip then
+      log.warn_and_show(status.tooltip)
+    end
   end
 end
 

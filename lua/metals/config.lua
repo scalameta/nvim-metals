@@ -2,10 +2,11 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
-local log = require("metals.log")
 local decoration = require("metals.decoration")
 local default_handlers = require("metals.handlers")
+local doctor = require("metals.doctor")
 local jvmopts = require("metals.jvmopts")
+local log = require("metals.log")
 local messages = require("metals.messages")
 local root_dir = require("metals.rootdir")
 local tvp = require("metals.tvp")
@@ -153,6 +154,32 @@ end
 
 local commands = {}
 
+-- Doesn't really fit in here, but we need to use it for the commands down below
+-- and also in metals.lua, so to avoid a cyclical dep we just put it in here
+local function toggle_logs()
+  local bufs = api.nvim_list_bufs()
+
+  for _, buf in ipairs(bufs) do
+    local buftype = api.nvim_buf_get_option(buf, "buftype")
+    local _, purpose = pcall(api.nvim_buf_get_var, buf, "metals_buf_purpose")
+
+    if buftype == "terminal" and purpose == "logs" then
+      local first_window_id = fn.win_findbuf(buf)[1]
+      if first_window_id then
+        fn.win_gotoid(first_window_id)
+      else
+        api.nvim_command(string.format("vsp | :b %i", buf))
+      end
+
+      return
+    end
+  end
+
+  -- Only open them if a terminal isn't already open
+  api.nvim_command([[vsp +set\ ft=log term://tail -f .metals/metals.log]])
+  vim.b["metals_buf_purpose"] = "logs"
+end
+
 local function debug_start_command(no_debug)
   -- we are naming this from_lens since this is the only place dap will be
   -- called this way. Then we know later on by checking the name that we can
@@ -168,8 +195,20 @@ local function debug_start_command(no_debug)
   end
 end
 
+-- TODO if this gets to be too much duplication with the
+-- metals/executeClientCommand we'll need to put these all in a table and use
+-- them in both places.
 commands["metals-run-session-start"] = debug_start_command(true)
 commands["metals-debug-session-start"] = debug_start_command(false)
+commands["metals-diagnostics-focus"] = function()
+  vim.diagnostic.setqflist({ severity = "E" })
+end
+-- We can re-se require("metals").run_doctor which does the same thing or we'd
+-- hae a cyclical dependency
+commands["metals-doctor-run"] = function()
+  vim.lsp.buf_request(0, "workspace/executeCommand", { command = "metals.doctor-run" })
+end
+commands["metals-logs-toggle"] = toggle_logs
 
 -- Main function used to validate our config and spit out the valid one.
 local function validate_config(config, bufnr)
@@ -338,6 +377,7 @@ return {
   metals_init_options = metals_init_options,
   scala_file_types = scala_file_types,
   set_config_cache = set_config_cache,
+  toggle_logs = toggle_logs,
   validate_config = validate_config,
   valid_metals_settings = valid_metals_settings,
 }
