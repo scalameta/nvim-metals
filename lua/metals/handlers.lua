@@ -5,6 +5,7 @@ local lsp = vim.lsp
 local decoration = require("metals.decoration")
 local doctor = require("metals.doctor")
 local log = require("metals.log")
+local status = require("metals.status")
 
 local M = {}
 
@@ -65,43 +66,13 @@ end
 -- Callback function to handle `metals/status`
 -- This sets a global variable `metals_status` which can be easily
 -- picked up and used in a statusline.
--- Command and Tooltip are not covered from the spec.
+-- NOTE: We also just add the bufnr and client_id right into here to be potentially
+-- used if needed later on if there is a tooltip and command attatched to the status.
 -- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
-M["metals/status"] = function(_, status, ctx)
-  if status.hide then
-    api.nvim_set_var("metals_status", "")
-  else
-    if status.text then
-      api.nvim_set_var("metals_status", status.text)
-    end
-
-    if status.command and status.tooltip then
-      vim.ui.select({ "yes", "no" }, {
-        prompt = string.format(
-          "%s\nThere is a %s command attatched to this, would you like to execute it?",
-          status.tooltip,
-          status.command
-        ),
-      }, function(choice)
-        if choice == "yes" then
-          local client = vim.lsp.get_client_by_id(ctx.client_id)
-          local fn = client.commands[status.command]
-          if fn then
-            fn(status.command, { bufnr = ctx.bufnr, client_id = ctx.client_id })
-          else
-            log.error_and_show(
-              string.format(
-                "It seems we don't implement %s as a client command. We should, tell Chris to fix this.",
-                status.command
-              )
-            )
-          end
-        end
-      end)
-    elseif status.tooltip then
-      log.warn_and_show(status.tooltip)
-    end
-  end
+M["metals/status"] = function(_, _status, ctx)
+  _status.bufnr = ctx.bufnr
+  _status.client_id = ctx.client_id
+  status.handle_status(_status)
 end
 
 -- Function needed to implement the Decoration Protocol from Metals.

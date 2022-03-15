@@ -4,7 +4,6 @@ local lsp = vim.lsp
 
 local decoration = require("metals.decoration")
 local default_handlers = require("metals.handlers")
-local doctor = require("metals.doctor")
 local jvmopts = require("metals.jvmopts")
 local log = require("metals.log")
 local messages = require("metals.messages")
