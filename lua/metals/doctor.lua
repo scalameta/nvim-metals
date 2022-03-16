@@ -50,6 +50,7 @@ Doctor.create = function(args)
       end
     end
   else
+    local doctor_version = tonumber(args.version) or 0
     table.insert(output, "## Build Targets")
 
     if args.version then
@@ -57,6 +58,9 @@ Doctor.create = function(args)
         table.insert(output, "")
         table.insert(output, string.format("### %s", target.buildTarget))
         table.insert(output, string.format("  - target type: %s", target.targetType))
+        if doctor_version >= 2 then
+          table.insert(output, string.format("  - compilation: %s", target.compilationStatus))
+        end
         table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
         table.insert(output, string.format("  - interactive: %s", target.interactive))
         table.insert(output, string.format("  - semanticdb: %s", target.semanticdb))
