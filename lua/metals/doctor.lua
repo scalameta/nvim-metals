@@ -1,12 +1,7 @@
 local api = vim.api
 local lsp = vim.lsp
 
-local log = require("metals.log")
-local has_plenary, Float = pcall(require, "plenary.window.float")
-
-if not has_plenary then
-  log.warn_and_show("Some features won't work without plenary installed. Please install nvim-lua/plenary.nvim")
-end
+local Float = require("plenary.window.float")
 
 --- Module meant to control the Metals doctor.
 --- It doesn't do a whole lot except create the doctor, and only

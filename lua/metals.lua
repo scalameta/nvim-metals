@@ -15,7 +15,7 @@ local has_plenary, Float = pcall(require, "plenary.window.float")
 local _, Path = pcall(require, "plenary.path")
 
 if not has_plenary then
-  log.warn_and_show("Plenary is now required for nvim-metals. Please install nvim-lua/plenary.nvim")
+  log.error_and_show("Plenary required for nvim-metals. Please install nvim-lua/plenary.nvim")
 end
 
 local M = {}
