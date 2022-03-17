@@ -1,0 +1,23 @@
+[selene]
+  base = "lua51"
+  name = "neovim"
+
+[vim]
+  any = true
+
+[[assert.are.same.args]]
+  type = "any"
+
+[[before_each.args]]
+  type = "function"
+
+[[describe.args]]
+  type = "string"
+[[describe.args]]
+  type = "function"
+
+[[it.args]]
+  type = "string"
+[[it.args]]
+  type = "function"
+

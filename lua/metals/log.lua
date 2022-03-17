@@ -31,9 +31,7 @@ local make_string = function(...)
   for i = 1, select("#", ...) do
     local thing_to_log = select(i, ...)
 
-    if type(thing_to_log) == "number" then
-      thing_to_log = tostring(thing_to_log)
-    elseif type(thing_to_log) == "table" then
+    if type(thing_to_log) == "table" then
       thing_to_log = vim.inspect(thing_to_log)
     else
       thing_to_log = tostring(thing_to_log)

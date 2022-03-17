@@ -2,10 +2,10 @@ format:
 	stylua lua/ 
 
 format-check:
-	stylua --check lua/
+	stylua --check lua/ tests/
 
 lint:
-	luacheck lua/
+	selene lua/ tests/
 
 test-setup:
 	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/setup/ { minimal_init = 'tests/minimal.vim', sequential = true }"

@@ -51,9 +51,9 @@ right away.
 
 ## Tooling
 
-The project uses [`luacheck`](https://github.com/mpeterv/luacheck) for static
-code analysis, and this is ran during CI on your project. You'll need to install
-this locally via luarocks: `luarocks install luacheck`. I also use
+The project uses [`selene`](https://kampfkarren.github.io/selene/selene.html)
+for linting , and is ran during CI. You'll need to install this locally via
+cargo: `cargo install selene`. I also use
 [`StyLua`](https://github.com/JohnnyMorganz/StyLua) for formatting. Please also
 use this as it gets rid of any need to discuss formatting. You can install it in
 various ways found on the github page, but the easiest is with cargo via `cargo
