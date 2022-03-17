@@ -1,5 +1,3 @@
-local api = vim.api
-
 local Path = require("plenary.path")
 
 local M = {}
@@ -28,14 +26,6 @@ M.check_exists_and_merge = function(defaultTable, userTable)
     return defaultTable
   else
     return vim.tbl_extend("force", defaultTable, userTable)
-  end
-end
-
-M.metals_status = function(text)
-  if text then
-    api.nvim_set_var("metals_status", text)
-  else
-    api.nvim_set_var("metals_status", "")
   end
 end
 

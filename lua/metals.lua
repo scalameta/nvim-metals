@@ -183,29 +183,7 @@ M.info = function()
   end
 end
 
-M.toggle_logs = function()
-  local bufs = api.nvim_list_bufs()
-
-  for _, buf in ipairs(bufs) do
-    local buftype = api.nvim_buf_get_option(buf, "buftype")
-    local _, purpose = pcall(api.nvim_buf_get_var, buf, "metals_buf_purpose")
-
-    if buftype == "terminal" and purpose == "logs" then
-      local first_window_id = fn.win_findbuf(buf)[1]
-      if first_window_id then
-        fn.win_gotoid(first_window_id)
-      else
-        api.nvim_command(string.format("vsp | :b %i", buf))
-      end
-
-      return
-    end
-  end
-
-  -- Only open them if a terminal isn't already open
-  api.nvim_command([[vsp +set\ ft=log term://tail -f .metals/metals.log]])
-  vim.b["metals_buf_purpose"] = "logs"
-end
+M.toggle_logs = conf.toggle_logs
 
 -- https://scalameta.org/metals/docs/integrations/new-editor/#create-new-scala-file
 -- https://scalameta.org/metals/docs/integrations/new-editor/#create-new-java-file

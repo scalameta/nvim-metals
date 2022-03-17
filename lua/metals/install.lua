@@ -1,6 +1,7 @@
 local conf = require("metals.config")
 local log = require("metals.log")
 local messages = require("metals.messages")
+local status = require("metals.status")
 local util = require("metals.util")
 
 local Job = require("plenary.job")
@@ -41,7 +42,7 @@ local function install_or_update(sync)
     util.nvim_metals_cache_dir:mkdir()
   end
 
-  util.metals_status("Installing Metals...")
+  status.set_status("Installing Metals...")
 
   local args = {
     "bootstrap",
@@ -64,25 +65,25 @@ local function install_or_update(sync)
     args = args,
     on_exit = vim.schedule_wrap(function(_, exit)
       if exit == 0 then
-        util.metals_status("Metals installed!")
+        status.set_status("Metals installed!")
         log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
       else
         log.error_and_show("Something went wrong with the Metals install. Please check the logs.")
-        util.metals_status("Install failed!")
+        status.set_status("Install failed!")
       end
     end),
     on_stdout = vim.schedule_wrap(function(err, data)
       if err then
         log.error_and_show(err)
       else
-        util.metals_status(data)
+        status.set_status(data)
       end
     end),
     on_stderr = vim.schedule_wrap(function(err, data)
       if err then
         log.error_and_show(err)
       else
-        util.metals_status(data)
+        status.set_status(data)
         log.info(data)
       end
     end),

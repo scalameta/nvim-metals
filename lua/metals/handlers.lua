@@ -5,7 +5,7 @@ local lsp = vim.lsp
 local decoration = require("metals.decoration")
 local doctor = require("metals.doctor")
 local log = require("metals.log")
-local util = require("metals.util")
+local status = require("metals.status")
 
 local M = {}
 
@@ -66,14 +66,13 @@ end
 -- Callback function to handle `metals/status`
 -- This sets a global variable `metals_status` which can be easily
 -- picked up and used in a statusline.
--- Command and Tooltip are not covered from the spec.
+-- NOTE: We also just add the bufnr and client_id right into here to be potentially
+-- used if needed later on if there is a tooltip and command attatched to the status.
 -- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
-M["metals/status"] = function(_, result)
-  if result.hide then
-    util.metals_status()
-  else
-    util.metals_status(result.text)
-  end
+M["metals/status"] = function(_, _status, ctx)
+  _status.bufnr = ctx.bufnr
+  _status.client_id = ctx.client_id
+  status.handle_status(_status)
 end
 
 -- Function needed to implement the Decoration Protocol from Metals.
