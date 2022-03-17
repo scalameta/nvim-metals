@@ -12,14 +12,18 @@ local Path = require("plenary.path")
 --  log.warn
 --  log.error
 --
---  But also the following which I use to both log and to show the user.
+--  But also the following which I use to both log and to show the user via vim.notify.
 --  log.info_and_show
 --  log.warn_and_show
 --  log.error_and_show
 --
 local M = {}
 
-local modes = { info = "None", warn = "WarningMsg", error = "ErrorMsg" }
+local modes = {
+  info = vim.log.levels.INFO,
+  warn = vim.log.levels.WARN,
+  error = vim.log.levels.ERROR,
+}
 
 -- Logging utility to take x number of things to log that can be
 -- strings, tables, or numbers. This will flatten them all and retrn
@@ -57,14 +61,10 @@ local generate_log_functions = function()
     local lineinfo = info.short_src .. ":" .. info.currentline
 
     if show_user then
-      vim.cmd(string.format("echohl %s", modes[level]))
-
       local split_console = vim.split(msg, "\n")
       for _, v in ipairs(split_console) do
-        vim.cmd(string.format([[echom "[%s] %s"]], "nvim-metals", vim.fn.escape(v, '"')))
+        vim.notify(string.format("[%s] %s", "nvim-metals", v), modes[level])
       end
-
-      vim.cmd("echohl NONE")
     end
 
     local fp = io.open(M.nvim_metals_log, "a")
