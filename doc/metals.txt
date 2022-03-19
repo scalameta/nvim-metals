@@ -125,6 +125,11 @@ snapshot version in your settings table: >
   }
 <
 
+You can also just default to the latest snapshot by setting this to
+`latest.snapshot`. NOTE: that while this will pull in the latest snapshot it
+happens during the actual install, not automatically all the time. So you
+still need to trigger a |:MetalsUpdate| regularly to get the newest snapshots.
+
 If no version is set, it defaults to the latest stable release. If a new
 release comes out or you change your server version, you can issue a
 |MetalsUpdate| command to re-install it.
@@ -384,7 +389,8 @@ Default: 'latest.stable' ~
 Targeted server version that you'd like to install. Note that if this is
 changed you need to do a |:MetalsInstall| or |:MetalsUpdate| again to ensure
 that it is installed. If you need to check what version you're currently
-using, you can use the |MetalsInfo| command.
+using, you can use the |MetalsInfo| command. NOTE: that `latest.snapshot` is
+also available as a value to install whatever the latest snapshot is.
 
 showImplicitArguments                                    *showImplicitArguments*
 
