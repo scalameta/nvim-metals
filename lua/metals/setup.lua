@@ -4,6 +4,7 @@ local lsp = vim.lsp
 local commands_table = require("metals.commands").commands_table
 local conf = require("metals.config")
 local log = require("metals.log")
+local messages = require("metals.messages")
 local util = require("metals.util")
 
 local lsps = {}
@@ -111,13 +112,12 @@ end
 local function setup_dap(execute_command)
   local status, dap = pcall(require, "dap")
   if not status then
-    log.error_and_show("Unable to find nvim-dap. Please make sure mfussenegger/nvim-dap is installed.")
+    log.error_and_show(messages.setup_dap_without_nvim_dap)
     return
   end
 
   dap.adapters.scala = function(callback, config)
     local uri = vim.uri_from_bufnr(0)
-    -- luacheck: ignore
     local arguments = {}
 
     if config.name == "from_lens" then

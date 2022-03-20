@@ -36,4 +36,8 @@ You have `useGlobalExecutable` set to true, so nvim-metals can't install or
 update your Metals executable. If you'd like nvim-metals to handle this for
 you, remove the `useGlobalExecutable` setting and try again.]]
 
+M.setup_dap_without_nvim_dap = [[
+You can call require("metals").setup_dap() without `nvim-dap` being installed.
+Please make sure `mfussenegger/nvim-dap` is installed.]]
+
 return M
