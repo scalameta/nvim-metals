@@ -43,7 +43,7 @@ local function valid_metals_buffer()
   if api.nvim_buf_is_loaded(state.attatched_bufnr) then
     return state.attatched_bufnr
   else
-    local valid_buf = tvp_util.find_metals_buffer()
+    local valid_buf = util.find_metals_buffer()
     state.attatched_bufnr = valid_buf
     return valid_buf
   end

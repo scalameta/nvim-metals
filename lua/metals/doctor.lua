@@ -1,6 +1,8 @@
 local api = vim.api
 local lsp = vim.lsp
 
+local util = require("metals.util")
+
 local Float = require("plenary.window.float")
 
 --- Module meant to control the Metals doctor.
@@ -108,7 +110,17 @@ Doctor.create = function(args)
   api.nvim_win_set_option(float.border_win_id, "winhl", "NormalFloat:Normal")
   api.nvim_buf_set_option(float.bufnr, "filetype", "markdown")
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
+
+  vim.cmd("autocmd WinLeave <buffer> lua require('metals.doctor').visibility_did_change(false)")
+
+  -- we have the win_id and then with that win_id we could set an autocmd that
+  -- on close it calls some function
   doctor_win_id = float.win_id
+end
+
+Doctor.visibility_did_change = function(bool)
+  local buf = util.find_metals_buffer() or 0
+  lsp.buf_notify(buf, "metals/doctorVisibilityDidChange", { visible = bool })
 end
 
 return Doctor
