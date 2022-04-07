@@ -97,6 +97,7 @@ local metals_init_options = {
   didFocusProvider = true,
   disableColorOutput = true,
   doctorProvider = "json",
+  doctorVisibilityProvider = true,
   executeClientCommandProvider = true,
   inputBoxProvider = true,
   quickPickProvider = true,

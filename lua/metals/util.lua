@@ -1,3 +1,4 @@
+local api = vim.api
 local Path = require("plenary.path")
 
 local M = {}
@@ -103,5 +104,23 @@ M.starts_with = function(text, prefix)
 end
 
 M.is_windows = vim.loop.os_uname().version:match("Windows")
+
+M.find_metals_buffer = function()
+  local metals_buf = nil
+  local bufs = api.nvim_list_bufs()
+
+  for _, buf in pairs(bufs) do
+    if api.nvim_buf_is_loaded(buf) then
+      local buf_clients = vim.lsp.buf_get_clients(buf)
+      for _, client in pairs(buf_clients) do
+        if client.name == "metals" then
+          metals_buf = buf
+          break
+        end
+      end
+    end
+  end
+  return metals_buf
+end
 
 return M
