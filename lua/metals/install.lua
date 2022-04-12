@@ -5,6 +5,7 @@ local status = require("metals.status")
 local util = require("metals.util")
 
 local Job = require("plenary.job")
+local Curl = require("plenary.curl")
 
 -- The main job that actually installs Metals
 -- @param coursier_exe (string) the coursier executable to be used
@@ -108,28 +109,19 @@ local function install_or_update()
     -- This is sort of a workaround to ensure that latest.snapshot works. If
     -- the user sets this we actually reach out to the metals site at
     -- latests.json to get the latest snapshot version and then do the actual
-    -- install job. Coursier won't handle latest.snapshot for us or return all the snapshots
-    -- if asks, so that's why we resort to this madness.
+    -- install job. Coursier won't handle latest.snapshot for us or return
+    -- all the snapshots if asked, so that's why we resort to this madness.
     -- https://github.com/scalameta/nvim-metals/issues/122
-    Job
-      :new({
-        command = "curl",
-        args = {
-          "-s",
-          "https://scalameta.org/metals/latests.json",
-        },
-        on_exit = vim.schedule_wrap(function(self, job_status)
-          if job_status == 0 then
-            local versions = vim.fn.json_decode(table.concat(self._stdout_results, ""))
-            local version = versions.snapshot or latest_stable
-            install_job(coursier_exe, create_args_for_install(server_org, binary_version, version)):sync(10000)
-          else
-            log.error_and_show("Something went wrong getting the latest snapshot so defaulting to latest stable.")
-            server_version = latest_stable
-          end
-        end),
-      })
-      :sync()
+    local res = Curl.get("https://scalameta.org/metals/latests.json", { accept = "application/json" })
+
+    if res.status == 200 then
+      server_version = vim.fn.json_decode(res.body).snapshot
+    else
+      log.error_and_show("Something went wrong getting the latest snapshot so defaulting to latest stable.")
+      server_version = latest_stable
+    end
+
+    install_job(coursier_exe, create_args_for_install(server_org, binary_version, server_version)):sync(10000)
   elseif server_version == latest_snapshot then
     log.error_and_show("You must be using mainline metals to use the latest.snapshot feature")
     return
