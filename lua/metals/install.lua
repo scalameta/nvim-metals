@@ -10,7 +10,8 @@ local Curl = require("plenary.curl")
 -- The main job that actually installs Metals
 -- @param coursier_exe (string) the coursier executable to be used
 -- @param args (table) args to pass into the install job
-local function install_job(coursier_exe, args)
+-- @param sync (boolean) whether to run the job sync or async
+local function do_install(coursier_exe, args, sync)
   local job = Job:new({
     command = coursier_exe,
     args = args,
@@ -39,7 +40,11 @@ local function install_job(coursier_exe, args)
       end
     end),
   })
-  return job
+  if sync then
+    job:sync(20000)
+  else
+    job:start()
+  end
 end
 
 -- Puts together the args that will be passed into the actual install
@@ -72,7 +77,8 @@ end
 -- overwritten by the bootstrap command.
 -- NOTE: that if a user has useGlobalExecutable set, this will just throw an
 -- error at them since they can't use this in that case.
-local function install_or_update()
+-- @param sync (boolean) whether the run the job sync or async (mainly used for testing)
+local function install_or_update(sync)
   local config = conf.get_config_cache()
   if config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_so_cant_update)
@@ -121,12 +127,12 @@ local function install_or_update()
       server_version = latest_stable
     end
 
-    install_job(coursier_exe, create_args_for_install(server_org, binary_version, server_version)):sync(10000)
+    do_install(coursier_exe, create_args_for_install(server_org, binary_version, server_version), sync)
   elseif server_version == latest_snapshot then
     log.error_and_show("You must be using mainline metals to use the latest.snapshot feature")
     return
   else
-    install_job(coursier_exe, create_args_for_install(server_org, binary_version, server_version)):sync(10000)
+    do_install(coursier_exe, create_args_for_install(server_org, binary_version, server_version), sync)
   end
 end
 

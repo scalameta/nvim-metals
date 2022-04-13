@@ -18,7 +18,7 @@ describe("install", function()
     local _ = config.validate_config({}, current_buf)
 
     eq(path:exists(), false)
-    install.install_or_update()
+    install.install_or_update(true)
     eq(path:exists(), true)
   end)
 
@@ -28,7 +28,7 @@ describe("install", function()
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path:exists(), false)
-    install.install_or_update()
+    install.install_or_update(true)
     eq(path:exists(), true)
   end)
 
@@ -38,7 +38,7 @@ describe("install", function()
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path:exists(), false)
-    install.install_or_update()
+    install.install_or_update(true)
     eq(path:exists(), true)
   end)
 
@@ -48,7 +48,7 @@ describe("install", function()
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path:exists(), false)
-    install.install_or_update()
+    install.install_or_update(true)
     eq(path:exists(), false)
   end)
 
@@ -60,7 +60,7 @@ describe("install", function()
     eq(path:exists(), false)
     -- This takes a bit longer here so we just pause for a couple seconds to
     -- ensure both jobs runs.
-    vim.wait(2000, install.install_or_update())
+    vim.wait(2000, install.install_or_update(true))
     eq(path:exists(), true)
   end)
 end)
