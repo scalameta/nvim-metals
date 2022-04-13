@@ -112,6 +112,8 @@ local function install_or_update(sync)
   status.set_status("Installing Metals...")
 
   if server_version == latest_snapshot and server_org == the_one_true_metals then
+    status.set_status("Fetching latest snapshot version...")
+
     -- This is sort of a workaround to ensure that latest.snapshot works. If
     -- the user sets this we actually reach out to the metals site at
     -- latests.json to get the latest snapshot version and then do the actual
