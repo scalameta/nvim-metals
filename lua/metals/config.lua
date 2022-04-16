@@ -146,13 +146,12 @@ local valid_nvim_metals_settings = {
 --- auto commands necessary for `metals/didFocusTextDocument`.
 --- https://scalameta.org/metals/docs/integrations/new-editor.html#metalsdidfocustextdocument
 local function auto_commands()
-  local nvim_metals_group = api.nvim_create_augroup("nvim-metals", { clear = true })
   api.nvim_create_autocmd("BufEnter", {
     pattern = { "*" },
     callback = function()
       require("metals").did_focus()
     end,
-    group = nvim_metals_group,
+    group = api.nvim_create_augroup("nvim-metals-focus", { clear = true }),
   })
 end
 

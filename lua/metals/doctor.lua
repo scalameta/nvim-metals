@@ -134,14 +134,12 @@ Doctor.create = function(args)
   api.nvim_buf_set_option(float.bufnr, "filetype", "markdown")
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
 
-  local nvim_metals_group = api.nvim_create_augroup("nvim-metals", { clear = true })
-
   api.nvim_create_autocmd("WinLeave", {
     buffer = float.bufnr,
     callback = function()
       require("metals.doctor").visibility_did_change(false)
     end,
-    group = nvim_metals_group,
+    group = api.nvim_create_augroup("nvim-metals-doctor", { clear = true }),
   })
 
   doctor_win_id = float.win_id
