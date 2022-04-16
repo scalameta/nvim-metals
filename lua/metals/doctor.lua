@@ -33,8 +33,31 @@ end
 --- Create the Doctor.
 -- @param args table of the args give by `metals/executeClientCommand`
 Doctor.create = function(args)
-  local header_text = lsp.util.convert_input_to_markdown_lines({ args.headerText })
-  local output = header_text
+  local output = {}
+
+  table.insert(output, "## Metals Info")
+
+  if args.version >= 3 then
+    local header = args.header
+    local fields = {
+      "serverInfo",
+      "buildTool",
+      "buildServer",
+      "importBuildStatus",
+      "jdkInfo",
+    }
+
+    for _, field in pairs(fields) do
+      if header[field] then
+        table.insert(output, "  - " .. header[field])
+      end
+    end
+    table.insert(output, "")
+    table.insert(output, header.buildTargetDescription)
+  else
+    output = lsp.util.convert_input_to_markdown_lines({ args.headerText })
+  end
+
   table.insert(output, "")
 
   if args.messages then
