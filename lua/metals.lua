@@ -157,6 +157,7 @@ M.info = function()
     table.insert(output, "")
     table.insert(output, "## Helpful links")
     table.insert(output, "  - https://discord.gg/FaVDrJegEh")
+    table.insert(output, "  - https://matrix.to/#/#scalameta:vim-users")
     table.insert(output, "  - https://github.com/scalameta/nvim-metals")
     table.insert(output, "  - https://github.com/scalameta/metals")
 
