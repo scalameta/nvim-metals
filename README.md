@@ -25,7 +25,7 @@ integrations with other projects such as
 
 ## Prerequisites
 
-- Before you get started you need to ensure that you are using nvim v.0.6.0 or
+- Before you get started you need to ensure that you are using nvim v.0.7.0 or
     newer.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
     on your machine. `nvim-metals` uses Coursier to download and update Metals.

@@ -31,7 +31,7 @@ the correct `init_options`.
 ================================================================================
 PREREQUISITES                                             *metals-prerequisites*
 
-- Ensure you're using at least Neovim v0.6.0. While `nvim-metals` will aim to
+- Ensure you're using at least Neovim v0.7.0. While `nvim-metals` will aim to
   always work with the latest stable version of Neovim, there is no guarantee
   of compatibility with older versions.
 - WARNING: use this plugin for Metals and also `neovim/nvim-lspconfig` for
@@ -59,24 +59,24 @@ PREREQUISITES                                             *metals-prerequisites*
 - Check out the features list in
   https://github.com/scalameta/nvim-metals/discussions/279. New features will
   always be added there.
+- If you're unfamiliar with configuring Neovim with Lua or not sure how to
+  call Lua from Vimscript, check out the awesome guide at
+  https://github.com/nanotee/nvim-lua-guide. The help docs here always assume
+  Lua.
 
 ================================================================================
 GETTING STARTED                                         *metals-getting-started*
 
 Once installed, the most basic setup is to have the following: >
 
-  augroup lsp
-    au!
-    au FileType java,scala,sbt lua require("metals").initialize_or_attach({})
-  augroup end
-<
-
-Or as a |vim.cmd| if using a pure Lua setup. >
-
-  cmd [[augroup lsp]]
-  cmd [[au!]]
-  cmd [[au FileType java,scala,sbt lua require("metals").initialize_or_attach({})]]
-  cmd [[augroup end]]
+  local nvim_metals_group = api.nvim_create_augroup("nvim-metals", { clear = true })
+  api.nvim_create_autocmd("FileType", {
+    pattern = { "scala", "sbt", "java" },
+    callback = function()
+      require("metals").initialize_or_attach({})
+    end,
+    group = nvim_metals_group,
+  })
 <
 
 This will give you the defaults that Metals provides. The empty `{}` that
