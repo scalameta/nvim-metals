@@ -4,15 +4,9 @@
 
 `nvim-metals` is a Lua plugin built to provide a better experience while using
 Metals, the Scala Language Server, with Neovim's built-in [LSP
-support](https://neovim.io/doc/user/lsp.html). This plugin provides the
-necessary commands you'll need to develop with nvim and Metals. This extension
-also implements the custom Metals LSP extensions that will give you a much
-richer experience than just using Metals with the default
-[nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) setup, as well as
-automatically setting all of the correct `init_options`, and offering some
-integrations with other projects such as
-[nvim-dap](https://github.com/mfussenegger/nvim-dap) and
-[Telescope](https://github.com/nvim-telescope/telescope.nvim).
+support](https://neovim.io/doc/user/lsp.html).[^no-lspconfig] You can see all
+the available features
+[here](https://github.com/scalameta/nvim-metals/discussions/279).
 
 <p align="center">
     <a href="https://discord.gg/FaVDrJegEh">
@@ -27,69 +21,45 @@ integrations with other projects such as
 
 - Before you get started you need to ensure that you are using nvim v.0.7.0 or
     newer.
-- Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is installed
-    on your machine. `nvim-metals` uses Coursier to download and update Metals.
-    _NOTE_: On Windows, you should run `coursier` or `cs.exe` once from the command
-    line as this is how it will install itself. Once this is done you should 
-    add `C:\Users\YOURNAME\AppData\Coursier\data\bin` to your path. To verify
-    that it is properly installed you can run `cs --help` from a new shell.
-- Remove `F` from `shortmess`. `set shortmess-=F`
-    (for lua `vim.opt_global.shortmess:remove("F")`)
-    _NOTE_: Without doing this, autocommands that deal with filetypes prohibit
-    messages from being shown, so some of the messages we show to help users get
-    started may not be shown. _If_ you're confident you don't need help setting
-    up, then just remove this, and `nvim-metals` will work fine, but any log
-    messages won't actually be shown to you if something goes wrong with
-    `nvim-metals`.
-- Ensure that you have mappings created for functionality that you desire. By
-    default methods for things like goto definition, find references, etc are
-    there, but not automatically mapped. You can find a minimal example
-    configuration
-    [here](https://github.com/scalameta/nvim-metals/discussions/39).
-- This plugin relies on [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
-    which you're more than likely already relying on for other plugins. However,
-    make sure to also have this installed.
+- Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is
+    installed locally.[^coursier]
+- Remove `F` from `shortmess`[^shortmess]
+- Ensure that you have all the LSP mappings for the core functionality you want
+    setup.[^mappings]
+- Ensure [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) is
+    installed.[^plenary]
 - Subscribe to [this
     discussion](https://github.com/scalameta/nvim-metals/discussions/253) which
     will notify you of any breaking changes.
+- Unfamiliar with Lua and Neovim? Check out the great
+    [`nanotee/nvim-lua-guide`](https://github.com/nanotee/nvim-lua-guide).
 
 ## Installation
 
 _NOTE_: This plugin works without needing to install
 [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig). If you have
 it installed for other languages, that's not a problem, but make sure you do not
-have Metals configured through `nvim-lspconfig` while using this plugin. If you
-have metals setup registered with `nvim-lspconfig`, you'll want to remove
-it.
+have Metals configured through `nvim-lspconfig` while using this plugin.[^no-lspconfig]
 
-`nvim-metals` is just a plugin installed like any other Neovim plugin. For
-example if using [`packer`](https://github.com/wbthomason/packer.nvim):
+Example if using [`packer`](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use({'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }})
-
 ```
 
 ## Getting started
 
-To get started with `nvim-metals`, _please read_ [`:help
-nvim-metals`](https://github.com/scalameta/nvim-metals/blob/main/doc/metals.txt).
-This will give you a thorough overview of the setup and settings.
+- Full [example configuration](https://github.com/scalameta/nvim-metals/discussions/39)
+- Full documentation can be found with [`:help
+    vim-metals`](https://github.com/scalameta/nvim-metals/blob/main/doc/metals.txt).
+    This will give you a thorough overview of the setup and settings.
+- Full [list of features](https://github.com/scalameta/nvim-metals/discussions/279).
 
-## Features
-
-To see a full list of features, check out the [Features
-List](https://github.com/scalameta/nvim-metals/discussions/279).
-
-## Settings and Commands
+### Settings and Commands
 
 To view all of the available commands, check out `:help metals-commands` in the
 help docs. Similarly, to see the available configuration settings check out
 `:help metals-settings`.
-
-_NOTE_: You can find an example of a minimal configuration showing how to set
-various settings and options
-[here](https://github.com/scalameta/nvim-metals/discussions/39).
 
 ## Integrations
 
@@ -97,3 +67,31 @@ To see the full details on the available configurations, checkout out `:help
 metals-integrations`. The currently available integrations are:
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap)
 - [Telescope](https://github.com/nvim-telescope/telescope.nvim)
+
+
+[^no-lspconfig]: If you're familiar with nvim and LSP you'll probably know of
+  [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) which also has a
+  Metals configuration. Note that this is a very minimal version with no
+  specific Metals commands and no Metals extensions. You can see more info on
+  this [here](https://github.com/scalameta/nvim-metals/discussions/93). **DO
+  NOT** try to use Metals both with `nvim-lspconfig` and with `nvim-metals` as
+  stuff *will* not work right.
+[^coursier]: `nvim-metals` uses Coursier to download and update Metals. _NOTE_:
+  On Windows, you should run `coursier` or `cs.exe` once from the command line
+  as this is how it will install itself. Once this is done you should add
+  `C:\Users\YOURNAME\AppData\Coursier\data\bin` to your path. To verify that it
+  is properly installed you can run `cs --help` from a new shell.
+[^shortmess]: `vim.opt_global.shortmess:remove("F")` will do what you need. If
+  you don't know what shortmess is, check out `:h shortmess`. Without doing
+  this, autocommands that deal with filetypes prohibit messages from being
+  shown, so some of the messages we show to help users get started may not be
+  shown. _If_ you're confident you don't need help setting up, then just remove
+  this, and `nvim-metals` will work fine, but any log messages won't actually be
+  shown to you if something goes wrong with `nvim-metals`.
+[^mappings]: By default methods for things like goto definition, find
+  references, etc are there, but not automatically mapped. You can find a
+  minimal example configuration
+  [here](https://github.com/scalameta/nvim-metals/discussions/39).
+[^plenary]: You're more than likely already relying on for other plugins.
+  However, make sure to also have this installed as Metals uses it for things
+  like Jobs, popups, and paths.
