@@ -42,7 +42,9 @@ end
 local function add_commands()
   for _, cmd in pairs(commands_table) do
     local vim_cmd = util.camel_to_pascal(cmd.id)
-    vim.cmd(string.format([[command! Metals%s lua require'metals'.%s()]], vim_cmd, cmd.id))
+    api.nvim_create_user_command("Metals" .. vim_cmd, function()
+      require("metals")[cmd.id]()
+    end, {})
   end
 end
 
