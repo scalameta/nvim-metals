@@ -49,11 +49,11 @@ use({'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }})
 
 ## Getting started
 
-- Full [example configuration](https://github.com/scalameta/nvim-metals/discussions/39)
-- Full documentation can be found with [`:help
+- You can find a full [minimal example configuration
+    here](https://github.com/scalameta/nvim-metals/discussions/39).
+- You can find the full documentation with [`:help
     vim-metals`](https://github.com/scalameta/nvim-metals/blob/main/doc/metals.txt).
-    This will give you a thorough overview of the setup and settings.
-- Full [list of features](https://github.com/scalameta/nvim-metals/discussions/279).
+- You can find a full [list of features here](https://github.com/scalameta/nvim-metals/discussions/279).
 
 ### Settings and Commands
 
