@@ -101,9 +101,7 @@ local function install_or_update(sync)
   local server_version = config.settings.metals.serverVersion or latest_stable
 
   local binary_version = "2.12"
-  -- TODO When we release 0.11.3 we need to change this to:
-  -- if server_version == latestStable or server_version > "0.11.2" then
-  if server_version ~= latest_stable and server_version > "0.11.2" then
+  if server_version == latest_stable or server_version == latest_snapshot or server_version > "0.11.2" then
     binary_version = "2.13"
   end
 

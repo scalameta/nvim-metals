@@ -22,9 +22,9 @@ describe("install", function()
     eq(path:exists(), true)
   end)
 
-  it("should be able to install with an old 2.12 snapshot", function()
+  it("should be able to install with an old 2.12", function()
     local bare_config = require("metals.setup").bare_config()
-    bare_config.settings = { serverVersion = "0.10.9+131-30f6a57b-SNAPSHOT" }
+    bare_config.settings = { serverVersion = "0.11.0" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path:exists(), false)
