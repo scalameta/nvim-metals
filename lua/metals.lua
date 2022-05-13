@@ -252,7 +252,7 @@ end
 
 M.find_in_dependency_jars = function()
   local function send_request(mask, query)
-    lsp.buf_request(0, "metals/findTextInDependencyJars", {
+    lsp.buf_request(util.find_metals_buffer(), "metals/findTextInDependencyJars", {
       options = { include = mask },
       query = { pattern = query },
     })
