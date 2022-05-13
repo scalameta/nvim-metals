@@ -108,7 +108,7 @@ M["metals/publishDecorations"] = function(err, result)
   end
 end
 
-M["metals/findTextInDependencyJars"] = function(_, result, ctx, config)
+M["metals/findTextInDependencyJars"] = function(_, result, _, config)
   if not result or vim.tbl_isempty(result) then
     vim.notify("Nothing found in jars files.")
   else
@@ -116,13 +116,13 @@ M["metals/findTextInDependencyJars"] = function(_, result, ctx, config)
     if config.loclist then
       vim.fn.setloclist(0, {}, " ", {
         title = "Language Server",
-        items = lsp.util.locations_to_items(result, ctx.bufnr),
+        items = lsp.util.locations_to_items(result, "utf-16"),
       })
       api.nvim_command("lopen")
     else
       vim.fn.setqflist({}, " ", {
         title = "Language Server",
-        items = lsp.util.locations_to_items(result, ctx.bufnr),
+        items = lsp.util.locations_to_items(result, "utf-16"),
       })
       api.nvim_command("copen")
     end
