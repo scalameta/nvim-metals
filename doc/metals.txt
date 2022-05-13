@@ -754,16 +754,9 @@ info()                    Give info about the currently installed version of
 initialize_or_attach({config})    
                   
                           This is the main entrypoint into the plugin, and the
-                          way to set up `nvim-metals`. This would be used in
-                          the following way: >
+                          way to set up `nvim-metals`. See the example in
+                          |metals-getting-started| for an example.
 
-  if has('nvim-0.5')
-    augroup lsp
-      au!
-      au FileType scala,sbt lua require("metals").initialize_or_attach({})
-    augroup end
-  endif
-<
                           Parameters:
                           {config} (table) This config is meant to mimic the
                           config that is used in the |vim.lsp.start_client()|.
