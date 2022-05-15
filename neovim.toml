@@ -8,6 +8,9 @@
 [[assert.are.same.args]]
   type = "any"
 
+[[assert.stub.args]]
+  type = "any"
+
 [[before_each.args]]
   type = "function"
 
