@@ -55,9 +55,6 @@ jobs:
       matrix:
         neovim_version: ['v0.7.0', 'nightly']
 
-    env:
-      NEOVIM_BRANCH: ${{ matrix.neovim_branch }}
-
     steps:
       - uses: actions/checkout@v3
 
