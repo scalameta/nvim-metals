@@ -8,6 +8,15 @@
 [[assert.are.same.args]]
   type = "any"
 
+[[assert.are.same.args]]
+  type = "any"
+
+[[assert.are.not_same.args]]
+  type = "any"
+
+[[assert.are.not_same.args]]
+  type = "any"
+
 [[assert.stub.args]]
   type = "any"
 
