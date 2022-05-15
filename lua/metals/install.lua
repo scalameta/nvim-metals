@@ -53,7 +53,6 @@ end
 -- @param version (string) the version of metals to install
 -- @return a table of args for the install
 local function create_args_for_install(server_org, binary_version, version)
-  print("creating args")
   return {
     "bootstrap",
     "--java-opt",
