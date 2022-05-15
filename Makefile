@@ -13,6 +13,9 @@ test-setup:
 test:
 	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/ { minimal_init = 'tests/minimal.vim', sequential = true }"
 
+test-handlers:
+	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/handlers/ { minimal_init = 'tests/minimal.vim', sequential = true }"
+
 test-all:
 	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/ { minimal_init = 'tests/minimal.vim' }"
 
