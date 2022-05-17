@@ -12,7 +12,7 @@ local M = {}
 local decoration_namespace = api.nvim_create_namespace("metals_decoration")
 
 -- Implementation of the `metals/quickPick` Metals LSP extension.
--- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsquickpick
+-- https://scalameta.org/metals/docs/integrations/new-editor/#metalsquickpick
 M["metals/quickPick"] = function(_, result)
   local ids = {}
   local labels = {}
@@ -29,7 +29,7 @@ M["metals/quickPick"] = function(_, result)
 end
 
 -- Implementation of the `metals/inputBox` Metals LSP extension.
--- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsinputbox
+-- https://scalameta.org/metals/docs/integrations/new-editor#metalsinputbox
 M["metals/inputBox"] = function(_, result)
   local name = vim.fn.input(result.prompt .. ": ")
 
@@ -41,7 +41,7 @@ M["metals/inputBox"] = function(_, result)
 end
 
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
--- - https://scalameta.org/metals/docs/integrations/new-editor.html#metalsexecuteclientcommand
+-- - https://scalameta.org/metals/docs/integrations/new-editor#metalsexecuteclientcommand
 M["metals/executeClientCommand"] = function(_, result)
   if result.command == "metals-goto-location" then
     lsp.util.jump_to_location(result.arguments[1], "utf-16")
@@ -68,7 +68,7 @@ end
 -- picked up and used in a statusline.
 -- NOTE: We also just add the bufnr and client_id right into here to be potentially
 -- used if needed later on if there is a tooltip and command attatched to the status.
--- - https://scalameta.org/metals/docs/editors/new-editor.html#metalsstatus
+-- https://scalameta.org/metals/docs/integrations/new-editor/#metalsstatus
 M["metals/status"] = function(_, _status, ctx)
   _status.bufnr = ctx.bufnr
   _status.client_id = ctx.client_id
@@ -76,7 +76,7 @@ M["metals/status"] = function(_, _status, ctx)
 end
 
 -- Function needed to implement the Decoration Protocol from Metals.
--- - https://scalameta.org/metals/docs/integrations/decoration-protocol.html
+-- - https://scalameta.org/metals/docs/integrations/decoration-protocol
 M["metals/publishDecorations"] = function(err, result)
   if err then
     log.error_and_show("Server error while publishing decorations. Please see logs for details.")
@@ -108,6 +108,7 @@ M["metals/publishDecorations"] = function(err, result)
   end
 end
 
+-- https://scalameta.org/metals/docs/integrations/new-editor/#metalsfindtextindependencyjars
 M["metals/findTextInDependencyJars"] = function(_, result, _, config)
   if not result or vim.tbl_isempty(result) then
     vim.notify("Nothing found in jars files.")
