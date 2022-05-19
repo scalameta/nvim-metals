@@ -8,16 +8,13 @@ lint:
 	selene lua/ tests/
 
 test-setup:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/setup/ { minimal_init = 'tests/minimal.vim', sequential = true }"
+	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/setup/ { minimal = true, sequential = true }"
 
 test:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/ { minimal_init = 'tests/minimal.vim', sequential = true }"
+	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/ { minimal = true, sequential = true }"
 
 test-handlers:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/handlers/ { minimal_init = 'tests/minimal.vim', sequential = true }"
-
-test-all:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/ { minimal_init = 'tests/minimal.vim' }"
+	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/handlers/ { minimal = true, sequential = true }"
 
 clean:
 	rm -rf mill-minimal
