@@ -81,8 +81,11 @@ jobs:
           git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
           ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
 
-      - name: Run setup tests
-        run: make test-setup
+      - name: Run test clone
+        run: make test-clone
+
+      - name: Run test insatll
+        run: make test-install
 
       - name: Run tests
         run: make test

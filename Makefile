@@ -7,8 +7,11 @@ format-check:
 lint:
 	selene lua/ tests/
 
-test-setup:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/setup/ { minimal = true, sequential = true }"
+test-install:
+	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory ./tests/setup/install_spec.lua { minimal = true, sequential = true }"
+
+test-clone:
+	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory ./tests/setup/clone_spec.lua { minimal = true, sequential = true }"
 
 test:
 	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/ { minimal = true, sequential = true }"
