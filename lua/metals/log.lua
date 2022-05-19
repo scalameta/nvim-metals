@@ -46,43 +46,43 @@ local make_string = function(...)
   return table.concat(output, " ")
 end
 
----- Location of the nvim-metals specific log file
---M.nvim_metals_log = Path:new(util.nvim_metals_cache_dir, "nvim-metals.log").filename
---
---local generate_log_functions = function()
---  if not util.nvim_metals_cache_dir:exists() then
---    util.nvim_metals_cache_dir:mkdir()
---  end
---  local log_at_level = function(level, show_user, ...)
---    local nameupper = level:upper()
---
---    local msg = make_string(...)
---    local info = debug.getinfo(2, "Sl")
---    local lineinfo = info.short_src .. ":" .. info.currentline
---
---    if show_user then
---      local split_console = vim.split(msg, "\n")
---      for _, v in ipairs(split_console) do
---        vim.notify(string.format("[%s] %s", "nvim-metals", v), modes[level])
---      end
---    end
---
---    local fp = io.open(M.nvim_metals_log, "a")
---    local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
---    fp:write(str)
---    fp:close()
---  end
---
---  for key, _ in pairs(modes) do
---    M[key] = function(...)
---      return log_at_level(key, false, ...)
---    end
---
---    M[("%s_and_show"):format(key)] = function(...)
---      return log_at_level(key, true, ...)
---    end
---  end
---end
+-- Location of the nvim-metals specific log file
+M.nvim_metals_log = Path:new(util.nvim_metals_cache_dir, "nvim-metals.log").filename
+
+local generate_log_functions = function()
+  if not util.nvim_metals_cache_dir:exists() then
+    util.nvim_metals_cache_dir:mkdir()
+  end
+  local log_at_level = function(level, show_user, ...)
+    local nameupper = level:upper()
+
+    local msg = make_string(...)
+    local info = debug.getinfo(2, "Sl")
+    local lineinfo = info.short_src .. ":" .. info.currentline
+
+    if show_user then
+      local split_console = vim.split(msg, "\n")
+      for _, v in ipairs(split_console) do
+        vim.notify(string.format("[%s] %s", "nvim-metals", v), modes[level])
+      end
+    end
+
+    local fp = io.open(M.nvim_metals_log, "a")
+    local str = string.format("[%-6s%s] %s: %s\n", nameupper, os.date(), lineinfo, msg)
+    fp:write(str)
+    fp:close()
+  end
+
+  for key, _ in pairs(modes) do
+    M[key] = function(...)
+      return log_at_level(key, false, ...)
+    end
+
+    M[("%s_and_show"):format(key)] = function(...)
+      return log_at_level(key, true, ...)
+    end
+  end
+end
 
 --generate_log_functions()
 
