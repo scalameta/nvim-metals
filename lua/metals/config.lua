@@ -2,7 +2,7 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
---local decoration = require("metals.decoration")
+local decoration = require("metals.decoration")
 --local default_handlers = require("metals.handlers")
 --local jvmopts = require("metals.jvmopts")
 --local log = require("metals.log")
