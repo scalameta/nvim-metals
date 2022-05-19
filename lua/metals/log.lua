@@ -19,33 +19,33 @@ local Path = require("plenary.path")
 --
 local M = {}
 
---local modes = {
---  info = vim.log.levels.INFO,
---  warn = vim.log.levels.WARN,
---  error = vim.log.levels.ERROR,
---}
---
----- Logging utility to take x number of things to log that can be
----- strings, tables, or numbers. This will flatten them all and retrn
----- a string representation of it.
----- @param (string, number, table) as many as you wish
----- @return (string)
---local make_string = function(...)
---  local output = {}
---  for i = 1, select("#", ...) do
---    local thing_to_log = select(i, ...)
---
---    if type(thing_to_log) == "table" then
---      thing_to_log = vim.inspect(thing_to_log)
---    else
---      thing_to_log = tostring(thing_to_log)
---    end
---
---    output[#output + 1] = thing_to_log
---  end
---  return table.concat(output, " ")
---end
---
+local modes = {
+  info = vim.log.levels.INFO,
+  warn = vim.log.levels.WARN,
+  error = vim.log.levels.ERROR,
+}
+
+-- Logging utility to take x number of things to log that can be
+-- strings, tables, or numbers. This will flatten them all and retrn
+-- a string representation of it.
+-- @param (string, number, table) as many as you wish
+-- @return (string)
+local make_string = function(...)
+  local output = {}
+  for i = 1, select("#", ...) do
+    local thing_to_log = select(i, ...)
+
+    if type(thing_to_log) == "table" then
+      thing_to_log = vim.inspect(thing_to_log)
+    else
+      thing_to_log = tostring(thing_to_log)
+    end
+
+    output[#output + 1] = thing_to_log
+  end
+  return table.concat(output, " ")
+end
+
 ---- Location of the nvim-metals specific log file
 --M.nvim_metals_log = Path:new(util.nvim_metals_cache_dir, "nvim-metals.log").filename
 --
