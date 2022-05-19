@@ -1,7 +1,6 @@
 local util = require("metals.util")
 
 local Path = require("plenary.path")
-
 -- log.lua
 --
 -- Inspired by github.com/tjdevries/vlog.nvim, which was inspired by rxi/log.lua,
@@ -47,11 +46,12 @@ local make_string = function(...)
 end
 
 -- Location of the nvim-metals specific log file
-M.nvim_metals_log = Path:new(util.nvim_metals_cache_dir, "nvim-metals.log").filename
+M.nvim_metals_log = Path:new(util.nvim_metals_cache_dir(), "nvim-metals.log").filename
 
 local generate_log_functions = function()
-  if not util.nvim_metals_cache_dir:exists() then
-    util.nvim_metals_cache_dir:mkdir()
+  if not util.nvim_metals_cache_dir():exists() then
+    print("hoi")
+    --util.nvim_metals_cache_dir():mkdir()
   end
   local log_at_level = function(level, show_user, ...)
     local nameupper = level:upper()

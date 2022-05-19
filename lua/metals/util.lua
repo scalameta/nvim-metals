@@ -31,7 +31,9 @@ M.check_exists_and_merge = function(defaultTable, userTable)
 end
 
 -- Location of any files or executables that nvim-metals will create on your system
-M.nvim_metals_cache_dir = Path.new(vim.fn.stdpath("cache"), "nvim-metals")
+M.nvim_metals_cache_dir = function()
+  return Path.new(vim.fn.stdpath("cache"), "nvim-metals")
+end
 
 --- Strip the leading and trailing spaces of a string
 --- @param s string the string you want to trim.
