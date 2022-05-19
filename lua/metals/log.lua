@@ -84,6 +84,6 @@ local generate_log_functions = function()
   end
 end
 
---generate_log_functions()
+generate_log_functions()
 
 return M
