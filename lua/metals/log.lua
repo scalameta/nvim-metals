@@ -51,7 +51,7 @@ M.nvim_metals_log = Path:new(util.nvim_metals_cache_dir(), "nvim-metals.log").fi
 local generate_log_functions = function()
   if not util.nvim_metals_cache_dir():exists() then
     print("hoi")
-    --util.nvim_metals_cache_dir():mkdir()
+    util.nvim_metals_cache_dir():mkdir({parents = true})
   end
   local log_at_level = function(level, show_user, ...)
     local nameupper = level:upper()
