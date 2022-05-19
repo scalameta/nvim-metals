@@ -9,8 +9,6 @@ local status = require("metals.status")
 
 local M = {}
 
-local decoration_namespace = api.nvim_create_namespace("metals_decoration")
-
 -- Implementation of the `metals/quickPick` Metals LSP extension.
 -- https://scalameta.org/metals/docs/integrations/new-editor/#metalsquickpick
 M["metals/quickPick"] = function(_, result)
@@ -88,6 +86,7 @@ M["metals/publishDecorations"] = function(err, result)
 
   local uri = result.uri
   local bufnr = vim.uri_to_bufnr(uri)
+
   if not bufnr then
     log.warn_and_show(string.format("Couldn't find buffer for %s while publishing decorations.", uri))
     return
@@ -99,12 +98,10 @@ M["metals/publishDecorations"] = function(err, result)
     return
   end
 
-  api.nvim_buf_clear_namespace(bufnr, decoration_namespace, 0, -1)
-  decoration.clear_hover_messages()
+  decoration.clear(bufnr)
 
   for _, deco in ipairs(result.options) do
-    decoration.set_decoration(bufnr, decoration_namespace, deco)
-    decoration.store_hover_message(deco)
+    decoration.set_decoration(bufnr, deco)
   end
 end
 
