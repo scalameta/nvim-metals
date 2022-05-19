@@ -1,5 +1,5 @@
 --local api = vim.api
---local log = require("metals.log")
+local log = require("metals.log")
 --local lsp = require("vim.lsp")
 --
 --local hover_messages = {}
