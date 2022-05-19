@@ -10,42 +10,6 @@ on:
       - '**.md'
 
 jobs:
-  lint-check:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout sources
-      uses: actions/checkout@v3
-
-    - name: Setup selene
-      run: |
-        wget "https://github.com/Kampfkarren/selene/releases/download/$VERSION/selene-$VERSION-linux.zip"
-        echo "$SHA256_CHECKSUM  selene-$VERSION-linux.zip" > "selene-$VERSION-linux.zip.checksum"
-        sha256sum --check "selene-$VERSION-linux.zip.checksum"
-        unzip "selene-$VERSION-linux.zip"
-        install -Dp selene "$HOME/.local/bin/selene"
-        echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      env:
-        VERSION: "0.17.0"
-        # shashum -a 256 selene-<version>-linux.zip
-        SHA256_CHECKSUM: "d092fe2f531e2037476fb1be7ffe068436be863eb20f56926fa1897c33e03b65"
-
-    - name: Run selene
-      run: make lint
-
-
-  format-check:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Run StyLua
-      uses: JohnnyMorganz/stylua-action@1.0.0
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        version: 0.13.1
-        args: --check lua/
 
   test:
     name: Run tests
@@ -53,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        neovim_version: ['v0.7.0', 'nightly']
+        neovim_version: ['nightly']
 
     steps:
       - uses: actions/checkout@v3
@@ -78,14 +42,8 @@ jobs:
 
       - name: Prepare plenary
         run: |
-          git clone --depth 1 https://github.com/nvim-lua/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
+          git clone -b fixNightlyTests --depth 1 https://github.com/ckipp01/plenary.nvim ~/.local/share/nvim/site/pack/vendor/start/plenary.nvim
           ln -s $(pwd) ~/.local/share/nvim/site/pack/vendor/start
-
-      - name: Run test clone
-        run: make test-clone
 
       - name: Run test insatll
         run: make test-install
-
-      - name: Run tests
-        run: make test
