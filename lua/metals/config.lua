@@ -159,19 +159,27 @@ local commands = {}
 
 -- Doesn't really fit in here, but we need to use it for the commands down below
 -- and also in metals.lua, so to avoid a cyclical dep we just put it in here
-local function toggle_logs()
+local function toggle_logs(direction)
   local bufs = api.nvim_list_bufs()
+  local split_direction = "vsp"
+
+  if direction then
+    if direction ~= "vsp" and direction ~= "sp" then
+      log.error_and_show("direction must be able vsp or sp")
+    else
+      split_direction = direction
+    end
+  end
 
   for _, buf in ipairs(bufs) do
     local buftype = api.nvim_buf_get_option(buf, "buftype")
     local _, purpose = pcall(api.nvim_buf_get_var, buf, "metals_buf_purpose")
-
     if buftype == "terminal" and purpose == "logs" then
       local first_window_id = fn.win_findbuf(buf)[1]
       if first_window_id then
         fn.win_gotoid(first_window_id)
       else
-        api.nvim_command(string.format("vsp | :b %i", buf))
+        api.nvim_command(string.format("%s | :b %i", split_direction, buf))
       end
 
       return
@@ -179,7 +187,7 @@ local function toggle_logs()
   end
 
   -- Only open them if a terminal isn't already open
-  api.nvim_command([[vsp +set\ ft=log term://tail -f .metals/metals.log]])
+  api.nvim_command(string.format([[%s +set\ ft=log term://tail -f .metals/metals.log]], split_direction))
   vim.b["metals_buf_purpose"] = "logs"
 end
 
