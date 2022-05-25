@@ -191,6 +191,7 @@ local commands_table = {
     id = "toggle_logs",
     label = "Toggle Logs",
     hint = "Toggle Metals logs.",
+    expected_args = 1,
   },
   {
     id = "update",
