@@ -120,7 +120,7 @@ In order to install the latest snapshot of metals you can explicitly set the
 snapshot version in your settings table: >
 
   metals_config = require("metals").bare_config()
-  Metals_config.settings = {
+  metals_config.settings = {
     serverVersion = "0.10.9+131-30f6a57b-SNAPSHOT"
   }
 <
