@@ -44,7 +44,7 @@ local function add_commands()
     local vim_cmd = util.camel_to_pascal(cmd.id)
     api.nvim_create_user_command("Metals" .. vim_cmd, function(args)
       require("metals")[cmd.id](args.args)
-    end, { nargs = cmd.expected_args or 0 })
+    end, { nargs = cmd.nargs or 0 })
   end
 end
 
