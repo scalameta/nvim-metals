@@ -69,8 +69,8 @@ GETTING STARTED                                         *metals-getting-started*
 
 Once installed, the most basic setup is to have the following: >
 
-  local nvim_metals_group = api.nvim_create_augroup("nvim-metals", { clear = true })
-  api.nvim_create_autocmd("FileType", {
+  local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+  vim.api.nvim_create_autocmd("FileType", {
     pattern = { "scala", "sbt", "java" },
     callback = function()
       require("metals").initialize_or_attach({})
@@ -940,7 +940,7 @@ type_of_range()           Use to get the type of the selected range. NOTE that
 
                           Example usage: >
 
-  api.nvim_set_keymap("v", "K", [[<Esc><cmd>lua require("metals").type_of_range()<CR>]])
+  vim.api.nvim_set_keymap("v", "K", [[<Esc><cmd>lua require("metals").type_of_range()<CR>]])
 
 <
 
