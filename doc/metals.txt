@@ -34,8 +34,8 @@ PREREQUISITES                                             *metals-prerequisites*
 - Ensure you're using at least Neovim v0.7.0. While `nvim-metals` will aim to
   always work with the latest stable version of Neovim, there is no guarantee
   of compatibility with older versions.
-- WARNING: use this plugin for Metals and also `neovim/nvim-lspconfig` for
-  Metals. If you've used `neovim/nvim-lspconfig` before with Metals, make sure
+- WARNING: do not use this plugin for Metals in parallel with `neovim/nvim-lspconfig`.
+  If you've used `neovim/nvim-lspconfig` before with Metals, make sure
   to remove metals setup for it as it will conflict with this plugin.  NOTE:
   that keeping the plugin installed for other LSP servers is totally fine,
   just let `nvim-metals` handle Metals.
@@ -69,8 +69,8 @@ GETTING STARTED                                         *metals-getting-started*
 
 Once installed, the most basic setup is to have the following: >
 
-  local nvim_metals_group = api.nvim_create_augroup("nvim-metals", { clear = true })
-  api.nvim_create_autocmd("FileType", {
+  local nvim_metals_group = vim.api.nvim_create_augroup("nvim-metals", { clear = true })
+  vim.api.nvim_create_autocmd("FileType", {
     pattern = { "scala", "sbt", "java" },
     callback = function()
       require("metals").initialize_or_attach({})
@@ -96,7 +96,7 @@ may not want this if you're using something like `nvim-jdtls` for more Java
 heavy projects. Since then you'd be triggering two different servers to
 connect here, which you probably don't want. However, if you're primarily
 using Scala and also have _some_ Java to deal with, then ensuring that `java`
-is listed here is important or else Metals won't attatch on Java files.
+is listed here is important or else Metals won't attach on Java files.
 
 NOTE: It's highly recommended to set your `statusBarProvider` to `on`. This
 enables `metals/status` and also other helpful messages that are shown to you.
@@ -113,7 +113,7 @@ enable the `statusBarProvider` like shown below: >
 Then instead of passing an empty `{}` to |initialize_or_attach()|, you'd pass
 in `metals_config`.
 
-Once setup, the first time you open a Scala project you'll be prompted to
+Once set up, the first time you open a Scala project you'll be prompted to
 install Metals. You can do this with the following command: |MetalsInstall|.
 
 In order to install the latest snapshot of metals you can explicitly set the
@@ -180,7 +180,7 @@ _ones that are sent and used by the server_
   * |showImplicitConversionsAndClasses|
   * |showInferredType|
   * |superMethodLensesEnabled|
-  *
+
 _ones that are used internally by `nvim-metals`_ 
   * |disabledMode|
   * |decorationColor|
@@ -272,7 +272,7 @@ including the package in your list and prepending `--` to it. >
   ["--sun"]
 <
 
-gradleScript                                                     *gradleScript*
+gradleScript                                                      *gradleScript*
 
 Type: string ~
 Default: '' ~
@@ -294,7 +294,7 @@ and Ammonite scripts.
 
 Note: Setting this to a higher version than Metals currently supports won't
 work and you'll just get a warning. So don't be cheeky and think you can bump
-faster that Metals can be using this.
+faster than Metals can by using this.
 
 javaFormat.eclipseConfigPath                      *javaFormat.eclipseConfigPath*
 
@@ -426,7 +426,7 @@ environment variable `JAVA_OPTS` and the `.jvmopts` file are respected.
 However, we care most about the proxy settings from those places, not
 necessarily the memory options since Metals has different requirements for
 example than sbt. So if you have proxy settings defined in `JAVA_OPTS`, then
-no need to define them here again. However, if you want to set some spefic
+no need to define them here again. However, if you want to set some specific 
 memory settings for Metals, then this is the place. 
 
 superMethodLensesEnabled                              *superMethodLensesEnabled*
@@ -523,12 +523,12 @@ MetalsDisconnectBuild        Manually disconnect from the build server without
                              reconnecting.
 
                                                     *MetalsFindInDependencyJars*
-MetalsFindInDependencyJars  Used to find values in dependency jar files. Note
-                            that this differs from global symbol search in
-                            that it looks through a specific filetype given a
-                            mask. The default masks is `.conf`. This is useful
-                            to search through configuration files that your
-                            dependencies mayb be brining in.
+MetalsFindInDependencyJars   Used to find values in dependency jar files. Note
+                             that this differs from global symbol search in
+                             that it looks through a specific filetype given a
+                             mask. The default mask is `.conf`. This is useful
+                             to search through configuration files that your
+                             dependencies may be bringing in.
 
                                                        *MetalsGenerateBspConfig*
 MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
@@ -541,7 +541,7 @@ MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
                              it.
 
                                                          *MetalsGotoSuperMethod*
-MetalsGotoSuperMethod       Jump to the super method of the current symbol.
+MetalsGotoSuperMethod        Jump to the super method of the current symbol.
 
                                                              *MetalsImportBuild*
 MetalsImportBuild            Trigger an import for the current workspace.
@@ -551,8 +551,8 @@ MetalsInfo                   Give info about the currently installed version
                              of Metals that will be used, and display it in a
                              floating window. This will also contain the
                              location of Metals that was installed with
-                             |MetalsInstall| and also the location of the
-                             `nvim-metals.log` file and some helpful links.
+                             |MetalsInstall|, the location of the
+                             `nvim-metals.log` file, and some helpful links.
 
                                                                  *MetalsInstall*
 MetalsInstall                Install Metals. NOTE that behind the scenes this
@@ -598,8 +598,8 @@ MetalsRestartBuild           Manually restart the build server.
                                                            *MetalsRestartServer*
 MetalsRestartServer          Restart the Metals server.
 
-                                                                *MetalsRunDoctor*
-MetalsRunDoctor                 Run Metals Doctor, which will open a floating
+                                                               *MetalsRunDoctor*
+MetalsRunDoctor              Run Metals Doctor, which will open a floating
                              window to show you the status of Metals.
 
                                                              *MetalsScanSources*
@@ -664,7 +664,7 @@ MetalsSwitchBsp              Prompts the user to select a new build server to
                              installed then Metals will prompt the user to
                              select which server to use.
 
-                                                               *MetalsToggleLogs*
+                                                              *MetalsToggleLogs*
 MetalsToggleLogs             Opens the embedded Nvim terminal tailing the
                              |.metals/metals.log| file in your workspace. If
                              triggered again, this will either bring you to
@@ -696,251 +696,251 @@ can find above in |metals-commands| with more details. Please keep in mind
 that here we are trying to unify command names with verb followed by noun.
 That's why `nvim-metals` lua commands sometimes differ from metals commands.
 
-                                                          *analyze_stacktrace()*
-analyze_stacktrace()      Use to execute a |metals.analyze-stacktrace| command.
+                                                           *analyze_stacktrace()*
+analyze_stacktrace()       Use to execute a |metals.analyze-stacktrace| command.
 
-                                                                 *bare_config()*
+                                                                  *bare_config()*
 bare_config()
-                          Returns an empty config table with empty tables also
-                          set for settings, handlers, and init_options, and
-                          tvp settings. Use this when setting ups settings for
-                          `nvim-metals` to pass into |initialize_or_attach()|.
+                           Returns an empty config table with empty tables also
+                           set for settings, handlers, and init_options, and
+                           tvp settings. Use this when setting up settings for
+                           `nvim-metals` to pass into |initialize_or_attach()|.
 
-                                                              *compile_cancel()*
-compile_cancel()          Use to execute a |metals.compile-cancel| command.
+                                                               *compile_cancel()*
+compile_cancel()           Use to execute a |metals.compile-cancel| command.
 
-                                                             *compile_cascade()*
-compile_cascade()         Use to execute a |metals.compile-cascade| command.
+                                                              *compile_cascade()*
+compile_cascade()          Use to execute a |metals.compile-cascade| command.
 
-                                                               *compile_clean()*
-compile_clean()           Use to execute a |metals.compile-clean| command.
+                                                                *compile_clean()*
+compile_clean()            Use to execute a |metals.compile-clean| command.
 
-                                                               *connect_build()*
-connect_build()           Use to execute a |metals.build-connect| command.
+                                                                *connect_build()*
+connect_build()            Use to execute a |metals.build-connect| command.
 
-                                                       *copy_worksheet_output()*
-copy_worksheet_output()   Use to execute a |metals.copy-worksheet-output|
-                          command.
+                                                        *copy_worksheet_output()*
+copy_worksheet_output()    Use to execute a |metals.copy-worksheet-output|
+                           command.
 
-                                                            *disconnect_build()*
-disconnect_build()        Use to execute a |metals.build-disconnect| command.
+                                                             *disconnect_build()*
+disconnect_build()         Use to execute a |metals.build-disconnect| command.
 
-                                                         *generate_bsp_config()*
-generate_bsp_config()     Use to execute a |metals.generate-bsp-config| command.
+                                                          *generate_bsp_config()*
+generate_bsp_config()      Use to execute a |metals.generate-bsp-config| command.
 
-                                                           *goto_super_method()*
-goto_super_method()       Use to execute a |metals.goto-super-method| command.
-                          This is the same as triggering the code lens on a
-                          symbol that is overriding another.
+                                                            *goto_super_method()*
+goto_super_method()        Use to execute a |metals.goto-super-method| command.
+                           This is the same as triggering the code lens on a
+                           symbol that is overriding another.
 
-                                                     *find_in_dependency_jars()*
-find_in_dependency_jars() Use to send in a `meatls/findTextInDependencyJars`
-                          request to the server.
+                                                      *find_in_dependency_jars()*
+find_in_dependency_jars()  Use to send in a `meatals/findTextInDependencyJars`
+                           request to the server.
 
-                                                             *hover_worksheet()*
-hover_worksheet()         Use to expand the decoration to show the full hover
-                          message that was returned from the decoration.
+                                                              *hover_worksheet()*
+hover_worksheet()          Use to expand the decoration to show the full hover
+                           message that was returned from the decoration.
 
-                                                                *import_build()*
-import_build()            Use to execute a |metals.build-import| command.
+                                                                 *import_build()*
+import_build()             Use to execute a |metals.build-import| command.
 
-                                                                        *info()*
-info()                    Give info about the currently installed version of
-                          Metals that will be used by `nvim-metals`, the
-                          location of the installed Metals, and the location
-                          of the `nvim-metals.log` file.
+                                                                         *info()*
+info()                     Give info about the currently installed version of
+                           Metals that will be used by `nvim-metals`, the
+                           location of the installed Metals, and the location
+                           of the `nvim-metals.log` file.
 
-                                                        *initialize_or_attach()*
+                                                         *initialize_or_attach()*
 initialize_or_attach({config})    
                   
-                          This is the main entrypoint into the plugin, and the
-                          way to set up `nvim-metals`. See the example in
-                          |metals-getting-started| for an example.
+                           This is the main entrypoint into the plugin, and the
+                           way to set up `nvim-metals`. See the example in
+                           |metals-getting-started| for an example.
 
-                          Parameters:
-                          {config} (table) This config is meant to mimic the
-                          config that is used in the |vim.lsp.start_client()|.
-                          You can visit the help docs of vim to see the full
-                          signature of the config.
+                           Parameters:
+                           {config} (table) This config is meant to mimic the
+                           config that is used in the |vim.lsp.start_client()|.
+                           You can visit the help docs of vim to see the full
+                           signature of the config.
 
-                          There are a couple small differences with this
-                          config table. The first is `root_patterns`, which
-                          is a short way to change way the `root_dir` is
-                          detected by giving it new patterns. The default
-                          `root_patterns` are >
-                             {'build.sbt', 'build.sc', 'build.gradle',
-                             'pom.xml', '.git'}
+                           There are a couple small differences with this
+                           config table. The first is `root_patterns`, which
+                           is a short way to change way the `root_dir` is
+                           detected by giving it new patterns. The default
+                           `root_patterns` are >
+                              {'build.sbt', 'build.sc', 'build.gradle',
+                              'pom.xml', '.git'}
 <
-                          If you need even more fine-grained control over
-                          finding your root-dir (in cases where you have very
-                          uncommon build layouts) you can also use the
-                          `find_root_dir` key in the config to provide your
-                          own custom funtion to find the root dir given a
-                          startig dir and root patterns. _You more than likely
-                          shouldn't need to do this_.
+                           If you need even more fine-grained control over
+                           finding your root-dir (in cases where you have very
+                           uncommon build layouts) you can also use the
+                           `find_root_dir` key in the config to provide your
+                           own custom function to find the root dir given a
+                           starting dir and root patterns. _You more than likely
+                           shouldn't need to do this_.
 
-                          The other small difference is the `settings` key.
-                          Since this is only the config for `nvim-metals` you
-                          don't need to preface your settings object with the
-                          `metals` keyword. You can find more information
-                          about how to set these in |metals-settings|.
+                           The other small difference is the `settings` key.
+                           Since this is only the config for `nvim-metals` you
+                           don't need to preface your settings object with the
+                           `metals` keyword. You can find more information
+                           about how to set these in |metals-settings|.
 
-                          NOTE: This function also includes some
-                          metals-specific autocommands
-                          that are given to the `on_attach()` of the config.
+                           NOTE: This function also includes some
+                           metals-specific autocommands
+                           that are given to the `on_attach()` of the config.
 
-                          NOTE: Keep in mind that there are some other
-                          autocmds that you'll probbly want to set up locally
-                          that aren't set by default to esnure features like
-                          document highlighting and code lenses work. Make
-                          sure to check out
-                          |vim.lsp.buf.document_highlight()|,
-                          |vim.lsp.buf.clear_references()|, and
-                          |vim.lsp.codelens.refresh()|.
+                           NOTE: Keep in mind that there are some other
+                           autocmds that you'll probably want to set up locally
+                           that aren't set by default to ensure features like
+                           document highlighting and code lenses work. Make
+                           sure to check out
+                           |vim.lsp.buf.document_highlight()|,
+                           |vim.lsp.buf.clear_references()|, and
+                           |vim.lsp.codelens.refresh()|.
 
-                                                           *install_or_update()*
-install_or_update()       Install Metals if it doesn't exist or update to the
-                          latest stable version or version set if you have a
-                          `serverVersion` entry in your config table.
+                                                            *install_or_update()*
+install_or_update()        Install Metals if it doesn't exist or update to the
+                           latest stable version or version set if you have a
+                           `serverVersion` entry in your config table.
 
-                                                               *new_java_file()*
+                                                                *new_java_file()*
 new_java_file({directory_uri_opt}, {name_opt}, {file_type_option})
 
-                          Use to execute a |metals.new-java-file| command. All
-                          of the parameters are optional. If they are not
-                          provided you will be prompted for them.
+                           Use to execute a |metals.new-java-file| command. All
+                           of the parameters are optional. If they are not
+                           provided you will be prompted for them.
 
-                          Parameters:
-                          {directory_uri_opt} (string) directory that you'd
-                          like the new file to be created in.
+                           Parameters:
+                           {directory_uri_opt} (string) directory that you'd
+                           like the new file to be created in.
 
-                          {name_opt} (string) name you'd like to be given to 
-                          the file.
+                           {name_opt} (string) name you'd like to be given to 
+                           the file.
 
-                          {file_type_option} (string) the type of Scala file
-                          that you'd like to be created.
+                           {file_type_option} (string) the type of Java file
+                           that you'd like to be created.
 
-                                                              *new_scala_file()*
+                                                               *new_scala_file()*
 new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
 
-                          Use to execute a |metals.new-scala-file| command. All
-                          of the parameters are optional. If they are not
-                          provided you will be prompted for them.
+                           Use to execute a |metals.new-scala-file| command. All
+                           of the parameters are optional. If they are not
+                           provided you will be prompted for them.
 
-                          Parameters:
-                          {directory_uri_opt} (string) directory that you'd
-                          like the new file to be created in.
+                           Parameters:
+                           {directory_uri_opt} (string) directory that you'd
+                           like the new file to be created in.
 
-                          {name_opt} (string) name you'd like to be given to 
-                          the file.
+                           {name_opt} (string) name you'd like to be given to 
+                           the file.
 
-                          {file_type_option} (string) the type of Scala file
-                          that you'd like to be created.
+                           {file_type_option} (string) the type of Scala file
+                           that you'd like to be created.
 
-                                                           *new_scala_project()*
-new_scala_project()       Use to execute a |metals.new-scala-project| command.
+                                                            *new_scala_project()*
+new_scala_project()        Use to execute a |metals.new-scala-project| command.
 
-                                                            *organize_imports()*
-organize_imports()        Use a code action request to get edits from Metals
-                          to organize imports for the current buffer.
+                                                             *organize_imports()*
+organize_imports()         Use a code action request to get edits from Metals
+                           to organize imports for the current buffer.
 
-                                                             *quick_worksheet()*
-quick_worksheet()         Create a quick worksheet in your current dir with 
-                          the name of your current dir.
+                                                              *quick_worksheet()*
+quick_worksheet()          Create a quick worksheet in your current dir with 
+                           the name of your current dir.
 
-                                                                *reset_choice()*
-reset_choice()            Use to execute a |metals.reset-choice| command.
+                                                                 *reset_choice()*
+reset_choice()             Use to execute a |metals.reset-choice| command.
 
-                                                               *restart_build()*
-restart_build()           Use to execute a |metals.build-restart| command.
+                                                                *restart_build()*
+restart_build()            Use to execute a |metals.build-restart| command.
 
-                                                              *restart_server()*
-restart_server()          Restart the Metals server.
+                                                               *restart_server()*
+restart_server()           Restart the Metals server.
 
-                                                                  *run_doctor()*
-run_doctor()              Use to execute a |metals.doctor-run| command.
+                                                                   *run_doctor()*
+run_doctor()               Use to execute a |metals.doctor-run| command.
 
-                                                                *scan_sources()*
-scan_sources()            Use to execute a |metals.sources-scan| command.
+                                                                 *scan_sources()*
+scan_sources()             Use to execute a |metals.sources-scan| command.
 
-                                                      *show_build_target_info()*
-show_build_target_info() Show info for a build target that you will choose
-                         when you execute this.
+                                                       *show_build_target_info()*
+show_build_target_info()   Show info for a build target that you will choose
+                           when you execute this.
 
-                                                                    *show_cfr()*
-show_cfr()                Show decompiled cfr of the current file.
+                                                                     *show_cfr()*
+show_cfr()                 Show decompiled cfr of the current file.
 
-                                                                  *show_javap()*
-show_javap()              Show decompiled javap of the current file
+                                                                   *show_javap()*
+show_javap()               Show decompiled javap of the current file
 
-                                                          *show_javap_verbose()*
-show_javap_verbose()      Show verbose decompiled javap of the current file
+                                                           *show_javap_verbose()*
+show_javap_verbose()       Show verbose decompiled javap of the current file
 
-                                                     *show_semanticdb_compact()*
-show_semanticdb_compact() Show compact semanticdb representation of the
-                          current file.
+                                                      *show_semanticdb_compact()*
+show_semanticdb_compact()  Show compact semanticdb representation of the
+                           current file.
 
-                                                    *show_semanticdb_detailed()*
+                                                     *show_semanticdb_detailed()*
 show_semanticdb_detailed() Show detailed semanticdb representation of the
-                          current file.
+                           current file.
 
-                                                       *show_semanticdb_proto()*
-show_semanticdb_proto()   Show protobuf semanticdb representation of the
-                          current file.
+                                                        *show_semanticdb_proto()*
+show_semanticdb_proto()    Show protobuf semanticdb representation of the
+                           current file.
 
-                                                                  *show_tasty()*
-show_tasty()              Show TASTy representation of the current file.
-                          NOTE: This only currently works with Scala 3.
+                                                                   *show_tasty()*
+show_tasty()               Show TASTy representation of the current file.
+                           NOTE: This only currently works with Scala 3.
 
-                                                              *start_ammonite()*
-start_ammonite()          Use to execute a |metals.ammonite-start| command.
+                                                               *start_ammonite()*
+start_ammonite()           Use to execute a |metals.ammonite-start| command.
 
-                                                                *start_server()*
-start_server()            Start Metals server. Must be in a Scala or sbt file 
-                          in a workspace where Metals is not yet started.
+                                                                 *start_server()*
+start_server()             Start Metals server. Must be in a Scala or sbt file 
+                           in a workspace where Metals is not yet started.
 
-                                                               *stop_ammonite()*
-stop_ammonite()           Use to execute a |metals.ammonite-stop| command.
+                                                                *stop_ammonite()*
+stop_ammonite()            Use to execute a |metals.ammonite-stop| command.
 
-                                                      *super_method_hierarchy()*
-super_method_hierarchy()  Use to execute a |metals.super-method-hierarchy|
-                          command.
+                                                       *super_method_hierarchy()*
+super_method_hierarchy()   Use to execute a |metals.super-method-hierarchy|
+                           command.
 
-                                                                  *switch_bsp()*
-switch_bsp()              Use to execute a |metals.bsp-switch| command.
+                                                                   *switch_bsp()*
+switch_bsp()               Use to execute a |metals.bsp-switch| command.
 
-                                                                 *toggle_logs()*
-toggle_logs({direction}) Use to trigger a |tail -f .metals/log| on your
-                          current workspace that will open in the embedded
-                          Neovim terminal.
+                                                                  *toggle_logs()*
+toggle_logs({direction})   Use to trigger a `tail -f .metals/log` on your
+                           current workspace that will open in the embedded
+                           Neovim terminal.
 
-                          Parameters: {direction} (string) This can either be
-                          vsp to split vertically or sp for a horizontal split.
+                           Parameters: {direction} (string) This can either be
+                           vsp to split vertically or sp for a horizontal split.
 
-                                                              *toggle_setting()*
+                                                               *toggle_setting()*
 toggle_setting({setting})
 
-                          Use to toggle a boolean setting in |metals-settings|.
-                          If the setting is not set, you'll be toggling it on.
+                           Use to toggle a boolean setting in |metals-settings|.
+                           If the setting is not set, you'll be toggling it on.
 
-                          Parameters:
-                          {setting} (string) the name of the setting that
-                          you'd like to toggle.
+                           Parameters:
+                           {setting} (string) the name of the setting that
+                           you'd like to toggle.
 
-                          Example usage: >
+                           Example usage: >
 
     lua require("metals").toggle_setting("showImplicitArguments")
 <
 
-                                                               *type_of_range()*
-type_of_range()           Use to get the type of the selected range. NOTE that
-                          the mapping for this requires an `<Esc>` before the
-                          actual mapping to ensure that the last correct range
-                          is used.
+                                                                *type_of_range()*
+type_of_range()            Use to get the type of the selected range. NOTE that
+                           the mapping for this requires an `<Esc>` before the
+                           actual mapping to ensure that the last correct range
+                           is used.
 
-                          Example usage: >
+                           Example usage: >
 
-  api.nvim_set_keymap("v", "K", [[<Esc><cmd>lua require("metals").type_of_range()<CR>]])
+  vim.api.nvim_set_keymap("v", "K", [[<Esc><cmd>lua require("metals").type_of_range()<CR>]])
 
 <
 
@@ -1045,7 +1045,7 @@ Other plugins that `nvim-metals` integrates with for various extra features.
 In order for you to utilize Metals to run, test, and debug code, an
 integration with https://github.com/mfussenegger/nvim-dap is provided offering
 great DAP support. Before getting starting it's best to read the |dap.txt| to
-get an understanding of how to both setup and use nvim-dap as you'll need to
+get an understanding of how to both set up and use nvim-dap as you'll need to
 ensure you have mappings defined and the correct configurations. To get
 started, you'll want ensure that `nvim-dap` is installed and then extend your
 metals configuration with the following `on_attach` function. >
