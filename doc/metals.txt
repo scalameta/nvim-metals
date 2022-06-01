@@ -96,7 +96,7 @@ may not want this if you're using something like `nvim-jdtls` for more Java
 heavy projects. Since then you'd be triggering two different servers to
 connect here, which you probably don't want. However, if you're primarily
 using Scala and also have _some_ Java to deal with, then ensuring that `java`
-is listed here is important or else Metals won't attatch on Java files.
+is listed here is important or else Metals won't attach on Java files.
 
 NOTE: It's highly recommended to set your `statusBarProvider` to `on`. This
 enables `metals/status` and also other helpful messages that are shown to you.
@@ -426,7 +426,7 @@ environment variable `JAVA_OPTS` and the `.jvmopts` file are respected.
 However, we care most about the proxy settings from those places, not
 necessarily the memory options since Metals has different requirements for
 example than sbt. So if you have proxy settings defined in `JAVA_OPTS`, then
-no need to define them here again. However, if you want to set some spefic
+no need to define them here again. However, if you want to set some specific 
 memory settings for Metals, then this is the place. 
 
 superMethodLensesEnabled                              *superMethodLensesEnabled*
@@ -528,7 +528,7 @@ MetalsFindInDependencyJars  Used to find values in dependency jar files. Note
                             that it looks through a specific filetype given a
                             mask. The default masks is `.conf`. This is useful
                             to search through configuration files that your
-                            dependencies mayb be brining in.
+                            dependencies may be bringing in.
 
                                                        *MetalsGenerateBspConfig*
 MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
@@ -775,8 +775,8 @@ initialize_or_attach({config})
                           finding your root-dir (in cases where you have very
                           uncommon build layouts) you can also use the
                           `find_root_dir` key in the config to provide your
-                          own custom funtion to find the root dir given a
-                          startig dir and root patterns. _You more than likely
+                          own custom function to find the root dir given a
+                          starting dir and root patterns. _You more than likely
                           shouldn't need to do this_.
 
                           The other small difference is the `settings` key.
@@ -790,8 +790,8 @@ initialize_or_attach({config})
                           that are given to the `on_attach()` of the config.
 
                           NOTE: Keep in mind that there are some other
-                          autocmds that you'll probbly want to set up locally
-                          that aren't set by default to esnure features like
+                          autocmds that you'll probably want to set up locally
+                          that aren't set by default to ensure features like
                           document highlighting and code lenses work. Make
                           sure to check out
                           |vim.lsp.buf.document_highlight()|,
