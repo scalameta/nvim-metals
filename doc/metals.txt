@@ -969,7 +969,9 @@ The following configuration values are available to be passed into
 <
 
 The two main functions that you'll want to make sure to have mapped are
-|toggle_tree_view| and |reveal_in_tree|. The full api is below:
+|toggle_tree_view| and |reveal_in_tree|. When creating a mapping for any of
+the tvp functions, you'll want to ensure you require the `metals.tvp` module,
+not just the `metals` module. The full api is below:
 
                                                               *reveal_in_tree()*
 reveal_in_tree()             When in your source code this will locate the
