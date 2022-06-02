@@ -317,7 +317,11 @@ Type: string ~
 Default: falls back to JAVA_HOME ~
 
 The Java Home directory used for indexing JDK sources and locating the java
-binary.
+binary. This will also be forwarded to Bloop to ensure it starts using this
+Java. NOTE: Due to the way nvim-metals bootstraps Metals, this setting won't
+actually be used to start Metals, but rather your JAVA_HOME will be picked up
+and used. You can see more details about this in
+https://github.com/scalameta/nvim-metals/issues/380.
 
 mavenScript                                                        *mavenScript*
 
