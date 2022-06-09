@@ -415,6 +415,11 @@ M.super_method_hierarchy = function()
   })
 end
 
+M.run_scalafix = function()
+  local text_doc_position = lsp.util.make_position_params()
+  execute_command({ command = "metals.scalafix-run", arguments = { text_doc_position } })
+end
+
 M.type_of_range = function()
   vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_given_range_params())
 end

@@ -118,6 +118,11 @@ local commands_table = {
     hint = "Run doctor.",
   },
   {
+    id = "run_scalafix",
+    label = "Run Scalafix Rules",
+    hint = "Run all Scalafix rules that are defined for the workspace.",
+  },
+  {
     id = "scan_sources",
     label = "Scan Sources",
     hint = "Scan all workspace sources.",

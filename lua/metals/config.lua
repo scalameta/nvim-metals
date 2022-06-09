@@ -122,6 +122,7 @@ local valid_metals_settings = {
   "remoteLanguageServer",
   "sbtScript",
   "scalafixConfigPath",
+  "scalafixRulesDependencies",
   "scalafmtConfigPath",
   "serverProperties",
   "showImplicitArguments",
