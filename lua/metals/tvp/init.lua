@@ -23,7 +23,7 @@ local config = nil
 local state = {
   -- NOTE: this is a bit of a hack since once we create the tvp panel, we can
   -- no longer use 0 as the buffer to send the requests so we store a valid
-  -- buffer that Metals is attatched to. It doesn't really matter _whats_ in
+  -- buffer that Metals is attatched to. It doesn't really matter _what's_ in
   -- that buffer, as long as Metals is attatched.
   attatched_bufnr = nil,
   tvp_tree = nil,
@@ -124,7 +124,7 @@ function Tree:new()
   return setmetatable(root, self)
 end
 
--- Sends a request to the server to retrive the children of a given node_uri. If
+-- Sends a request to the server to retrieve the children of a given node_uri. If
 -- the node_uri is absent we are dealing with the root node
 -- @param view_id (string)
 -- @param node_uri (string)
@@ -203,7 +203,7 @@ end
 
 function Tree:set_lines(start_idx, end_idx, lines)
   -- NOTE: We are replacing the entire buffer with set_lines. If performance
-  -- every becomes an issue it may be better to _only_ update the nodes that
+  -- ever becomes an issue it may be better to _only_ update the nodes that
   -- have changed and their children. For now this seems fast enough to just
   -- not care
   api.nvim_buf_set_option(self.bufnr, "modifiable", true)
@@ -365,7 +365,7 @@ handlers["metals/treeViewDidChange"] = function(_, result)
       local new_node = Node:new(node)
       state.tvp_tree:update(new_node.node_uri, {})
       -- As far as I know, the res.nodes here will never be children of eachother, so we
-      -- should be safe doing this call for the children int he same loop as the update.
+      -- should be safe doing this call for the children in the same loop as the update.
       if new_node.collapse_state == collapse_state.expanded then
         state.tvp_tree:tree_view_children({ view_id = metals_packages, parent_uri = new_node.node_uri })
       end

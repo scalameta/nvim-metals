@@ -1,7 +1,7 @@
 local log = require("metals.log")
 local util = require("metals.tvp.util")
 
--- Notify the server that the collapse statet for a node has changed
+-- Notify the server that the collapse stated for a node has changed
 -- @param view_id (string) the view id that contains the node
 -- @param node_uri (string) uri of the node
 -- @param collapsed (boolean)
