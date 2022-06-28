@@ -182,7 +182,7 @@ _ones that are sent and used by the server_
   * |showInferredType|
   * |superMethodLensesEnabled|
 
-_ones that are used internally by `nvim-metals`_ 
+_ones that are used internally by `nvim-metals`_
   * |disabledMode|
   * |decorationColor|
   * |serverOrg|
@@ -439,8 +439,8 @@ environment variable `JAVA_OPTS` and the `.jvmopts` file are respected.
 However, we care most about the proxy settings from those places, not
 necessarily the memory options since Metals has different requirements for
 example than sbt. So if you have proxy settings defined in `JAVA_OPTS`, then
-no need to define them here again. However, if you want to set some specific 
-memory settings for Metals, then this is the place. 
+no need to define them here again. However, if you want to set some specific
+memory settings for Metals, then this is the place.
 
 superMethodLensesEnabled                              *superMethodLensesEnabled*
 
@@ -549,8 +549,8 @@ MetalsGenerateBspConfig      Checks to see if your build tool can serve as a
                              BSP server. If so, generate the necessary BSP
                              config to connect to the server. If there is more
                              than one build tool for a workspace, you can then
-                             choose the desired one and that one will be used 
-                             to generate the config. After the config is 
+                             choose the desired one and that one will be used
+                             to generate the config. After the config is
                              generated, Metals will attempt to auto-connect to
                              it.
 
@@ -603,7 +603,7 @@ MetalsQuickWorksheet         Creates a worksheet in the current directory that
                                                              *MetalsResetChoice*
 MetalsResetChoice            ResetChoicePopup command allows you to reset a
                              decision you made about different settings.
-                             E.g. If you choose to import workspace with sbt 
+                             E.g. If you choose to import workspace with sbt
                              you can decide to reset and change it again.
 
                                                             *MetalsRestartBuild*
@@ -622,7 +622,7 @@ MetalsRunScalafix            Runs all of the Scalafix rules that you have
                              you're using external Scalafix rules you'll need
                              to ensure you add them to your settings table
                              under `scalafixRulesDependencies`.
-                            
+
 
                                                              *MetalsScanSources*
 MetalsScanSources            Scan all workspaces sources.
@@ -760,8 +760,12 @@ find_in_dependency_jars()  Use to send in a `meatals/findTextInDependencyJars`
                            request to the server.
 
                                                               *hover_worksheet()*
-hover_worksheet()          Use to expand the decoration to show the full hover
+hover_worksheet({opts})    Use to expand the decoration to show the full hover
                            message that was returned from the decoration.
+                           Parameter is optional.
+                           Parameters:
+                           {opts} (table) Options that are passed to
+                           |vim.lsp.util.open_floating_preview()|
 
                                                                  *import_build()*
 import_build()             Use to execute a |metals.build-import| command.
@@ -773,8 +777,8 @@ info()                     Give info about the currently installed version of
                            of the `nvim-metals.log` file.
 
                                                          *initialize_or_attach()*
-initialize_or_attach({config})    
-                  
+initialize_or_attach({config})
+
                            This is the main entrypoint into the plugin, and the
                            way to set up `nvim-metals`. See the example in
                            |metals-getting-started| for an example.
@@ -836,7 +840,7 @@ new_java_file({directory_uri_opt}, {name_opt}, {file_type_option})
                            {directory_uri_opt} (string) directory that you'd
                            like the new file to be created in.
 
-                           {name_opt} (string) name you'd like to be given to 
+                           {name_opt} (string) name you'd like to be given to
                            the file.
 
                            {file_type_option} (string) the type of Java file
@@ -853,7 +857,7 @@ new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
                            {directory_uri_opt} (string) directory that you'd
                            like the new file to be created in.
 
-                           {name_opt} (string) name you'd like to be given to 
+                           {name_opt} (string) name you'd like to be given to
                            the file.
 
                            {file_type_option} (string) the type of Scala file
@@ -867,7 +871,7 @@ organize_imports()         Use a code action request to get edits from Metals
                            to organize imports for the current buffer.
 
                                                               *quick_worksheet()*
-quick_worksheet()          Create a quick worksheet in your current dir with 
+quick_worksheet()          Create a quick worksheet in your current dir with
                            the name of your current dir.
 
                                                                  *reset_choice()*
@@ -921,7 +925,7 @@ show_tasty()               Show TASTy representation of the current file.
 start_ammonite()           Use to execute a |metals.ammonite-start| command.
 
                                                                  *start_server()*
-start_server()             Start Metals server. Must be in a Scala or sbt file 
+start_server()             Start Metals server. Must be in a Scala or sbt file
                            in a workspace where Metals is not yet started.
 
                                                                 *stop_ammonite()*
@@ -1043,7 +1047,7 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsinputbox
                           Parameters:
                           {err}    Error
                           {method} metals/status
-                          {result} MetalsQuickPickParams 
+                          {result} MetalsQuickPickParams
 
 The spec for this can be found here:
 
@@ -1057,7 +1061,7 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsquickpick
                           Parameters:
                           {err}    Error
                           {method} metals/status
-                          {result} MetalsQuickPickParams 
+                          {result} MetalsQuickPickParams
 
 The spec for this can be found here:
 
@@ -1090,7 +1094,7 @@ will have `run` and `debug` code lenses on your main methods and `test` and
 `testDebug` code lenses on your test classes. By triggering these behind the
 scenes everything should just work. However, if you're making usage of
 `jvmOptions`, `args` and even an `envFile` you'll want to make some
-|dap-configuration|s, which will give you finer grain control. 
+|dap-configuration|s, which will give you finer grain control.
 
 These configurations are the configurations explained in |dap-configuration|
 with a metals-specific table added under the `metals` key. The valid keys in

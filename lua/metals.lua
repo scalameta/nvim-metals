@@ -431,7 +431,9 @@ M.initialize_or_attach = setup.initialize_or_attach
 M.install = install.install_or_update
 M.update = install.install_or_update
 
-M.hover_worksheet = decoration.hover_worksheet
+M.hover_worksheet = function(opts)
+  return decoration.hover_worksheet(opts)
+end
 
 M.setup_dap = function()
   setup.setup_dap(execute_command)
