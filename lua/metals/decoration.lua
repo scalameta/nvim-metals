@@ -1,5 +1,6 @@
 local api = vim.api
 local log = require("metals.log")
+local util = require("metals.util")
 local lsp = require("vim.lsp")
 
 local hover_messages = {}
@@ -25,7 +26,7 @@ M.set_decoration = function(bufnr, decoration)
   hover_messages[ext_id] = hover_message
 end
 
-M.hover_worksheet = function()
+M.hover_worksheet = function(opts)
   local buf = api.nvim_get_current_buf()
   local line, _ = unpack(api.nvim_win_get_cursor(0))
 
@@ -60,7 +61,8 @@ M.hover_worksheet = function()
       return
     end
 
-    lsp.util.open_floating_preview(hover_message, "markdown", { pad_left = 1, pad_right = 1 })
+    local floating_preview_opts = util.check_exists_and_merge({ pad_left = 1, pad_right = 1 }, opts)
+    lsp.util.open_floating_preview(hover_message, "markdown", floating_preview_opts)
   end
 end
 
