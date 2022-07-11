@@ -61,8 +61,6 @@ local function create_args_for_install(server_org, binary_version, version)
     "-Xms100m",
     string.format("%s:metals_%s:%s", server_org, binary_version, version),
     "-r",
-    "bintray:scalacenter/releases",
-    "-r",
     "sonatype:snapshots",
     "-o",
     conf.metals_install_name(),
