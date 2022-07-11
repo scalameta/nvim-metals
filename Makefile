@@ -1,5 +1,5 @@
 format:
-	stylua lua/ 
+	stylua lua/ tests/
 
 format-check:
 	stylua --check lua/ tests/

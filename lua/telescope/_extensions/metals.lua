@@ -75,24 +75,26 @@ local function commands(opts)
     previewer = false,
   })
 
-  pickers.new(opts, {
-    prompt_title = "Metals Commands",
-    finder = finders.new_table({
-      results = commands_table,
-      entry_maker = command_entry_maker(get_max_width(commands_table)),
-    }),
-    sorter = conf.generic_sorter(opts),
-    attach_mappings = function(_, map)
-      map("i", "<CR>", execute_command)
-      map("n", "<CR>", execute_command)
+  pickers
+    .new(opts, {
+      prompt_title = "Metals Commands",
+      finder = finders.new_table({
+        results = commands_table,
+        entry_maker = command_entry_maker(get_max_width(commands_table)),
+      }),
+      sorter = conf.generic_sorter(opts),
+      attach_mappings = function(_, map)
+        map("i", "<CR>", execute_command)
+        map("n", "<CR>", execute_command)
 
-      -- If the return value of `attach_mappings` is true, then the other
-      -- default mappings are still applies.
-      -- Return false if you don't want any other mappings applied.
-      -- A return value _must_ be returned. It is an error to not return anything.
-      return true
-    end,
-  }):find()
+        -- If the return value of `attach_mappings` is true, then the other
+        -- default mappings are still applies.
+        -- Return false if you don't want any other mappings applied.
+        -- A return value _must_ be returned. It is an error to not return anything.
+        return true
+      end,
+    })
+    :find()
 end
 
 return telescope.register_extension({

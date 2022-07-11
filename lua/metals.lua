@@ -343,13 +343,8 @@ M.show_build_target_info = function()
         if choice ~= nil then
           local root = conf.get_config_cache().root_dir
 
-          local metals_uri = string.format(
-            "%s:file:///%s/%s.%s",
-            decoder.metals_decode,
-            root,
-            choice,
-            decoder.types.build_target
-          )
+          local metals_uri =
+            string.format("%s:file:///%s/%s.%s", decoder.metals_decode, root, choice, decoder.types.build_target)
           execute_command({
             command = decoder.command,
             arguments = { metals_uri },
