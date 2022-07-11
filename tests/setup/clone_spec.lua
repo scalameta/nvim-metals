@@ -8,22 +8,20 @@ local scala_cli = Path:new("minimal-scala-cli-test/")
 -- Not really a test at all, but we run this as a spec so it's picked up during
 -- make test-setup and clones the expected repos down before we make test
 local clone = function(repo)
-  Job
-    :new({
-      command = "git",
-      args = { "clone", repo },
-      on_exit = function(_, status)
-        if not status == 0 then
-          print("Something went wrong cloning")
-        else
-          print("Correctly cloned")
-        end
-      end,
-      on_start = function()
-        print("starting to clone " .. repo)
-      end,
-    })
-    :start()
+  Job:new({
+    command = "git",
+    args = { "clone", repo },
+    on_exit = function(_, status)
+      if not status == 0 then
+        print("Something went wrong cloning")
+      else
+        print("Correctly cloned")
+      end
+    end,
+    on_start = function()
+      print("starting to clone " .. repo)
+    end,
+  }):start()
 end
 
 if not (multi_build_example:exists()) then
