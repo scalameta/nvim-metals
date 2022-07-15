@@ -41,9 +41,14 @@ local function handle_status(status)
       set_status(status.text)
     end
 
+    -- This status actually appears a lot in external sources, but really isn't
+    -- a huge deal. In other editors like VS Code its fine becasue it doesn't
+    -- steal your focus, but in nvim it does causing you to have to hit enter.
+    -- Because of that when we see it we just ignore it.
+    local annoyingMessage = "This external library source has compile errors."
     if status.command and status.tooltip then
       prompt_command(status)
-    elseif status.tooltip then
+    elseif status.tooltip and not string.find(status.tooltip, annoyingMessage) then
       log.warn_and_show(status.tooltip)
     end
   end
