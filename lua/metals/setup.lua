@@ -39,11 +39,19 @@ local function bare_config()
   return { handlers = {}, init_options = { compilerOptions = {} }, settings = {}, tvp = {} }
 end
 
+local function map_empty_args(args)
+  if args == "" then
+    return nil
+  else
+    return args
+  end
+end
+
 local function add_commands()
   for _, cmd in pairs(commands_table) do
     local vim_cmd = util.camel_to_pascal(cmd.id)
     api.nvim_create_user_command("Metals" .. vim_cmd, function(args)
-      require("metals")[cmd.id](args.args)
+      require("metals")[cmd.id](map_empty_args(args.args))
     end, { nargs = cmd.nargs or 0 })
   end
 end

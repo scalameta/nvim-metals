@@ -164,7 +164,7 @@ local function toggle_logs(direction)
   local bufs = api.nvim_list_bufs()
   local split_direction = "vsp"
 
-  if direction and direction ~= "" then
+  if direction then
     if direction ~= "vsp" and direction ~= "sp" then
       log.error_and_show("direction must be able vsp or sp")
       return
