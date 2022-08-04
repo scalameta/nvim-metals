@@ -14,7 +14,6 @@ local default_config = {
   panel_alignment = "left",
   toggle_node_mapping = "<CR>",
   node_command_mapping = "r",
-  execute_node_command_on_leaf_toggle = false,
   collapsed_sign = "▸",
   expanded_sign = "▾",
 }
@@ -313,7 +312,7 @@ function Tree:toggle_node()
   elseif node.collapse_state == collapse_state.expanded then
     node:collapse(valid_metals_buffer())
     self:reload_and_show()
-  elseif config.execute_node_command_on_leaf_toggle then
+  else
     execute_node_command(node)
   end
 end
