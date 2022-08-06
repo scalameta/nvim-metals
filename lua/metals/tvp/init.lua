@@ -280,6 +280,21 @@ function Tree:toggle()
   end
 end
 
+local function execute_node_command(node)
+  if node.command ~= nil then
+    -- Jump to the last window so this doesn't open up in the actual tvp panel
+    vim.cmd([[wincmd p]])
+    vim.lsp.buf_request(valid_metals_buffer(), "workspace/executeCommand", {
+      command = node.command.command,
+      arguments = node.command.arguments,
+    }, function(err, _, _)
+      if err then
+        log.error_and_show("Unable to execute node command.")
+      end
+    end)
+  end
+end
+
 function Tree:toggle_node()
   local lnum, _ = unpack(vim.api.nvim_win_get_cursor(0))
   local node = self.lookup[lnum]
@@ -297,25 +312,15 @@ function Tree:toggle_node()
   elseif node.collapse_state == collapse_state.expanded then
     node:collapse(valid_metals_buffer())
     self:reload_and_show()
+  else
+    execute_node_command(node)
   end
 end
 
 function Tree:node_command()
   local lnum, _ = unpack(vim.api.nvim_win_get_cursor(0))
-  local node_info = self.lookup[lnum]
-
-  if node_info.command ~= nil then
-    -- Jump to the last window so this doesn't open up in the actual tvp panel
-    vim.cmd([[wincmd p]])
-    vim.lsp.buf_request(valid_metals_buffer(), "workspace/executeCommand", {
-      command = node_info.command.command,
-      arguments = node_info.command.arguments,
-    }, function(err, _, _)
-      if err then
-        log.error_and_show("Unable to execute node command.")
-      end
-    end)
-  end
+  local node = self.lookup[lnum]
+  execute_node_command(node)
 end
 
 function Tree:update(parent_uri, new_nodes)
