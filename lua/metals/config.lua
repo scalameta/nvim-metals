@@ -189,7 +189,9 @@ local function toggle_logs(direction)
   end
 
   -- Only open them if a terminal isn't already open
-  api.nvim_command(string.format([[%s +set\ ft=log term://tail -f .metals/metals.log]], split_direction))
+  -- -n here allows for the last 100 lines to also be shown.
+  -- Useful if you hit on an issue and first then toggle the logs.
+  api.nvim_command(string.format([[%s +set\ ft=log term://tail -n 100 -f .metals/metals.log]], split_direction))
   vim.b["metals_buf_purpose"] = "logs"
 end
 
