@@ -68,9 +68,9 @@ You can find the tests that exist for `nvim-metals` in the `tests/` directory.
 These are ran using the
 [`plenary.test_harness`](https://github.com/nvim-lua/plenary.nvim/tree/master#plenarytest_harness).
 It's useful to give the plenary page a read about this to better understand what
-is happening. However, before running the tests make sure to run `make
-test-setup` which will clone some repos used for testing. After this you can
-use `make test`.
+is happening. However, before running the tests locally make sure to run `make
+local-test-setup` which will clone some repos used for testing. After this you
+can use `make test`.
 
 ## Other Libraries / Integrations
 

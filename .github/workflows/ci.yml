@@ -58,16 +58,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: date +%F > todays-date
-      - name: Restore cache for today's nightly.
-        uses: actions/cache@v3.0.5
+      - uses: actions/checkout@v3
         with:
-          path: _neovim
-          key: ${{ runner.os }}-x64-${{ hashFiles('todays-date') }}
+          repository: "ckipp01/multiple-build-file-example"
+          path: "multiple-build-file-example"
+
+      - uses: actions/checkout@v3
+        with:
+          repository: "ckipp01/mill-minimal"
+          path: "mill-minimal"
+
+      - uses: actions/checkout@v3
+        with:
+          repository: "ckipp01/minimal-scala-cli-test"
+          path: "minimal-scala-cli-test"
 
       - uses: coursier/setup-action@v1
         with:
-          jvm: adopt:11
+          jvm: adopt:8
           apps: ""
 
       - name: Setup neovim
