@@ -454,7 +454,7 @@ parent/super methods of members.
 Type: boolean ~
 Default: false ~
 
-For all you crazy Nix kids out there, or if you are want to re-use the same
+For all you crazy Nix kids out there, or if you want to re-use the same
 executable for multiple clients, this is for you. Please NOTE that by doing
 this, you are fully taking control of updating and installing Metals. Unless
 there is a specific reason that you want to manage your own version and
@@ -713,8 +713,8 @@ the mapping would be: >
     <cmd>lua require("metals").import_build()<CR>
 <
 
-Note: Most of these that are just executing a command have commands that you
-can find above in |metals-commands| with more details. Please keep in mind
+Note: Most of these that are just executing commands that you can
+find above in |metals-commands| with more details. Please keep in mind
 that here we are trying to unify command names with verb followed by noun.
 That's why `nvim-metals` lua commands sometimes differ from metals commands.
 
