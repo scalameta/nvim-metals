@@ -1008,8 +1008,8 @@ The following configuration values are available to be passed into
   }
 <
 
-In order for default icons to be displayed properly you need to install
-patched font.
+In order for the default icons to be displayed properly you need to have
+installed a patched font.
 
 The two main functions that you'll want to make sure to have mapped are
 |toggle_tree_view| and |reveal_in_tree|. When creating a mapping for any of
