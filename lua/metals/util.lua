@@ -26,7 +26,7 @@ M.check_exists_and_merge = function(defaultTable, userTable)
   if not userTable then
     return defaultTable
   else
-    return vim.tbl_extend("force", defaultTable, userTable)
+    return vim.tbl_deep_extend("force", defaultTable, userTable)
   end
 end
 

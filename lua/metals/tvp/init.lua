@@ -16,6 +16,21 @@ local default_config = {
   node_command_mapping = "r",
   collapsed_sign = "▸",
   expanded_sign = "▾",
+  icons = {
+    enabled = false,
+    symbols = {
+      object = "",
+      trait = "",
+      class = "ﭰ",
+      interface = "",
+      val = "",
+      var = "",
+      method = "ﬦ",
+      enum = "",
+      field = "",
+      package = "",
+    },
+  },
 }
 
 local config = nil
@@ -211,6 +226,30 @@ function Tree:set_lines(start_idx, end_idx, lines)
   api.nvim_buf_set_option(self.bufnr, "modifiable", false)
 end
 
+local function get_sign(node)
+  local sign = " "
+  if node.collapse_state == collapse_state.collapsed then
+    sign = config.collapsed_sign
+  elseif node.collapse_state == collapse_state.expanded then
+    sign = config.expanded_sign
+  end
+  return sign
+end
+
+local function get_icon(node)
+  if not config.icons.enabled then
+    return ""
+  end
+  local icon = config.icons.symbols.package
+  if node.icon ~= nil then
+    icon = config.icons.symbols[node.icon]
+    if icon == nil then
+      icon = " "
+    end
+  end
+  return " " .. icon
+end
+
 function Tree:reload_and_show()
   local base_nodes = self.children
 
@@ -220,17 +259,10 @@ function Tree:reload_and_show()
   local line = 1
   local function iterate(nodes, level)
     for _, node in pairs(nodes) do
-      local sign
-      if node.collapse_state == collapse_state.collapsed then
-        sign = config.collapsed_sign
-      elseif node.collapse_state == collapse_state.expanded then
-        sign = config.expanded_sign
-      else
-        sign = " "
-      end
-
+      local sign = get_sign(node)
+      local icon = get_icon(node)
       local space = string.rep(" ", level)
-      table.insert(lines, space .. sign .. " " .. node.label)
+      table.insert(lines, space .. sign .. icon .. " " .. node.label)
       lookup[line] = node
       line = line + 1
       if #node.children ~= 0 and node.collapse_state == collapse_state.expanded then

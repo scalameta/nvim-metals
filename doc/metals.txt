@@ -990,8 +990,26 @@ The following configuration values are available to be passed into
     node_command_mapping = "r",
     collapsed_sign = "▸",
     expanded_sign = "▾",
+    icons = {
+      enabled = false,
+      symbols = {
+        object = "",
+        trait = "",
+        class = "ﭰ",
+        interface = "",
+        val = "",
+        var = "",
+        method = "ﬦ",
+        enum = "",
+        field = "",
+        package = "",
+      },
+    },
   }
 <
+
+In order for the default icons to be displayed properly you need to have
+installed a patched font.
 
 The two main functions that you'll want to make sure to have mapped are
 |toggle_tree_view| and |reveal_in_tree|. When creating a mapping for any of
