@@ -71,4 +71,13 @@ describe("config", function()
     local valid_config = config.validate_config(bare_config, current_buf)
     eq(valid_config.tvp.panel_width, 1000)
   end)
+
+  it("should be able to handle a custom cmd without adding anything to it", function()
+    local bare_config = require("metals.setup").bare_config()
+    local cmd = { "cs", "launch", "metals" }
+    bare_config.cmd = cmd
+
+    local valid_config = config.validate_config(bare_config, current_buf)
+    eq(valid_config.cmd, cmd)
+  end)
 end)

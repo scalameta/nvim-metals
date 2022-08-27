@@ -358,7 +358,14 @@ local function validate_config(config, bufnr)
     all_opts[i] = "-J" .. opt
   end
 
-  config.cmd = util.merge_lists({ metals_bin() }, all_opts)
+  -- If the user overrides config.cmd then they are sort of on there on to ensure that
+  -- what they are passing in can correctly start Metals. Also keep in mind that by doing
+  -- this none of the metals.serverProperties will be applied and none of the java_opts
+  -- from the workspce will be either. We basically have no idea what someone is overriding
+  -- this with, so if they do, they are 100% on their own here.
+  if not config.cmd then
+    config.cmd = util.merge_lists({ metals_bin() }, all_opts)
+  end
 
   -- This shouldn't really be needed as it doesn't do anything in core,
   -- however, I'm adding this in now for
