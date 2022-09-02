@@ -121,6 +121,7 @@ local valid_metals_settings = {
   "millScript",
   "remoteLanguageServer",
   "sbtScript",
+  "scalaCliLauncher",
   "scalafixConfigPath",
   "scalafixRulesDependencies",
   "scalafmtConfigPath",

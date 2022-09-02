@@ -50,6 +50,14 @@ M.stop_ammonite = function()
   execute_command({ command = "metals.ammonite-stop" })
 end
 
+M.start_scala_cli = function()
+  execute_command({ command = "metals.scala-cli-start" })
+end
+
+M.stop_scala_cli = function()
+  execute_command({ command = "metals.scala-cli-stop" })
+end
+
 M.switch_bsp = function()
   execute_command({ command = "metals.bsp-switch" })
 end

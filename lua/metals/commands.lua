@@ -173,6 +173,11 @@ local commands_table = {
     hint = "Start the Ammonite build server.",
   },
   {
+    id = "start_scala_cli",
+    label = "Start Scala CLI BSP server",
+    hint = "Start Scala CLI as a BSP server.",
+  },
+  {
     id = "start_server",
     label = "Start Server",
     hint = "Start Metals (only useful if you have it disabled by default).",
@@ -181,6 +186,11 @@ local commands_table = {
     id = "stop_ammonite",
     label = "Stop Ammonite",
     hint = "Stop the Ammonite build server.",
+  },
+  {
+    id = "stop_scala_cli",
+    label = "Stop Scala CLI BSP server",
+    hint = "Stop the SCALA CLI build server.",
   },
   {
     id = "super_method_hierarchy",
