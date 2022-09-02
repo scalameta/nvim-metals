@@ -173,6 +173,7 @@ _ones that are sent and used by the server_
   * |millScript|
   * |remoteLanguageServer|
   * |sbtScript|
+  * |scalaCliLauncher|
   * |scalafixConfigPath|
   * |scalafixRulesDependencies|
   * |scalafmtConfigPath|
@@ -364,6 +365,13 @@ embedded launcher while respecting .jvmopts and .sbtopts. Update this setting
 if your sbt script requires more customizations like using environment
 variables.
 
+scalaCliLauncher                                              *scalaCliLauncher*
+
+Type: string ~
+Default: '' ~
+
+Optional absolute path to the Scala CLI launcher to use.
+
 scalafixConfigPath                                          *scalafixConfigPath*
 
 Type: string ~
@@ -497,8 +505,10 @@ The following commands are provided by `nvim-metals`:
   * |MetalsShowSemanticdbProto|
   * |MetalsShowTasty|
   * |MetalsStartAmmonite|
+  * |MetalsStartScalaCli|
   * |MetalsStartServer|
   * |MetalsStopAmmonite|
+  * |MetalsStopScalaCli|
   * |MetalsSuperMethodHierarchy|
   * |MetalsSwitchBsp|
   * |MetalsToggleLogs|
@@ -665,12 +675,19 @@ MetalsShowTasty              Show the TASTy representation of the current file.
                                                            *MetalsStartAmmonite*
 MetalsStartAmmonite          Start the Ammonite BSP Server.
 
+                                                           *MetalsStartScalaCli*
+MetalsStartScalaCli          Start Scala CLI as a BSP server.
+
                                                              *MetalsStartServer*
 MetalsStartServer            Start Metals server. Must be in a Scala or sbt file
                              in a workspace where Metals is not yet started.
 
                                                             *MetalsStopAmmonite*
 MetalsStopAmmonite           Stop the Ammonite BSP Server.
+
+                                                            *MetalsStopScalaCli*
+MetalsStopScalaCli           Stop the Scala CLI when running as a Build
+                             Server.
 
                                                     *MetalsSuperMethodHierarchy*
 MetalsSuperMethodHierarchy   Gathers the inheritance hierarchy of a member and
