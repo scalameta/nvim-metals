@@ -1,6 +1,14 @@
 -- Used mainly for long messages to no clog up the other files
 local M = {}
 
+M.binary_path_set_but_cant_find = [[
+You have `metalsBinaryPath` set, but it seems to not exist.
+Please make sure it exists and try again..]]
+
+M.binary_path_set_so_cant_update = [[
+You have `metalsBinaryPath` set , so nvim-metals can't install or update your Metals executable.
+If you'd like nvim-metals to handle this for you, remove the `metalsBinaryPath` setting and try again.]]
+
 M.coursier_not_installed = [[
 It looks like you don't have Coursier installed, which you need to install Metals.
 

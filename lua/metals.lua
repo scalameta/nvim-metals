@@ -126,6 +126,8 @@ M.info = function()
   local config = conf.get_config_cache()
   if not util.has_bins(conf.metals_bin()) and config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_but_cant_find)
+  elseif not util.has_bins(conf.metals_bin()) and config.settings.metals.metalsBinaryPath then
+    log.error_and_show(messages.binary_path_set_but_cant_find)
   elseif not util.has_bins(conf.metals_bin()) then
     log.warn_and_show(messages.metals_not_installed)
   else

@@ -22,6 +22,8 @@ end
 describe("config", function()
   local current_buf = api.nvim_get_current_buf()
   local config = require("metals.config")
+  local utils = require("metals.util")
+  local Path = require("plenary.path")
 
   before_each(function()
     package.loaded["metals.config"] = nil
@@ -79,5 +81,27 @@ describe("config", function()
 
     local valid_config = config.validate_config(bare_config, current_buf)
     eq(valid_config.cmd, cmd)
+  end)
+
+  it("should be able to use metalsBinaryPath and retain valid serverProperties", function()
+    local bare_config = require("metals.setup").bare_config()
+    bare_config.settings.serverProperties = { "-XX", "someFakeProperty" }
+
+    local metals_path = Path:new(utils.nvim_metals_cache_dir, "metals").filename
+
+    bare_config.settings.metalsBinaryPath = metals_path
+
+    local valid_config = config.validate_config(bare_config, current_buf)
+
+    eq(valid_config.cmd, { metals_path, "-J-XX", "-JsomeFakeProperty" })
+  end)
+
+  it("should error if you try to use metalsBinaryPath and it doesn't exist", function()
+    local bare_config = require("metals.setup").bare_config()
+    bare_config.settings.metalsBinaryPath = "i/dont/exist"
+
+    local valid_config = config.validate_config(bare_config, current_buf)
+
+    eq(valid_config, nil)
   end)
 end)

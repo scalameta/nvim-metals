@@ -72,13 +72,18 @@ end
 -- executes `:MetalsInstall` it will just install the latest or install what they
 -- have set no matter what. If there is an existing Metals there, it is then
 -- overwritten by the bootstrap command.
--- NOTE: that if a user has useGlobalExecutable set, this will just throw an
--- error at them since they can't use this in that case.
+-- NOTE: that if a user has useGlobalExecutable or metalsBinaryPath set,
+-- this will just throw an error at them since they can't use this in that case.
 -- @param sync (boolean) whether the run the job sync or async (mainly used for testing)
 local function install_or_update(sync)
   local config = conf.get_config_cache()
   if config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_so_cant_update)
+    return
+  end
+
+  if config.settings.metals.metalsBinaryPath then
+    log.error_and_show(messages.binary_path_set_so_cant_update)
     return
   end
 
@@ -117,7 +122,7 @@ local function install_or_update(sync)
     -- https://github.com/scalameta/nvim-metals/issues/122
     local res = Curl.get("https://scalameta.org/metals/latests.json", { accept = "application/json" })
 
-    if res.status == 200 then
+    if res and res.status == 200 then
       server_version = vim.fn.json_decode(res.body).snapshot
     else
       log.error_and_show("Something went wrong getting the latest snapshot so defaulting to latest stable.")
