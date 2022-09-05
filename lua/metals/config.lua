@@ -39,20 +39,16 @@ local function in_disabled_mode(config)
   return disabled
 end
 
---- Used to generate Metals installation file name depending on configuration
+--- Used to generate Metals installation file
 --- @return string fileame
 local function metals_install_name()
-  if config_cache and config_cache.settings.metals.useGlobalExecutable then
-    return metals_name
-  else
-    return Path:new(util.nvim_metals_cache_dir, metals_name).filename
-  end
+  return Path:new(util.nvim_metals_cache_dir, metals_name).filename
 end
 
 --- Ultimately what will be passed to the config.cmd to initialize the LSP
 --- connection. If a user is using useGlobalExecutable then we just default
---- to `metals`, if not we take control and construct the location in the
---- cache dir.
+--- to `metals`, if they are using metalsBinaryPath then we use that, and if
+--- not we take control and construct the location in the cache dir.
 --- @return string executable
 local function metals_bin()
   local metals_filename = metals_name
@@ -64,6 +60,8 @@ local function metals_bin()
 
   if config_cache and config_cache.settings.metals.useGlobalExecutable then
     return metals_filename
+  elseif config_cache and config_cache.settings.metals.metalsBinaryPath then
+    return config_cache.settings.metals.metalsBinaryPath
   else
     return Path:new(util.nvim_metals_cache_dir, metals_filename).filename
   end
@@ -71,7 +69,7 @@ end
 
 --- Check to see if coursier is installed. This method favors the native cs. So if
 --- cs is installed, that will be returned, if not, then coursier will be returned.
---- @return string 'cs', 'cs.bat', 'coursier', or nil
+--- @return string|nil 'cs', 'cs.bat', 'coursier', or nil
 local function check_for_coursier()
   -- this must be first the second "cs" is also found as binary but we should
   -- be more specific on Windows
@@ -81,6 +79,8 @@ local function check_for_coursier()
     return "cs"
   elseif util.has_bins("coursier") then
     return "coursier"
+  else
+    return nil
   end
 end
 
@@ -140,6 +140,7 @@ local valid_metals_settings = {
 local valid_nvim_metals_settings = {
   "decorationColor",
   "disabledMode",
+  "metalsBinaryPath",
   "serverOrg",
   "serverVersion",
   "useGlobalExecutable",
@@ -285,6 +286,9 @@ local function validate_config(config, bufnr)
 
   if not util.has_bins(metals_bin()) and config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_but_cant_find)
+    return
+  elseif not util.has_bins(metals_bin()) and config.settings.metals.metalsBinaryPath then
+    log.error_and_show(messages.binary_path_set_but_cant_find)
     return
   elseif not util.has_bins(metals_bin()) then
     local heading = "Welcome to nvim-metals!\n"
