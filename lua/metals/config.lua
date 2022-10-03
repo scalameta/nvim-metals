@@ -378,10 +378,6 @@ local function validate_config(config, bufnr)
   -- lspsaga it will still work as expected for the lsp_finder()
   config.filetypes = { "sbt", "scala" }
 
-  config.on_init = function(client, _)
-    return client.notify("workspace/didChangeConfiguration", { settings = config.settings })
-  end
-
   if not config.on_attach then
     config.on_attach = auto_commands
   else
