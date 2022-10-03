@@ -23,7 +23,6 @@ the available features
     newer.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is
     installed locally.[^coursier]
-- Remove `F` from `shortmess`[^shortmess]
 - Ensure that you have all the LSP mappings for the core functionality you want
     setup.[^mappings]
 - Ensure [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) is
@@ -81,13 +80,6 @@ metals-integrations`. The currently available integrations are:
   as this is how it will install itself. Once this is done you should add
   `C:\Users\YOURNAME\AppData\Coursier\data\bin` to your path. To verify that it
   is properly installed you can run `cs --help` from a new shell.
-[^shortmess]: `vim.opt_global.shortmess:remove("F")` will do what you need. If
-  you don't know what shortmess is, check out `:h shortmess`. Without doing
-  this, autocommands that deal with filetypes prohibit messages from being
-  shown, so some of the messages we show to help users get started may not be
-  shown. _If_ you're confident you don't need help setting up, then just remove
-  this, and `nvim-metals` will work fine, but any log messages won't actually be
-  shown to you if something goes wrong with `nvim-metals`.
 [^mappings]: By default methods for things like goto definition, find
   references, etc are there, but not automatically mapped. You can find a
   minimal example configuration
