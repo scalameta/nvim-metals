@@ -7,8 +7,6 @@ local log = require("metals.log")
 local messages = require("metals.messages")
 local util = require("metals.util")
 
-local lsps = {}
-
 -- So by default metals starts automatically, however, if a user wants it not
 -- to, then this needs to be set to true in order for Metals to continually
 -- attach in a workspace that MetalsStartServer was called on.
@@ -24,12 +22,6 @@ end
 
 local function explicitly_enable()
   explicity_enabled = true
-end
-
---- Clear out the lsps table. This is used when we are restarting the server
---- and aren't - planning on closing nvim, but rather just re-connecting.
-local function reset_lsps()
-  lsps = {}
 end
 
 -- A bare config to use to be passed into initialize_or_attach.
@@ -91,29 +83,10 @@ local function initialize_or_attach(config)
   end
 
   local current_buf = api.nvim_get_current_buf()
-
-  -- Check to see if Metals is already attatched, and if so attatch
-  for _, buf in pairs(vim.fn.getbufinfo({ bufloaded = true })) do
-    if vim.tbl_contains(conf.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
-      local clients = lsp.buf_get_clients(buf.bufnr)
-      for _, client in ipairs(clients) do
-        if client.config.name == config.name then
-          lsp.buf_attach_client(current_buf, client.id)
-          return true
-        end
-      end
-    end
-  end
-
   local valid_config = conf.validate_config(config, current_buf)
 
   if valid_config then
-    local client_id = lsps[config.root_dir]
-    if not client_id then
-      client_id = lsp.start_client(valid_config)
-      lsps[config.root_dir] = client_id
-    end
-    lsp.buf_attach_client(current_buf, client_id)
+    lsp.start(valid_config)
   end
 end
 
@@ -181,6 +154,5 @@ return {
   bare_config = bare_config,
   explicitly_enable = explicitly_enable,
   initialize_or_attach = initialize_or_attach,
-  reset_lsps = reset_lsps,
   setup_dap = setup_dap,
 }
