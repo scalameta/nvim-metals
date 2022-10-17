@@ -2,7 +2,9 @@ local log = require("metals.log")
 
 -- @param status (string) a new status to be displayed
 local function set_status(status)
-  vim.api.nvim_set_var("metals_status", status)
+  -- Scaping the status to prevent % characters breaking the statusline
+  local scaped_status = status:gsub('[%%]', '%%%1')
+  vim.api.nvim_set_var("metals_status", scaped_status)
 end
 
 local function prompt_command(status)
