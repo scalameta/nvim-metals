@@ -130,6 +130,7 @@ local valid_metals_settings = {
   "showImplicitConversionsAndClasses",
   "showInferredType",
   "superMethodLensesEnabled",
+  "testUserInterface",
 }
 
 -- We keep these seperated from the `valid_metals_settings` just for clarity.

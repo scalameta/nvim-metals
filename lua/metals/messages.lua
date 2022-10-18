@@ -45,7 +45,17 @@ update your Metals executable. If you'd like nvim-metals to handle this for
 you, remove the `useGlobalExecutable` setting and try again.]]
 
 M.setup_dap_without_nvim_dap = [[
-You can call require("metals").setup_dap() without `nvim-dap` being installed.
+You can not call require("metals").setup_dap() without `nvim-dap` being installed.
+Please make sure `mfussenegger/nvim-dap` is installed.]]
+
+M.no_test_suites_found = [[
+No test sutes could be found in current file.]]
+
+M.no_test_cases_found = [[
+No test cases found in selected suite. Fallback to run whose suite.]]
+
+M.run_test_without_nvim_dap = [[
+You can not run test without `nvim-dap` being installed.
 Please make sure `mfussenegger/nvim-dap` is installed.]]
 
 return M

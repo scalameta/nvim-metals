@@ -100,16 +100,13 @@ local function setup_dap(execute_command)
   end
 
   dap.adapters.scala = function(callback, config)
-    local uri = vim.uri_from_bufnr(0)
     local arguments = {}
-
-    if config.name == "from_lens" then
+    if config.name == "from_lens" or config.name == "Run Test" then
       arguments = config.metals
     else
       local metals_dap_settings = config.metals or {}
-
       arguments = {
-        path = uri,
+        path = vim.uri_from_bufnr(0),
         runType = metals_dap_settings.runType or "run",
         args = metals_dap_settings.args,
         jvmOptions = metals_dap_settings.jvmOptions,

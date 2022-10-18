@@ -213,6 +213,16 @@ local commands_table = {
     label = "Update Metals",
     hint = "Update to the latest Metals.",
   },
+  {
+    id = "select_test_suite",
+    label = "Select Test Suite",
+    hint = "Select test suite to run.",
+  },
+  {
+    id = "select_test_case",
+    label = "Select Test Case",
+    hint = "Select test case from current file to run.",
+  },
 }
 
 return {

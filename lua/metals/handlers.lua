@@ -6,6 +6,7 @@ local decoration = require("metals.decoration")
 local doctor = require("metals.doctor")
 local log = require("metals.log")
 local status = require("metals.status")
+local test_explorer = require("metals.test_explorer")
 
 local M = {}
 
@@ -56,6 +57,8 @@ M["metals/executeClientCommand"] = function(_, result)
     vim.diagnostic.setqflist({ severity = "E" })
   elseif result.command == "metals-model-refresh" then
     lsp.codelens.refresh()
+  elseif result.command == "metals-update-test-explorer" then
+    test_explorer.update_state(result.arguments)
   else
     log.warn_and_show(string.format("Looks like nvim-metals doesn't handle %s yet.", result.command))
   end
