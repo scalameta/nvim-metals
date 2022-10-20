@@ -23,3 +23,13 @@ describe("metals/status", function()
     assert.are.same("", empty_status)
   end)
 end)
+
+describe("status.set_status", function()
+  it("correctly scapes % characters", function()
+    local msg = "50% double %%"
+    local expected_msg = "50%% double %%%%"
+    require("metals.status").set_status(msg)
+    local status = vim.api.nvim_get_var("metals_status")
+    assert.are.same(expected_msg, status)
+  end)
+end)
