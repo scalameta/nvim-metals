@@ -216,7 +216,7 @@ local commands_table = {
   {
     id = "select_test_suite",
     label = "Select Test Suite",
-    hint = "Select test suite to run.",
+    hint = "Select the test suite in your workspace to run.",
   },
   {
     id = "select_test_case",
