@@ -33,19 +33,19 @@ function TestSuite:add_test_cases(testCases)
 end
 
 local function handle_remove_suite(targetName, event)
-  state[targetName][event.fullyQualifiedClassName] = nil
+  state[targetName].suites[event.fullyQualifiedClassName] = nil
 end
 
 local function handle_add_suite(targetName, event)
-  state[targetName][event.fullyQualifiedClassName] = TestSuite:new(event, targetName)
+  state[targetName].suites[event.fullyQualifiedClassName] = TestSuite:new(event, targetName)
 end
 
 local function handle_update_suite_location(targetName, event)
-  state[targetName][event.fullyQualifiedClassName].location = event.location
+  state[targetName].suites[event.fullyQualifiedClassName].location = event.location
 end
 
 local function handle_add_test_cases(targetName, event)
-  state[targetName][event.fullyQualifiedClassName]:add_test_cases(event.testCases)
+  state[targetName].suites[event.fullyQualifiedClassName]:add_test_cases(event.testCases)
 end
 
 local function handle(targetName, event)
@@ -58,14 +58,14 @@ local function handle(targetName, event)
   elseif event.kind == "addTestCases" then
     handle_add_test_cases(targetName, event)
   else
-    log.error("Unknown event in test explorer", targetName, event)
+    log.error_and_show("Unknown event in test explorer", targetName, event)
   end
 end
 
 local function get_test_suites(test_suite_uri)
   local test_suites = {}
   for _, buildTargetState in pairs(state) do
-    for _, test_suite in pairs(buildTargetState) do
+    for _, test_suite in pairs(buildTargetState.suites) do
       if test_suite_uri == nil or test_suite.location.uri == test_suite_uri then
         table.insert(test_suites, test_suite)
       end
@@ -85,7 +85,7 @@ local function get_test_cases(test_suite)
   return test_cases
 end
 
-local function dap_run_test(root, test_suite, test_case)
+local function dap_run_test(test_suite, test_case)
   local dap_ok, dap = pcall(require, "dap")
   if not dap_ok then
     return log.error_and_show(messages.run_test_without_nvim_dap)
@@ -100,7 +100,7 @@ local function dap_run_test(root, test_suite, test_case)
     name = "Run Test",
     -- ScalaTestSuitesDebugRequest
     metals = {
-      target = { uri = "file:" .. root .. "/?id=" .. test_suite.targetName },
+      target = { uri = state[test_suite.targetName].uri },
       requestData = {
         suites = {
           {
@@ -116,13 +116,13 @@ local function dap_run_test(root, test_suite, test_case)
   dap.run(arguments)
 end
 
-M.dap_select_test_suite = function(root)
+M.dap_select_test_suite = function()
   local test_suites = get_test_suites(nil)
   if #test_suites == 0 then
     return log.warn_and_show(messages.no_test_suites_found)
   end
   local test_suite_runner = function(selected_suite)
-    dap_run_test(root, selected_suite, nil)
+    dap_run_test(selected_suite, nil)
   end
   vim.ui.select(test_suites, {
     prompt = "Select test suite:",
@@ -132,7 +132,7 @@ M.dap_select_test_suite = function(root)
   }, test_suite_runner)
 end
 
-M.dap_select_test_case = function(root)
+M.dap_select_test_case = function()
   local test_suites = get_test_suites(vim.uri_from_bufnr(0))
   if #test_suites == 0 then
     return log.warn_and_show(messages.no_test_suites_found)
@@ -140,7 +140,7 @@ M.dap_select_test_case = function(root)
   local test_case_selector = function(selected_suite)
     local test_cases = get_test_cases(selected_suite)
     local test_case_runner = function(selected_case)
-      dap_run_test(root, selected_suite, selected_case)
+      dap_run_test(selected_suite, selected_case)
     end
     if #test_cases == 0 then
       log.warn_and_show(messages.no_test_cases_found)
@@ -165,7 +165,7 @@ end
 M.update_state = function(buildTargetUpdates)
   for _, buildTagetUpdate in ipairs(buildTargetUpdates) do
     if state[buildTagetUpdate.targetName] == nil then
-      state[buildTagetUpdate.targetName] = {}
+      state[buildTagetUpdate.targetName] = { suites = {}, uri = buildTagetUpdate.targetUri }
     end
     for _, event in ipairs(buildTagetUpdate.events) do
       handle(buildTagetUpdate.targetName, event)

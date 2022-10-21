@@ -213,6 +213,9 @@ local commands_table = {
     label = "Update Metals",
     hint = "Update to the latest Metals.",
   },
+}
+
+local dap_commands_table = {
   {
     id = "select_test_suite",
     label = "Select Test Suite",
@@ -224,6 +227,11 @@ local commands_table = {
     hint = "Select test case from current file to run.",
   },
 }
+
+local dap_available, _ = pcall(require, "dap")
+if dap_available then
+  vim.list_extend(commands_table, dap_commands_table)
+end
 
 return {
   commands_table = commands_table,

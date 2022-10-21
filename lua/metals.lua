@@ -467,11 +467,11 @@ M.toggle_setting = function(setting)
 end
 
 M.select_test_suite = function()
-  test_explorer.dap_select_test_suite(conf.get_config_cache().root_dir)
+  test_explorer.dap_select_test_suite()
 end
 
 M.select_test_case = function()
-  test_explorer.dap_select_test_case(conf.get_config_cache().root_dir)
+  test_explorer.dap_select_test_case()
 end
 
 return M

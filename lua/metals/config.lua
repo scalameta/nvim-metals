@@ -93,6 +93,7 @@ end
 local metals_init_options = {
   compilerOptions = {},
   debuggingProvider = debugging_provider,
+  testExplorerProvider = debugging_provider,
   decorationProvider = true,
   didFocusProvider = true,
   disableColorOutput = true,
