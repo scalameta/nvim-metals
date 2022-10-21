@@ -49,7 +49,7 @@ You can not call require("metals").setup_dap() without `nvim-dap` being installe
 Please make sure `mfussenegger/nvim-dap` is installed.]]
 
 M.no_test_suites_found = [[
-No test sutes could be found in current file.]]
+No test suites could be found in current file.]]
 
 M.no_test_cases_found = [[
 No test cases found in selected suite. Fallback to run whole suite.]]
