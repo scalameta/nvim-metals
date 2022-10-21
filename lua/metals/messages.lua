@@ -52,7 +52,7 @@ M.no_test_suites_found = [[
 No test sutes could be found in current file.]]
 
 M.no_test_cases_found = [[
-No test cases found in selected suite. Fallback to run whose suite.]]
+No test cases found in selected suite. Fallback to run whole suite.]]
 
 M.run_test_without_nvim_dap = [[
 You can not run test without `nvim-dap` being installed.
