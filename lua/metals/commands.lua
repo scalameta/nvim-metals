@@ -215,6 +215,24 @@ local commands_table = {
   },
 }
 
+local dap_commands_table = {
+  {
+    id = "select_test_suite",
+    label = "Select Test Suite",
+    hint = "Select the test suite in your workspace to run.",
+  },
+  {
+    id = "select_test_case",
+    label = "Select Test Case",
+    hint = "Select test case from current file to run.",
+  },
+}
+
+local dap_available, _ = pcall(require, "dap")
+if dap_available then
+  vim.list_extend(commands_table, dap_commands_table)
+end
+
 return {
   commands_table = commands_table,
 }

@@ -506,6 +506,8 @@ The following commands are provided by `nvim-metals`:
   * |MetalsRunDoctor|
   * |MetalsRunScalafix|
   * |MetalsScanSources|
+  * |MetalsSelectTestCase|
+  * |MetalsSelectTestSuite|
   * |MetalsShowBuildTargetInfo|
   * |MetalsShowCfr|
   * |MetalsShowJavap|
@@ -643,9 +645,18 @@ MetalsRunScalafix            Runs all of the Scalafix rules that you have
                              to ensure you add them to your settings table
                              under `scalafixRulesDependencies`.
 
-
                                                              *MetalsScanSources*
 MetalsScanSources            Scan all workspaces sources.
+
+                                                          *MetalsSelectTestCase*
+MetalsSelectTestCase         Select the test suite in your workspace to run.
+                             NOTE: this requires additional configuration.
+                             See |metals-nvim-dap|
+
+                                                         *MetalsSelectTestSuite*
+MetalsSelectTestSuite        Select test case from current file to run.
+                             NOTE: this requires additional configuration.
+                             See |metals-nvim-dap|
 
                                                      *MetalsShowBuildTargetInfo*
 MetalsShowBuildTargetInfo    Will return a list of all the build targets in
@@ -1126,7 +1137,7 @@ ensure you have mappings defined and the correct configurations. To get
 started, you'll want ensure that `nvim-dap` is installed and then extend your
 metals configuration with the following `on_attach` function. >
 
-  Metals_config.on_attach = function(client, bufnr)
+  metals_config.on_attach = function(client, bufnr)
     require("metals").setup_dap()
   end
 <
@@ -1196,7 +1207,14 @@ current file and the other for testing the entire target. >
     },
   }
 <
+You may also want to use `Select Test Suite` and `Select Test Case` commands
+to run tests. For them to work correctly you should set `testUserInterface`
+setting. This action will deactivate code lenses for test classes. >
 
+  metals_config.settings = {
+    testUserInterface = "Test Explorer",
+  }
+<
                                                               *metals-telescope*
 
 Metals provides a custom picker from

@@ -9,6 +9,7 @@ local install = require("metals.install")
 local log = require("metals.log")
 local messages = require("metals.messages")
 local setup = require("metals.setup")
+local test_explorer = require("metals.test_explorer")
 local util = require("metals.util")
 
 local has_plenary, Float = pcall(require, "plenary.window.float")
@@ -463,6 +464,14 @@ M.toggle_setting = function(setting)
 
     lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { metals = settings } })
   end
+end
+
+M.select_test_suite = function()
+  test_explorer.dap_select_test_suite()
+end
+
+M.select_test_case = function()
+  test_explorer.dap_select_test_case()
 end
 
 return M
