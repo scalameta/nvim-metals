@@ -129,7 +129,7 @@ M.dap_select_test_suite = function()
     log.info_and_show(
       string.format("Single test suite (%s) found so just running that.", suite.fullyQualifiedClassName)
     )
-    test_suite_runner(test_suites[1])
+    test_suite_runner(suite)
   else
     vim.ui.select(test_suites, {
       prompt = "Select test suite:",
