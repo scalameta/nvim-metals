@@ -26,7 +26,7 @@ local function filename_from_uri(full_uri)
   return parts[#parts]
 end
 
-local handle_decoder_response = function(result, uri, decoder, format)
+local handle_decoder_response = function(result, decoder, format)
   if result.error then
     local err = result.error or result.value
     log.error_and_show(err)
@@ -39,7 +39,7 @@ local handle_decoder_response = function(result, uri, decoder, format)
     )
     log.error_and_show("This shouldn't happen. Please check the logs and report a bug that you saw this.")
   elseif result.value then
-    local filename = filename_from_uri(uri)
+    local filename = filename_from_uri(result.requestedUri)
     local name = string.format("%s %s %s viewer", filename, format or "", decoder)
     local cwd = fn.getcwd()
 
@@ -82,13 +82,13 @@ local handle_decoder_response = function(result, uri, decoder, format)
   -- cancells the quickpick so we only return the uri, not result, no err.
 end
 
-local make_handler = function(uri, decoder, format)
+local make_handler = function(decoder, format)
   return function(err, _, result)
     if err then
       log.error_and_show(string.format("Something went wrong trying to get %s. Please check the logs.", decoder))
       log.error(err)
     else
-      handle_decoder_response(result, uri, decoder, format)
+      handle_decoder_response(result, decoder, format)
     end
   end
 end
@@ -96,7 +96,6 @@ end
 return {
   command = "metals.file-decode",
   formats = formats,
-  handle_decoder_response = handle_decoder_response,
   make_handler = make_handler,
   metals_decode = "metalsDecode",
   types = types,
