@@ -1207,9 +1207,10 @@ current file and the other for testing the entire target. >
     },
   }
 <
-You may also want to use `Select Test Suite` and `Select Test Case` commands
-to run tests. For them to work correctly you should set `testUserInterface`
-setting. This action will deactivate code lenses for test classes. >
+You may also want to use the `Select Test Suite` and `Select Test Case`
+commands to run tests. For them to work correctly you should set the
+`testUserInterface` setting to `"Test Explorer"` as you see below. This action
+will deactivate code lenses for test classes. >
 
   metals_config.settings = {
     testUserInterface = "Test Explorer",

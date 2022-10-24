@@ -124,12 +124,20 @@ M.dap_select_test_suite = function()
   local test_suite_runner = function(selected_suite)
     dap_run_test(selected_suite, nil)
   end
-  vim.ui.select(test_suites, {
-    prompt = "Select test suite:",
-    format_item = function(item)
-      return item.fullyQualifiedClassName
-    end,
-  }, test_suite_runner)
+  if #test_suites == 1 then
+    local suite = test_suites[1]
+    log.info_and_show(
+      string.format("Single test suite (%s) found so just running that.", suite.fullyQualifiedClassName)
+    )
+    test_suite_runner(test_suites[1])
+  else
+    vim.ui.select(test_suites, {
+      prompt = "Select test suite:",
+      format_item = function(item)
+        return item.fullyQualifiedClassName
+      end,
+    }, test_suite_runner)
+  end
 end
 
 M.dap_select_test_case = function()
@@ -153,13 +161,16 @@ M.dap_select_test_case = function()
       end,
     }, test_case_runner)
   end
-
-  vim.ui.select(test_suites, {
-    prompt = "Select test suite:",
-    format_item = function(item)
-      return item.fullyQualifiedClassName
-    end,
-  }, test_case_selector)
+  if #test_suites == 1 then
+    test_case_selector(test_suites[1])
+  else
+    vim.ui.select(test_suites, {
+      prompt = "Select test suite:",
+      format_item = function(item)
+        return item.fullyQualifiedClassName
+      end,
+    }, test_case_selector)
+  end
 end
 
 M.update_state = function(buildTargetUpdates)
