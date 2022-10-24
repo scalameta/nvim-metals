@@ -338,7 +338,7 @@ local function show_decoded(decoder_type, format)
   execute_command({
     command = decoder.command,
     arguments = { metals_uri },
-  }, decoder.make_handler(file_uri, decoder_type, format))
+  }, decoder.make_handler(decoder_type, format))
 end
 
 M.show_build_target_info = function()
@@ -358,7 +358,7 @@ M.show_build_target_info = function()
           execute_command({
             command = decoder.command,
             arguments = { metals_uri },
-          }, decoder.make_handler(root, decoder.types.build_target))
+          }, decoder.make_handler(decoder.types.build_target))
         end
       end)
     else
