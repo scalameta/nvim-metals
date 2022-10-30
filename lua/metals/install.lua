@@ -7,6 +7,10 @@ local util = require("metals.util")
 local Job = require("plenary.job")
 local Curl = require("plenary.curl")
 
+local latest_stable = "latest.release"
+local latest_snapshot = "latest.snapshot"
+local the_one_true_metals = "org.scalameta"
+
 -- The main job that actually installs Metals
 -- @param coursier_exe (string) the coursier executable to be used
 -- @param args (table) args to pass into the install job
@@ -68,6 +72,47 @@ local function create_args_for_install(server_org, binary_version, version)
   }
 end
 
+-- Sort of a best attempt at actually trying to parse the server version
+-- to ensure that things that are less that 0.11.3 go to 2.12 and newer
+-- things go to 2.13. Snapshots and Milestones make this a bit more
+-- challenging, but this should cover like 99% of the situations users
+-- will hit on.
+local function scala_version_for_install(server_version)
+  local default = "2.13"
+
+  local function inspect_version(version)
+    local parts = util.split_on(version, "%.")
+    -- Major is > 0
+    if tonumber(parts[1]) > 0 then
+      return default
+      -- Major == 0 and Minor > 11
+    elseif tonumber(parts[2]) > 11 then
+      return default
+      -- Major == 0 and Minor == 11
+    elseif tonumber(parts[2]) == 11 then
+      -- If it contains SNAPSHOT just go 2.13
+      if parts[3]:find("SNAPSHOT") ~= nil then
+        return default
+        -- If PATCH is a vlid number and > 2
+      elseif tonumber(parts[3]) ~= nil and tonumber(parts[3]) > 2 then
+        return default
+      else
+        -- Either version is wonky and can't parse or it's 0 or 1
+        return "2.12"
+      end
+    else
+      -- All else fails just go 2.13
+      return default
+    end
+  end
+
+  if server_version == latest_stable or server_version == latest_snapshot then
+    return default
+  else
+    return inspect_version(server_version)
+  end
+end
+
 -- There is absolutely no difference with installing or updating, so if a user
 -- executes `:MetalsInstall` it will just install the latest or install what they
 -- have set no matter what. If there is an existing Metals there, it is then
@@ -97,15 +142,9 @@ local function install_or_update(sync)
     util.nvim_metals_cache_dir:mkdir()
   end
 
-  local latest_stable = "latest.release"
-  local latest_snapshot = "latest.snapshot"
-  local the_one_true_metals = "org.scalameta"
   local server_version = config.settings.metals.serverVersion or latest_stable
 
-  local binary_version = "2.12"
-  if server_version == latest_stable or server_version == latest_snapshot or server_version > "0.11.2" then
-    binary_version = "2.13"
-  end
+  local binary_version = scala_version_for_install(server_version)
 
   local server_org = config.settings.metals.serverOrg or the_one_true_metals
 
@@ -139,5 +178,6 @@ local function install_or_update(sync)
 end
 
 return {
+  _scala_version_for_install = scala_version_for_install,
   install_or_update = install_or_update,
 }
