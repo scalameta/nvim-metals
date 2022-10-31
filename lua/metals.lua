@@ -2,6 +2,7 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
+local commands = require("metals.commands")
 local conf = require("metals.config")
 local decoder = require("metals.decoder")
 local decoration = require("metals.decoration")
@@ -472,6 +473,19 @@ end
 
 M.select_test_case = function()
   test_explorer.dap_select_test_case()
+end
+
+M.commands = function()
+  vim.ui.select(commands.commands_table, {
+    prompt = "Metals Commands",
+    format_item = function(item)
+      return item.label
+    end,
+  }, function(item)
+    if item ~= nil then
+      M[item.id]()
+    end
+  end)
 end
 
 return M

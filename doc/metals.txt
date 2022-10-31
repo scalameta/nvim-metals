@@ -766,6 +766,17 @@ bare_config()
                            tvp settings. Use this when setting up settings for
                            `nvim-metals` to pass into |initialize_or_attach()|.
 
+commands()                                                           *commands()*
+                           Gives the users all the available |metals-commands|
+                           utilizing |vim.ui.select()|. If you're a telescope
+                           user you can choose to use this with something like
+                           https://github.com/stevearc/dressing.nvim or feel
+                           free to use the built-in telescope extension
+                           |metals-telescope| which just displays things a bit
+                           better since we have more control over using
+                           |vim.ui.select()|. If you're not a telescope user,
+                           then you'll want to use this.
+
                                                                *compile_cancel()*
 compile_cancel()           Use to execute a |metals.compile-cancel| command.
 
@@ -1240,5 +1251,8 @@ longer be lazy loaded. >
   require("telescope").extensions.metals.commands()
 
 <
+
+NOTE: If you'd rather utilize |vim.ui.select| for this a more generate
+|commands()| is available in the |metals-lua-api|.
 
 vim:tw=80:ts=2:ft=help:
