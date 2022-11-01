@@ -14,7 +14,6 @@ local test_explorer = require("metals.test_explorer")
 local util = require("metals.util")
 
 local has_plenary, Float = pcall(require, "plenary.window.float")
-local _, Path = pcall(require, "plenary.path")
 
 if not has_plenary then
   log.error_and_show("Plenary required for nvim-metals. Please install nvim-lua/plenary.nvim")
@@ -159,7 +158,7 @@ M.info = function()
     table.insert(output, "")
     table.insert(output, "## Useful locations")
     table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
-    table.insert(output, string.format("  - nvim lsp log file: %s", Path:new(fn.stdpath("cache"), "lsp.log").filename))
+    table.insert(output, string.format("  - nvim lsp log file: %s", lsp.get_log_path()))
     local loc_msg = "  - metals install location:"
     if config.settings.metals.useGlobalExecutable then
       table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
