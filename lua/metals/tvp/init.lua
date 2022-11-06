@@ -281,6 +281,15 @@ function Tree:reload_and_show()
     local tvp_panel = create_tvp_panel()
     self.win_id = tvp_panel.win_id
     self.bufnr = tvp_panel.bufnr
+
+    api.nvim_create_autocmd({ "BufDelete" }, {
+      buffer = tvp_panel.bufnr,
+      callback = function()
+        self:close()
+      end,
+      group = api.nvim_create_augroup("nvim-tvp", {}),
+    })
+
     vim.cmd(string.format("buffer %d", tvp_panel.bufnr))
     self:set_lines(0, -1, lines)
     set_keymaps(tvp_panel.bufnr)
