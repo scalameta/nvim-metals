@@ -1018,7 +1018,7 @@ type_of_range()            Use to get the type of the selected range. NOTE that
 
                            Example usage: >
 
-  vim.api.nvim_set_keymap("v", "K", [[<Esc><cmd>lua require("metals").type_of_range()<CR>]])
+  vim.keymap.set("v", "K", function() require("metals").type_of_range() end)
 
 <
 
