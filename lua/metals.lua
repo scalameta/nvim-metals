@@ -9,6 +9,7 @@ local decoration = require("metals.decoration")
 local install = require("metals.install")
 local log = require("metals.log")
 local messages = require("metals.messages")
+local Path = require("plenary.path")
 local setup = require("metals.setup")
 local test_explorer = require("metals.test_explorer")
 local util = require("metals.util")
@@ -236,9 +237,16 @@ M.new_scala_project = function()
 end
 
 M.quick_worksheet = function()
-  local dir = "file://" .. fn.expand("%:p:h")
+  local dir = fn.expand("%:p:h")
   local name = fn.expand("%:p:h:t")
-  M.new_scala_file(dir, name, "scala-worksheet")
+  local path = Path:new(dir, name .. ".worksheet.sc")
+  if path:exists() then
+    local cmd = ":e" .. path.filename
+    vim.cmd(cmd)
+  else
+    local dir_uri = "file://" .. dir
+    M.new_scala_file(dir_uri, name, "scala-worksheet")
+  end
 end
 
 M.scan_sources = function()
