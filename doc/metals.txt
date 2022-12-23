@@ -503,6 +503,7 @@ The following commands are provided by `nvim-metals`:
   * |MetalsResetChoice|
   * |MetalsRestartBuild|
   * |MetalsRestartServer|
+  * |MetalsRestartServerWithLangoustineTracing|
   * |MetalsRunDoctor|
   * |MetalsRunScalafix|
   * |MetalsScanSources|
@@ -633,6 +634,12 @@ MetalsRestartBuild           Manually restart the build server.
 
                                                            *MetalsRestartServer*
 MetalsRestartServer          Restart the Metals server.
+
+                                     *MetalsRestartServerWithLangoustineTracing*
+MetalsRestartServerWithLangoustineTracing Restart the Metals server with
+                             tracing enabled via Langoustine. To read more
+                             about Langoustine check out 
+                             https://neandertech.github.io/langoustine/tracer.html.
 
                                                                *MetalsRunDoctor*
 MetalsRunDoctor              Run Metals Doctor, which will open a floating
@@ -931,6 +938,9 @@ restart_build()            Use to execute a |metals.build-restart| command.
 
                                                                *restart_server()*
 restart_server()           Restart the Metals server.
+
+                                      *restart_server_with_langoustine_tracing()*
+restart_server()           Restart the Metals server with Langoustine tracing.
 
                                                                    *run_doctor()*
 run_doctor()               Use to execute a |metals.doctor-run| command.

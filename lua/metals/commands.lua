@@ -113,6 +113,11 @@ local commands_table = {
     hint = "Restart Metals",
   },
   {
+    id = "restart_server_with_langoustine_tracing",
+    label = "Restart Server with Langoustine tracing",
+    hint = "Restart Server with Tracing",
+  },
+  {
     id = "run_doctor",
     label = "Run Doctor",
     hint = "Run doctor.",

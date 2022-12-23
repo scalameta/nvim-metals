@@ -317,9 +317,7 @@ M.organize_imports = function()
   end
 end
 
--- Used to fully restart Metals. This will send a shutdown request to Metals,
--- delay for 3 seconds, and then reconnect.
-M.restart_server = function()
+local function get_metals_and_stop()
   for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
     if vim.tbl_contains(conf.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
       local clients = lsp.buf_get_clients(buf.bufnr)
@@ -330,9 +328,25 @@ M.restart_server = function()
       end
     end
   end
+end
+
+M.restart_server = function()
+  get_metals_and_stop()
 
   vim.defer_fn(function()
     setup.initialize_or_attach()
+  end, 3000)
+end
+
+M.restart_server_with_langoustine_tracing = function()
+  get_metals_and_stop()
+
+  local old_conf = conf.get_config_cache()
+  local langoustine = { "cs", "launch", "tech.neander:langoustine-tracer_3:latest.stable", "--" }
+  old_conf.cmd = util.merge_lists(langoustine, old_conf.cmd)
+
+  vim.defer_fn(function()
+    setup.initialize_or_attach(old_conf)
   end, 3000)
 end
 
