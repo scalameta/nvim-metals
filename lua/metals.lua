@@ -330,24 +330,40 @@ local function get_metals_and_stop()
   end
 end
 
-M.restart_server = function()
+local function configure_conf(with_tracing)
+  local our_config = conf.get_config_cache()
+
+  -- We want to make sure that we aren't double setting tracing here so we check
+  -- if tracing was enabled before and if so, do nothing. If we don't want tracing
+  -- we simply set the cmd to nil which will then force it to be re-computed in config.lua
+  -- ensure that if you had tracing before, you now don't on the restart.
+  if with_tracing then
+    if not util.starts_with(our_config.cmd[1], "cs") then
+      local langoustine = { "cs", "launch", "tech.neander:langoustine-tracer_3:latest.stable", "--" }
+      our_config.cmd = util.merge_lists(langoustine, our_config.cmd)
+    end
+  else
+    our_config.cmd = nil
+  end
+
+  return our_config
+end
+
+local function restart_server(with_tracing)
   get_metals_and_stop()
+  local fresh_conf = configure_conf(with_tracing)
 
   vim.defer_fn(function()
-    setup.initialize_or_attach()
+    setup.initialize_or_attach(fresh_conf)
   end, 3000)
 end
 
+M.restart_server = function()
+  restart_server(false)
+end
+
 M.restart_server_with_langoustine_tracing = function()
-  get_metals_and_stop()
-
-  local old_conf = conf.get_config_cache()
-  local langoustine = { "cs", "launch", "tech.neander:langoustine-tracer_3:latest.stable", "--" }
-  old_conf.cmd = util.merge_lists(langoustine, old_conf.cmd)
-
-  vim.defer_fn(function()
-    setup.initialize_or_attach(old_conf)
-  end, 3000)
+  restart_server(true)
 end
 
 local function show_decoded(decoder_type, format)
