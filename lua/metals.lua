@@ -320,11 +320,10 @@ end
 local function get_metals_and_stop()
   for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
     if vim.tbl_contains(conf.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
-      local clients = lsp.buf_get_clients(buf.bufnr)
+      local clients = lsp.get_active_clients({ buffer = buf.bufnr, name = "metals" })
       for _, client in ipairs(clients) do
-        if client.config.name == "metals" then
-          client.stop()
-        end
+        vim.notify("Found and stopping")
+        client.stop()
       end
     end
   end
