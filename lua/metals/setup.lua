@@ -107,12 +107,16 @@ local function setup_dap(execute_command)
       local metals_dap_settings = config.metals or {}
       arguments = {
         path = vim.uri_from_bufnr(0),
-        runType = metals_dap_settings.runType or "run",
         args = metals_dap_settings.args,
         jvmOptions = metals_dap_settings.jvmOptions,
         env = metals_dap_settings.env,
         envFile = metals_dap_settings.envFile,
       }
+      if metals_dap_settings.mainClass then
+        arguments.mainClass = metals_dap_settings.mainClass
+      else
+        arguments.runType = metals_dap_settings.runType or "run"
+      end
     end
 
     execute_command({
