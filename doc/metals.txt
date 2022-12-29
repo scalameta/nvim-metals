@@ -988,12 +988,9 @@ super_method_hierarchy()   Use to execute a |metals.super-method-hierarchy|
 switch_bsp()               Use to execute a |metals.bsp-switch| command.
 
                                                                   *toggle_logs()*
-toggle_logs({direction})   Use to trigger a `tail -f .metals/log` on your
+toggle_logs()              Use to trigger a `tail -f .metals/log` on your
                            current workspace that will open in the embedded
-                           Neovim terminal.
-
-                           Parameters: {direction} (string) This can either be
-                           vsp to split vertically or sp for a horizontal split.
+                           Neovim terminal in a new tab.
 
                                                                *toggle_setting()*
 toggle_setting({setting})
