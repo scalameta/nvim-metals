@@ -165,17 +165,11 @@ local commands = {}
 -- Doesn't really fit in here, but we need to use it for the commands down below
 -- and also in metals.lua, so to avoid a cyclical dep we just put it in here
 local function toggle_logs(direction)
-  local bufs = api.nvim_list_bufs()
-  local split_direction = "vsp"
-
   if direction then
-    if direction ~= "vsp" and direction ~= "sp" then
-      log.error_and_show("direction must be able vsp or sp")
-      return
-    else
-      split_direction = direction
-    end
+    log.warn_and_show("toggle_logs no longer takes a parameter. Please remove it.")
   end
+
+  local bufs = api.nvim_list_bufs()
 
   for _, buf in ipairs(bufs) do
     local buftype = api.nvim_buf_get_option(buf, "buftype")
@@ -185,7 +179,7 @@ local function toggle_logs(direction)
       if first_window_id then
         fn.win_gotoid(first_window_id)
       else
-        api.nvim_command(string.format("%s | :b %i", split_direction, buf))
+        api.nvim_command(string.format("tabnew +buf\\ %s", buf))
       end
 
       return
@@ -195,7 +189,7 @@ local function toggle_logs(direction)
   -- Only open them if a terminal isn't already open
   -- -n here allows for the last 100 lines to also be shown.
   -- Useful if you hit on an issue and first then toggle the logs.
-  api.nvim_command(string.format([[%s +set\ ft=log term://tail -n 100 -f .metals/metals.log]], split_direction))
+  api.nvim_command([[tabnew +set\ ft=log term://tail -n 100 -f .metals/metals.log]])
   vim.b["metals_buf_purpose"] = "logs"
 end
 
