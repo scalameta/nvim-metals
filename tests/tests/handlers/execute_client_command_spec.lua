@@ -4,12 +4,27 @@ describe("metals/executeClientCommand", function()
   it("handles metals-diagnostics-focus", function()
     local bufs_before = vim.api.nvim_list_bufs()
 
+    local captured_msg
+
+    vim.notify = function(...)
+      local msg = select(1, ...)
+      captured_msg = msg
+    end
+
     handlers["metals/executeClientCommand"](nil, { command = "metals-diagnostics-focus" })
 
-    local bufs_after = vim.api.nvim_list_bufs()
-
-    -- Another buffer should be open after the call since we opened the diagnostic window
-    assert.are.same(#bufs_before + 1, #bufs_after)
+    -- A litte bit of shinanigans here because the behavion in 0.8.0 and nightly is
+    -- slightly different whereas in nighly, since there is no errors this will just
+    -- notify youthat there are no diagnostics. However in 0.8.0 this would open a qf
+    -- window even if there was 0 diagnostics. So we first check if notify was called,
+    -- and if so, check the messaage (nightly) else we go back and check the buffer count.
+    if captured_msg then
+      assert.are.same("No diagnostics available", captured_msg)
+    else
+      local bufs_after = vim.api.nvim_list_bufs()
+      -- Another buffer should be open after the call since we opened the diagnostic window
+      assert.are.same(#bufs_before + 1, #bufs_after)
+    end
   end)
 
   it("handles metals-goto-location", function()
