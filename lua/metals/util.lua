@@ -111,13 +111,9 @@ M.find_metals_buffer = function()
 
   for _, buf in pairs(bufs) do
     if api.nvim_buf_is_loaded(buf) then
-      local buf_clients = vim.lsp.buf_get_clients(buf)
-      for _, client in pairs(buf_clients) do
-        if client.name == "metals" then
-          metals_buf = buf
-          break
-        end
-      end
+      local buf_clients = vim.lsp.get_active_clients({ buffer = buf, name = "metals" })
+      metals_buf = buf_clients[1]
+      break
     end
   end
   return metals_buf
