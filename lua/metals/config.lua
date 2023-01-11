@@ -142,6 +142,7 @@ local valid_metals_settings = {
 local valid_nvim_metals_settings = {
   "decorationColor",
   "disabledMode",
+  "langoustineTracing",
   "metalsBinaryPath",
   "serverOrg",
   "serverVersion",
