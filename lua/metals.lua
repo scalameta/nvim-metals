@@ -173,7 +173,7 @@ M.info = function()
     table.insert(output, "  - https://github.com/scalameta/nvim-metals")
     table.insert(output, "  - https://github.com/scalameta/metals")
 
-    output = lsp.util._trim(output)
+    output = lsp.util._trim(output, {})
 
     local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
       title = "Metals Info",
@@ -261,12 +261,7 @@ end
 -- This needs to be called in the appropriate autocommand, i.e. FocusGained
 M.did_focus = function()
   local focused_uri = vim.uri_from_bufnr(0)
-  lsp.buf_notify(0, "metals/didFocusTextDocument", focused_uri, function(err, _, _)
-    if err then
-      log.error_and_show("Server error with `metals/didFocusTextDocument`. Please check your logs for details.")
-      log.error(err.message)
-    end
-  end)
+  lsp.buf_notify(0, "metals/didFocusTextDocument", focused_uri)
 end
 
 M.find_in_dependency_jars = function()
