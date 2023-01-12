@@ -133,6 +133,7 @@ Doctor.create = function(args)
   api.nvim_win_set_option(float.border_win_id, "winhl", "NormalFloat:Normal")
   api.nvim_buf_set_option(float.bufnr, "filetype", "markdown")
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
+  api.nvim_buf_set_keymap(float.bufnr, "n", "q", "<cmd>close!<CR>", { nowait = true, noremap = true, silent = true })
 
   api.nvim_create_autocmd("WinLeave", {
     buffer = float.bufnr,
