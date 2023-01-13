@@ -295,7 +295,7 @@ end
 M.organize_imports = function()
   local params = lsp.util.make_range_params()
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }
-  local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = 'metals' })
+  local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = "metals" })
   local metals_client = {}
   for _, client in pairs(lsp_clients) do
     metals_client = client
