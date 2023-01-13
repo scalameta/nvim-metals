@@ -293,13 +293,15 @@ M.find_in_dependency_jars = function()
 end
 
 M.organize_imports = function()
+  local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = "metals" })
+  if not lsp_clients or vim.tbl_isempty(lsp_clients) then
+    log.warn("metals is not active for this buffer")
+    return
+  end
+  local metals_client = lsp_clients[1]
+
   local params = lsp.util.make_range_params()
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }
-  local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = "metals" })
-  local metals_client = {}
-  for _, client in pairs(lsp_clients) do
-    metals_client = client
-  end
 
   local response = metals_client.request_sync("textDocument/codeAction", params, 1000, 0)
   if not response or vim.tbl_isempty(response) then
