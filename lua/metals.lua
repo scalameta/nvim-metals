@@ -293,21 +293,26 @@ M.find_in_dependency_jars = function()
 end
 
 M.organize_imports = function()
+  local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = "metals" })
+  if not lsp_clients or vim.tbl_isempty(lsp_clients) then
+    log.warn_and_show("Metals is attatched to this buffer, so unable to organize imports.")
+    return
+  end
+  local metals_client = lsp_clients[1]
+
   local params = lsp.util.make_range_params()
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }
-  local resp = lsp.buf_request_sync(0, "textDocument/codeAction", params, 1000)
 
-  if not resp or vim.tbl_isempty(resp) then
+  local response = metals_client.request_sync("textDocument/codeAction", params, 1000, 0)
+  if not response or vim.tbl_isempty(response) then
     return
   end
 
-  for _, response in pairs(resp) do
-    for _, result in pairs(response.result or {}) do
-      if result.edit then
-        lsp.util.apply_workspace_edit(result.edit, "utf-16")
-      else
-        lsp.buf.execute_command(result.command)
-      end
+  for _, result in pairs(response.result or {}) do
+    if result.edit then
+      lsp.util.apply_workspace_edit(result.edit, "utf-16")
+    else
+      lsp.buf.execute_command(result)
     end
   end
 end
