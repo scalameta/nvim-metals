@@ -295,7 +295,7 @@ end
 M.organize_imports = function()
   local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = "metals" })
   if not lsp_clients or vim.tbl_isempty(lsp_clients) then
-    log.warn("metals is not active for this buffer")
+    log.warn_and_show("Metals is attatched to this buffer, so unable to organize imports.")
     return
   end
   local metals_client = lsp_clients[1]
