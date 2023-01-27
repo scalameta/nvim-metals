@@ -164,11 +164,7 @@ local commands = {}
 
 -- Doesn't really fit in here, but we need to use it for the commands down below
 -- and also in metals.lua, so to avoid a cyclical dep we just put it in here
-local function toggle_logs(direction)
-  if direction then
-    log.warn_and_show("toggle_logs no longer takes a parameter. Please remove it.")
-  end
-
+local function toggle_logs()
   local bufs = api.nvim_list_bufs()
 
   for _, buf in ipairs(bufs) do
@@ -186,11 +182,17 @@ local function toggle_logs(direction)
     end
   end
 
-  -- Only open them if a terminal isn't already open
-  -- -n here allows for the last 100 lines to also be shown.
-  -- Useful if you hit on an issue and first then toggle the logs.
-  api.nvim_command([[tabnew +set\ ft=log term://tail -n 100 -f .metals/metals.log]])
-  vim.b["metals_buf_purpose"] = "logs"
+  local logs_location = Path:new(config_cache.root_dir, ".metals", "metals.log")
+  if logs_location:exists() then
+    local cmd = [[tabnew +set\ ft=log term://tail -n 100 -f ]] .. logs_location.filename
+    -- Only open them if a terminal isn't already open
+    -- -n here allows for the last 100 lines to also be shown.
+    -- Useful if you hit on an issue and first then toggle the logs.
+    api.nvim_command(cmd)
+    vim.b["metals_buf_purpose"] = "logs"
+  else
+    log.warn_and_show(string.format("Unable to find logs file where expected at '%s'", logs_location.filename))
+  end
 end
 
 local function debug_start_command(no_debug)
