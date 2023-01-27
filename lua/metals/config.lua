@@ -164,11 +164,7 @@ local commands = {}
 
 -- Doesn't really fit in here, but we need to use it for the commands down below
 -- and also in metals.lua, so to avoid a cyclical dep we just put it in here
-local function toggle_logs(direction)
-  if direction then
-    log.warn_and_show("toggle_logs no longer takes a parameter. Please remove it.")
-  end
-
+local function toggle_logs()
   local bufs = api.nvim_list_bufs()
 
   for _, buf in ipairs(bufs) do
