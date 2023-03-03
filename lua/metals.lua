@@ -481,6 +481,10 @@ M.select_test_case = function()
   test_explorer.dap_select_test_case()
 end
 
+M.open_new_github_issue = function()
+  execute_command({ command = "metals.open-new-github-issue" })
+end
+
 M.commands = function()
   vim.ui.select(commands.commands_table, {
     prompt = "Metals Commands",

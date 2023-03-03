@@ -88,6 +88,11 @@ local commands_table = {
     hint = "Create a new Scala project.",
   },
   {
+    id = "open_new_github_issue",
+    label = "Open GitHub Issues (Metals)",
+    hint = "Open a new GitHub issue in the Metals codebase",
+  },
+  {
     id = "organize_imports",
     label = "Organize Imports",
     hint = "Organize your imports.",

@@ -498,6 +498,7 @@ The following commands are provided by `nvim-metals`:
   * |MetalsInfo|
   * |MetalsNewScalaFile|
   * |MetalsNewScalaProject|
+  * |MetalsOpenNewGithubIssue|
   * |MetalsOrganizeImports|
   * |MetalsQuickWorksheet|
   * |MetalsResetChoice|
@@ -605,6 +606,16 @@ MetalsNewScalaProject        Create a new Scala project using one of the
                              available g8 templates. This includes simple
                              projects as well as samples for most of the popular
                              Scala frameworks.
+
+                                                      *MetalsOpenNewGithubIssue*
+MetalsOpenNewGithubIssue     Grab some relevant information from your system
+                             and open a new issue in the Metals GitHub repo
+                             with this information.
+
+                             NOTE: That this is for Metals-specific bugs. If
+                             you'd like to create an issue for this plusin,
+                             make sure to create it in
+                             `scalameta/nvim-metals`.
 
                                                          *MetalsOrganizeImports*
 MetalsOrganizeImports        Sends a code action request to Metals to organize
@@ -914,6 +925,10 @@ new_scala_file({directory_uri_opt}, {name_opt}, {file_type_option})
 
                                                             *new_scala_project()*
 new_scala_project()        Use to execute a |metals.new-scala-project| command.
+
+open_new_github_issue()    Grab some relevant information from your system and
+                           open a new issue in the Metals GitHub repo with this
+                           information.
 
                                                              *organize_imports()*
 organize_imports()         Use a code action request to get edits from Metals
