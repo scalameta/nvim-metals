@@ -32,7 +32,7 @@ the available features
     discussion](https://github.com/scalameta/nvim-metals/discussions/253) which
     will notify you of any breaking changes.
 - Unfamiliar with Lua and Neovim? Check out the great
-    [`nanotee/nvim-lua-guide`](https://github.com/nanotee/nvim-lua-guide).
+    [`:h lua-guide`](https://neovim.io/doc/user/lua-guide.html#lua-guide).
 
 ## Installation
 
@@ -52,7 +52,7 @@ use({'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }})
 - You can find a full [minimal example configuration
     here](https://github.com/scalameta/nvim-metals/discussions/39).
 - You can find the full documentation with [`:help
-    vim-metals`](https://github.com/scalameta/nvim-metals/blob/main/doc/metals.txt).
+    nvim-metals`](https://github.com/scalameta/nvim-metals/blob/main/doc/metals.txt).
 - You can find a full [list of features here](https://github.com/scalameta/nvim-metals/discussions/279).
 
 ### Settings and Commands
