@@ -112,6 +112,7 @@ local valid_metals_settings = {
   "ammoniteJvmProperties",
   "bloopSbtAlreadyInstalled",
   "bloopVersion",
+  "enableSemanticHighlighting",
   "excludedPackages",
   "fallbackScalaVersion",
   "gradleScript",
