@@ -182,6 +182,7 @@ _ones that are sent and used by the server_
   * |showImplicitConversionsAndClasses|
   * |showInferredType|
   * |superMethodLensesEnabled|
+  * |enableSemanticHighlighting|
 
 _ones that are used internally by `nvim-metals`_
   * |disabledMode|
@@ -467,6 +468,16 @@ Default: true ~
 
 When enabled Metals will populate code lenses for you to navigate to the
 parent/super methods of members.
+
+
+enableSemanticHighlighting                          *enableSemanticHighlighting* 
+
+Type: boolean ~
+Default: false ~
+
+When this option is enabled, Metals will provide semantic tokens for clients
+that support it. The feature is still experimental and does not work for
+all sources.
 
                                                            *useGlobalExecutable*
 Type: boolean ~
