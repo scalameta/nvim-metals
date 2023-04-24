@@ -58,4 +58,9 @@ M.run_test_without_nvim_dap = [[
 You can not run test without `nvim-dap` being installed.
 Please make sure `mfussenegger/nvim-dap` is installed.]]
 
+M.scala_3_tree_view = [[
+You recieved a null response for the tree view.
+If you're using Scala 3, this is expected as it's not support yet.
+If you're using Scala 3, please create an issue for this in nvim-metals.]]
+
 return M
