@@ -2,6 +2,7 @@ local api = vim.api
 local lsp = vim.lsp
 
 local log = require("metals.log")
+local messages = require("metals.messages")
 local Node = require("metals.tvp.node")
 local tvp_util = require("metals.tvp.util")
 local util = require("metals.util")
@@ -453,8 +454,8 @@ local function reveal_in_tree()
     vim.lsp.buf_request(valid_metals_buffer(), "metals/treeViewReveal", params, function(err, result, ctx)
       if err then
         log.error_and_show(string.format("Error when executing: %s. Check the metals logs for more info.", ctx.method))
-      else
-        if result and result.viewId == metals_packages then
+      elseif result then
+        if result.viewId == metals_packages then
           if api.nvim_get_current_win() ~= state.tvp_tree.win_id then
             vim.fn.win_gotoid(state.tvp_tree.win_id)
           end
@@ -470,8 +471,12 @@ local function reveal_in_tree()
             focus = true,
           })
         else
-          log.warn_and_show("You recieved a node for a view nvim-metals doesn't support")
+          log.warn_and_show(
+            string.format("You recieved a node for a view nvim-metals doesn't support: %s", result.viewId)
+          )
         end
+      else
+        log.warn_and_show(messages.scala_3_tree_view)
       end
     end)
   end)
