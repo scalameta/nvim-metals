@@ -76,7 +76,7 @@ M.import_build = function()
   execute_command({ command = "metals.build-import" })
 end
 
-M.restart_build = function()
+M.restart_build_server = function()
   execute_command({ command = "metals.build-restart" })
 end
 
@@ -321,7 +321,7 @@ end
 
 -- Used to fully restart Metals. This will send a shutdown request to Metals,
 -- delay for 3 seconds, and then reconnect.
-M.restart_server = function()
+M.restart_metals = function()
   for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
     if vim.tbl_contains(conf.scala_file_types, api.nvim_buf_get_option(buf.bufnr, "filetype")) then
       local clients = lsp.get_active_clients({ buffer = buf.bufnr, name = "metals" })

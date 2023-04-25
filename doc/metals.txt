@@ -952,11 +952,11 @@ quick_worksheet()          Create a quick worksheet in your current dir with
                                                                  *reset_choice()*
 reset_choice()             Use to execute a |metals.reset-choice| command.
 
-                                                                *restart_build()*
-restart_build()            Use to execute a |metals.build-restart| command.
+                                                         *restart_build_server()*
+restart_build_server()     Use to execute a |metals.build-restart| command.
 
-                                                               *restart_server()*
-restart_server()           Restart the Metals server.
+                                                               *restart_metals()*
+restart_metals()           Restart the Metals server.
 
                                                                    *run_doctor()*
 run_doctor()               Use to execute a |metals.doctor-run| command.
