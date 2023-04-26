@@ -108,14 +108,14 @@ local commands_table = {
     hint = "Reset a specific choice.",
   },
   {
-    id = "restart_build",
-    label = "Restart Build",
+    id = "restart_build_server",
+    label = "Restart Build Server",
     hint = "Restart the current build server.",
   },
   {
-    id = "restart_server",
-    label = "Restart Server",
-    hint = "Restart Metals",
+    id = "restart_metals",
+    label = "Restart Metals",
+    hint = "Restart Metals server.",
   },
   {
     id = "run_doctor",
