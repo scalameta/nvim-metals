@@ -19,8 +19,8 @@ the available features
 
 ## Prerequisites
 
-- Before you get started you need to ensure that you are using nvim v.0.8.0 or
-    newer. If you're still on v0.7.x then you'll want to target the `v0.7.x`
+- Before you get started you need to ensure that you are using nvim v.0.9.0 or
+    newer. If you're still on v0.8.x then you'll want to target the `v0.8.x`
     tag.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is
     installed locally.[^coursier]
