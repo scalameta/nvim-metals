@@ -537,6 +537,7 @@ The following commands are provided by `nvim-metals`:
   * |MetalsSwitchBsp|
   * |MetalsToggleLogs|
   * |MetalsUpdate|
+  * |MetalsZipReports|
 
                                                        *MetalsAnalyzeStacktrace*
 MetalsAnalyzeStacktrace      Takes the stacktrace from your current register
@@ -761,6 +762,11 @@ MetalsUpdate                 Update to the latest stable version of Metals or
 
                              NOTE that behind the scenes this calls the same
                              function as |MetalsInstall|.
+
+                                                              *MetalsZipReports*
+MetalsZipReports             Zip up the icognito repos that are located under
+                             `.metals/.reports/metals` than can be used to
+                             upload with an issue report.
 
 ================================================================================
 LUA API                                                         *metals-lua-api*
@@ -1044,6 +1050,11 @@ type_of_range()            Use to get the type of the selected range. NOTE that
   vim.keymap.set("v", "K", function() require("metals").type_of_range() end)
 
 <
+
+                                                                 *zip_reports()*
+zip_reports()              Zip up the icognito repos that are located under
+                           `.metals/.reports/metals` than can be used to upload
+                           with an issue report.
 
 ================================================================================
 METALS TVP MODULE                                            *metals-tvp-module*

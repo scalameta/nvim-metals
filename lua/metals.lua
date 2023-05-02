@@ -486,6 +486,10 @@ M.open_new_github_issue = function()
   execute_command({ command = "metals.open-new-github-issue" })
 end
 
+M.zip_reports = function()
+  execute_command({ command = "metals.zip-reports" })
+end
+
 M.commands = function()
   vim.ui.select(commands.commands_table, {
     prompt = "Metals Commands",
