@@ -218,6 +218,11 @@ local commands_table = {
     label = "Update Metals",
     hint = "Update to the latest Metals.",
   },
+  {
+    id = "zip_reports",
+    label = "Zip Error Reports",
+    hint = "Zip up incongnito reports",
+  },
 }
 
 local dap_commands_table = {
