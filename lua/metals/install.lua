@@ -80,36 +80,12 @@ end
 local function scala_version_for_install(server_version)
   local default = "2.13"
 
-  local function inspect_version(version)
-    local parts = util.split_on(version, "%.")
-    -- Major is > 0
-    if tonumber(parts[1]) > 0 then
-      return default
-      -- Major == 0 and Minor > 11
-    elseif tonumber(parts[2]) > 11 then
-      return default
-      -- Major == 0 and Minor == 11
-    elseif tonumber(parts[2]) == 11 then
-      -- If it contains SNAPSHOT just go 2.13
-      if parts[3]:find("SNAPSHOT") ~= nil then
-        return default
-        -- If PATCH is a vlid number and > 2
-      elseif tonumber(parts[3]) ~= nil and tonumber(parts[3]) > 2 then
-        return default
-      else
-        -- Either version is wonky and can't parse or it's 0 or 1
-        return "2.12"
-      end
-    else
-      -- All else fails just go 2.13
-      return default
-    end
-  end
-
   if server_version == latest_stable or server_version == latest_snapshot then
     return default
+  elseif vim.version.gt(vim.version.parse(server_version), vim.version.parse("0.11.2")) then
+    return default
   else
-    return inspect_version(server_version)
+    return "2.12"
   end
 end
 
