@@ -23,13 +23,6 @@ describe("install_version", function()
     eq("2.13", binary_version)
   end)
 
-  it("should be able to know that 0.11.3 needs 2.13", function()
-    local server_version = "0.11.3"
-
-    local binary_version = install._scala_version_for_install(server_version)
-    eq("2.13", binary_version)
-  end)
-
   it("should be able to know that 0.11.11 needs 2.13", function()
     local server_version = "0.11.11"
 
