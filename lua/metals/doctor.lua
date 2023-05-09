@@ -35,18 +35,24 @@ end
 Doctor.create = function(args)
   local output = {}
 
+  local doctor_version = tonumber(args.version) or 0
+
   table.insert(output, "## Metals Info")
 
-  if args.version >= 3 then
-    local header = args.header
-    local fields = {
-      "serverInfo",
-      "buildTool",
-      "buildServer",
-      "importBuildStatus",
-      "jdkInfo",
-    }
+  -- Only used if we are on >= 3
+  local fields = {
+    "serverInfo",
+    "jdkInfo",
+  }
 
+  if doctor_version == 3 then
+    table.insert(fields, "buildTool")
+    table.insert(fields, "buildServer")
+    table.insert(fields, "importBuildStatus")
+  end
+
+  if doctor_version >= 3 then
+    local header = args.header
     for _, field in pairs(fields) do
       if header[field] then
         table.insert(output, "  - " .. header[field])
@@ -60,6 +66,7 @@ Doctor.create = function(args)
 
   table.insert(output, "")
 
+  -- Messages only exist if there is an issue
   if args.messages then
     for _, message in ipairs(args.messages) do
       table.insert(output, string.format("## %s", message.title))
@@ -70,10 +77,57 @@ Doctor.create = function(args)
       end
     end
   else
-    local doctor_version = tonumber(args.version) or 0
-    table.insert(output, "## Build Targets")
+    local function handle_explanations()
+      if args.explanations then
+        table.insert(output, "")
+        table.insert(output, "## Explanations")
+        for _, explanation in ipairs(args.explanations) do
+          table.insert(output, "")
+          table.insert(output, string.format("### %s", explanation.title))
+          for _, deep_explanation in ipairs(explanation.explanations) do
+            table.insert(output, string.format("%s", deep_explanation))
+          end
+        end
+      end
+    end
 
-    if args.version then
+    if doctor_version >= 4 then
+      table.insert(output, "## Workspaces")
+      for _, folder in ipairs(args.folders) do
+        table.insert(output, "")
+        table.insert(output, string.format("### Workspace: %s", folder.folder))
+        if folder.header.importBuildStatus then
+          table.insert(output, string.format(" - %s", folder.header.importBuildStatus))
+        end
+        if folder.header.buildTool then
+          table.insert(output, string.format(" - %s", folder.header.buildTool))
+        end
+        table.insert(output, string.format(" - %s", folder.header.buildServer))
+        table.insert(output, "")
+
+        table.insert(output, "## Build Targets")
+
+        for _, target in ipairs(folder.targets) do
+          table.insert(output, "")
+          table.insert(output, string.format("### %s", target.buildTarget))
+          table.insert(output, string.format("  - target type: %s", target.targetType))
+          table.insert(output, string.format("  - goto functionality: %s", target.gotoCommand))
+          table.insert(output, string.format("  - compilation: %s", target.compilationStatus))
+          table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
+          table.insert(output, string.format("  - interactive: %s", target.interactive))
+          table.insert(output, string.format("  - semanticdb: %s", target.semanticdb))
+          table.insert(output, string.format("  - debugging: %s", target.debugging))
+          table.insert(output, string.format("  - java: %s", target.java))
+          if target.recommendation ~= "" then
+            table.insert(output, string.format("  - recommendation: %s", target.recommendation))
+          end
+        end
+
+        handle_explanations()
+      end
+    elseif doctor_version > 0 then
+      table.insert(output, "## Build Targets")
+
       for _, target in ipairs(args.targets) do
         table.insert(output, "")
         table.insert(output, string.format("### %s", target.buildTarget))
@@ -90,15 +144,7 @@ Doctor.create = function(args)
           table.insert(output, string.format("  - recommendation: %s", target.recommendation))
         end
       end
-      table.insert(output, "")
-      table.insert(output, "## Explanations")
-      for _, explanation in ipairs(args.explanations) do
-        table.insert(output, "")
-        table.insert(output, string.format("### %s", explanation.title))
-        for _, deep_explanation in ipairs(explanation.explanations) do
-          table.insert(output, string.format("%s", deep_explanation))
-        end
-      end
+      handle_explanations()
     else
       for _, target in ipairs(args.targets) do
         table.insert(output, "")
