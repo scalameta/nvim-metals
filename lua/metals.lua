@@ -434,7 +434,26 @@ M.run_scalafix = function()
 end
 
 M.type_of_range = function()
-  vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_given_range_params())
+  local range_start = vim.fn.getpos("v")
+  local range_end = vim.fn.getcurpos()
+
+  local range_start_row = range_start[2]
+  local range_start_col = range_start[3]
+  local range_end_row = range_end[2]
+  local range_end_col = range_end[3]
+
+  local start_pos
+  local end_pos
+
+  if range_end_row < range_start_row or (range_start_row == range_end_row and range_start_col > range_end_col) then
+    start_pos = { range_end_row, range_end_col }
+    end_pos = { range_start_row, range_start_col - 1 }
+  else
+    start_pos = { range_start_row, range_start_col }
+    end_pos = { range_end_row, range_end_col - 1 }
+  end
+
+  vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_given_range_params(start_pos, end_pos))
 end
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's
