@@ -30,7 +30,13 @@ end
 -- Implementation of the `metals/inputBox` Metals LSP extension.
 -- https://scalameta.org/metals/docs/integrations/new-editor#metalsinputbox
 M["metals/inputBox"] = function(_, result)
-  local name = vim.fn.input(result.prompt .. ": ")
+  local args = { prompt = result.prompt .. "\n" }
+
+  if result.value then
+    args.default = result.value
+  end
+
+  local name = vim.fn.input(args)
 
   if name == "" then
     return { cancelled = true }
