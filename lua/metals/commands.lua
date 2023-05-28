@@ -124,8 +124,13 @@ local commands_table = {
   },
   {
     id = "run_scalafix",
-    label = "Run Scalafix Rules",
+    label = "Run All Scalafix Rules",
     hint = "Run all Scalafix rules that are defined for the workspace.",
+  },
+  {
+    id = "run_single_scalafix",
+    label = "Run a Single Scalafix Rule",
+    hint = "Run a single Scalafix rule or choose from selection.",
   },
   {
     id = "scan_sources",

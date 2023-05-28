@@ -517,6 +517,7 @@ The following commands are provided by `nvim-metals`:
   * |MetalsRestartServer|
   * |MetalsRunDoctor|
   * |MetalsRunScalafix|
+  * |MetalsRunSingleScalafix|
   * |MetalsScanSources|
   * |MetalsSelectTestCase|
   * |MetalsSelectTestSuite|
@@ -663,10 +664,20 @@ MetalsRunDoctor              Run Metals Doctor, which will open a floating
 
                                                              *MetalsRunScalafix*
 MetalsRunScalafix            Runs all of the Scalafix rules that you have
-                             configured for you current project. NOTE: that if
-                             you're using external Scalafix rules you'll need
-                             to ensure you add them to your settings table
-                             under `scalafixRulesDependencies`.
+                             configured for you current project.
+
+                             NOTE: that if you're using external Scalafix
+                             rules you'll need to ensure you add them to your
+                             settings table under `scalafixRulesDependencies`.
+
+                                                       *MetalsRunSingleScalafix*
+MetalsRunSingleScalafix      Runs a single Scalafix rules that you have given
+                             or provides you with a list of configured rules to
+                             choose from.
+
+                             NOTE: that if you're using external Scalafix
+                             rules you'll need to ensure you add them to your
+                             settings table under `scalafixRulesDependencies`.
 
                                                              *MetalsScanSources*
 MetalsScanSources            Scan all workspaces sources.
@@ -969,6 +980,9 @@ run_doctor()               Use to execute a |metals.doctor-run| command.
 
                                                                  *run_scalafix()*
 run_scalafix()             Use to execute a |metals.scalafix-run| command.
+
+                                                          *run_single_scalafix()*
+run_single_scalafix()      Use to execute a |metals.scalafix-run-single| command.
 
                                                                  *scan_sources()*
 scan_sources()             Use to execute a |metals.sources-scan| command.

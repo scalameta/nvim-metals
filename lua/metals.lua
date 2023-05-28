@@ -433,6 +433,16 @@ M.run_scalafix = function()
   execute_command({ command = "metals.scalafix-run", arguments = { text_doc_position } })
 end
 
+M.run_single_scalafix = function(rules)
+  local text_doc_position = lsp.util.make_position_params()
+  local args = { textDocumentPositionParams = text_doc_position }
+  if not rules == nil and type(rules) == "table" then
+    args.rules = rules
+  end
+
+  execute_command({ command = "metals.scalafix-run-only", arguments = args })
+end
+
 M.type_of_range = function()
   local range_start = vim.fn.getpos("v")
   local range_end = vim.fn.getcurpos()
