@@ -108,6 +108,11 @@ local commands_table = {
     hint = "Reset a specific choice.",
   },
   {
+    id = "reset_workspace",
+    label = "Reset workspace",
+    hint = "Fully clean the workspace and re-start the build server.",
+  },
+  {
     id = "restart_build_server",
     label = "Restart Build Server",
     hint = "Restart the current build server.",

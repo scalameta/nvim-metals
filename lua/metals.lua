@@ -259,6 +259,10 @@ M.reset_choice = function()
   execute_command({ command = "metals.reset-choice" })
 end
 
+M.reset_workspace = function()
+  execute_command({ command = "metals.reset-workspace" })
+end
+
 -- Notify the server when document has been focused
 -- This needs to be called in the appropriate autocommand, i.e. FocusGained
 M.did_focus = function()
