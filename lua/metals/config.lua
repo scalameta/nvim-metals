@@ -135,8 +135,8 @@ local valid_metals_settings = {
   "testUserInterface",
 }
 
--- We keep these seperated from the `valid_metals_settings` just for clarity.
--- The above are valide for the server, whereas these settings here are _only_
+-- We keep these separated from the `valid_metals_settings` just for clarity.
+-- The above are valid for the server, whereas these settings here are _only_
 -- being used by this plugin. It's bitter sweet, as we mix settings here a bit,
 -- but having multiple ways to set "settings" for metals may confuse the user
 -- even more, so it's a risk I think is worth it.
@@ -275,7 +275,7 @@ local function validate_config(config, bufnr)
   end
 
   -----------------------------------------------------------------------------
-  -- NOTE! If you access anyting related to settings after this point, you need
+  -- NOTE! If you access anything related to settings after this point, you need
   -- to remember you are now accessing config.setings.metals not just
   -- config.settings.
   -----------------------------------------------------------------------------
@@ -355,7 +355,37 @@ local function validate_config(config, bufnr)
 
   local passed_in_options = config.settings.metals.serverProperties or {}
 
-  local all_opts = util.merge_lists(passed_in_options, valid_java_opts)
+  local get_java_version = function(java_home)
+    java_home = java_home or os.getenv("JAVA_HOME")
+    if java_home == nil then
+      return nil
+    else
+      local release = Path:new(java_home, "release")
+      local version_line
+      for line in io.lines(release.filename) do
+        if util.starts_with(line, "JAVA_VERSION") then
+          version_line = line
+          break
+        end
+      end
+
+      local version = vim.version.parse(version_line:sub(14, version_line:len()))
+      return version
+    end
+  end
+
+  local java_version = get_java_version(config.settings.metals.javaHome)
+
+  local extra_java_opts = {}
+  if java_version and vim.version.gt(java_version, { 17, 0, 0 }) then
+    extra_java_opts = {
+      "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+      "--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+      "--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+    }
+  end
+
+  local all_opts = util.merge_lists(util.merge_lists(passed_in_options, valid_java_opts), extra_java_opts)
 
   for i, opt in ipairs(all_opts) do
     -- In order to pass these options to coursier they need to be prefaced with `-J`
