@@ -513,6 +513,7 @@ The following commands are provided by `nvim-metals`:
   * |MetalsOrganizeImports|
   * |MetalsQuickWorksheet|
   * |MetalsResetChoice|
+  * |MetalsResetWorkspace|
   * |MetalsRestartBuild|
   * |MetalsRestartServer|
   * |MetalsRunDoctor|
@@ -651,6 +652,15 @@ MetalsResetChoice            ResetChoicePopup command allows you to reset a
                              decision you made about different settings.
                              E.g. If you choose to import workspace with sbt
                              you can decide to reset and change it again.
+
+                                                          *MetalsResetWorkspace*
+MetalsResetWorkspace         Fully clean the workspace and restart the build
+                             server. When things seem to get borked and you
+                             don't know what to do, use this. It's
+                             essentially the same as if you'd do an `rm -rf`
+                             on all the dirs like `.bloop` etc that Metals
+                             creates, as well as restarting whatever build
+                             server you're using.
 
                                                             *MetalsRestartBuild*
 MetalsRestartBuild           Manually restart the build server.
@@ -968,6 +978,9 @@ quick_worksheet()          Create a quick worksheet in your current dir with
 
                                                                  *reset_choice()*
 reset_choice()             Use to execute a |metals.reset-choice| command.
+
+                                                              *reset_workspace()*
+reset_workspace()          Use to execute a |metals.reset-workspace| command.
 
                                                          *restart_build_server()*
 restart_build_server()     Use to execute a |metals.build-restart| command.
