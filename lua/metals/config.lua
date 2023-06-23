@@ -361,16 +361,20 @@ local function validate_config(config, bufnr)
       return nil
     else
       local release = Path:new(java_home, "release")
-      local version_line
-      for line in io.lines(release.filename) do
-        if util.starts_with(line, "JAVA_VERSION") then
-          version_line = line
-          break
+      if release:exists() then
+        local version_line
+        for line in io.lines(release.filename) do
+          if util.starts_with(line, "JAVA_VERSION") then
+            version_line = line
+            break
+          end
         end
-      end
 
-      local version = vim.version.parse(version_line:sub(14, version_line:len()))
-      return version
+        local version = vim.version.parse(version_line:sub(14, version_line:len()))
+        return version
+      else
+        return nil
+      end
     end
   end
 
