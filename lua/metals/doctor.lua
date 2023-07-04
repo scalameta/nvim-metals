@@ -105,21 +105,23 @@ Doctor.create = function(args)
         table.insert(output, string.format(" - %s", folder.header.buildServer))
         table.insert(output, "")
 
-        table.insert(output, "## Build Targets")
+        if folder.targets then
+          table.insert(output, "## Build Targets")
 
-        for _, target in ipairs(folder.targets) do
-          table.insert(output, "")
-          table.insert(output, string.format("### %s", target.buildTarget))
-          table.insert(output, string.format("  - target type: %s", target.targetType))
-          table.insert(output, string.format("  - goto functionality: %s", target.gotoCommand))
-          table.insert(output, string.format("  - compilation: %s", target.compilationStatus))
-          table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
-          table.insert(output, string.format("  - interactive: %s", target.interactive))
-          table.insert(output, string.format("  - semanticdb: %s", target.semanticdb))
-          table.insert(output, string.format("  - debugging: %s", target.debugging))
-          table.insert(output, string.format("  - java: %s", target.java))
-          if target.recommendation ~= "" then
-            table.insert(output, string.format("  - recommendation: %s", target.recommendation))
+          for _, target in ipairs(folder.targets) do
+            table.insert(output, "")
+            table.insert(output, string.format("### %s", target.buildTarget))
+            table.insert(output, string.format("  - target type: %s", target.targetType))
+            table.insert(output, string.format("  - goto functionality: %s", target.gotoCommand))
+            table.insert(output, string.format("  - compilation: %s", target.compilationStatus))
+            table.insert(output, string.format("  - diagnostics: %s", target.diagnostics))
+            table.insert(output, string.format("  - interactive: %s", target.interactive))
+            table.insert(output, string.format("  - semanticdb: %s", target.semanticdb))
+            table.insert(output, string.format("  - debugging: %s", target.debugging))
+            table.insert(output, string.format("  - java: %s", target.java))
+            if target.recommendation ~= "" then
+              table.insert(output, string.format("  - recommendation: %s", target.recommendation))
+            end
           end
         end
 
