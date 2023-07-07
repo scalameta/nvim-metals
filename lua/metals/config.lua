@@ -319,7 +319,11 @@ local function validate_config(config, bufnr)
 
   local find_root_dir = config.find_root_dir or root_dir.find_root_dir
 
-  config.root_dir = find_root_dir(config.root_patterns, bufname) or fn.expand("%:p:h")
+  -- Maximum parent folders to search AFTER the first project file (e.g. build.sbt) was found
+  local find_root_dir_max_project_nesting = config.find_root_dir_max_project_nesting or 2
+
+  config.root_dir = find_root_dir(config.root_patterns, bufname, find_root_dir_max_project_nesting)
+    or fn.expand("%:p:h")
 
   local base_handlers = vim.tbl_extend("error", default_handlers, tvp.handlers)
 

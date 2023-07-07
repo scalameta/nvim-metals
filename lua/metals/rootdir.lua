@@ -11,7 +11,8 @@ local has_pattern = function(patterns, target)
   end
 end
 
---- NOTE: This only searches 2 levels deep to find nested build files.
+--- NOTE: maxParentSearch lets you check up to a certain number of parent
+--- folders to find nested build files.
 --- Given a situation like the below one where you have a root build.sbt
 --- and one in your module a, you want to ensure the root is correctly set as
 --- the root one, not the a one. This checks the parent dir to ensure this.
@@ -19,24 +20,33 @@ end
 --- a/
 ---  - build.sbt <- this is not
 ---  - src/main/scala/Main.scala
-local find_root_dir = function(patterns, startpath)
+--- If your projects are multiple layers deep, set
+--- config.find_root_dir_max_project_nesting to a greater number. Default is 2
+--- for the behavior described above.
+local find_root_dir = function(patterns, startpath, maxParentSearch)
   local path = Path:new(startpath)
   -- TODO if we don't find it do we really want to search / probably not... add a check for this
-  for _, parent in ipairs(path:parents()) do
+  -- First parent index in which we found a target file
+  local firstFoundIdx = -1
+  local ret = nil
+
+  for i, parent in ipairs(path:parents()) do
+    -- Exit loop before checking anything if we've exceeded the search limits
+    if firstFoundIdx >= 0 and (i - firstFoundIdx >= maxParentSearch) then
+      return ret
+    end
     local pattern = has_pattern(patterns, parent)
     if pattern then
-      local grandparent = Path:new(parent):parent()
-      -- If the pattern is found, we don't check for all patterns anymore,
-      -- instead only the one that was found. This will ensure that we don't
-      -- find a buid.sc is src/build.sc and also a .git in ./ causing it to
-      -- default to that instead of src for the root.
-      if has_pattern({ pattern }, grandparent) then
-        return grandparent.filename
-      else
-        return parent
+      -- Mark the first parent that was found, so we can exit the loop when we've exhausted our search limits
+      if firstFoundIdx == -1 then
+        firstFoundIdx = i
       end
+      -- (over)write the return value with the highest parent found
+      ret = parent
     end
   end
+  -- In case we went through the entire loop (e.g. if maxParentSearch is really high)
+  return ret
 end
 
 return {
