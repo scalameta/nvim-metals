@@ -895,6 +895,21 @@ initialize_or_attach({config})
                               {'build.sbt', 'build.sc', 'build.gradle',
                               'pom.xml', '.git'}
 <
+
+                           By default, when Metals detects a valid root_dir,
+                           it will check 1 folder up to see if there is a
+                           valid "parent" project above it. If you have a
+                           more complex project with multiple nested sub-
+                           projects, set the `find_root_dir_max_project_nesting`
+                           key to an integer greater than 1.
+                           Ex: Set `find_root_dir_max_project_nesting` to 2 if
+                           this is your project tree:
+                           build.sbt <- this is the desired root
+                             a/
+                               b/
+                                 - build.sbt <- subproject, not the desired root
+                                 - src/main/scala/Main.scala
+
                            If you need even more fine-grained control over
                            finding your root-dir (in cases where you have very
                            uncommon build layouts) you can also use the
