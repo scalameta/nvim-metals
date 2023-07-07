@@ -320,7 +320,7 @@ local function validate_config(config, bufnr)
   local find_root_dir = config.find_root_dir or root_dir.find_root_dir
 
   -- Maximum parent folders to search AFTER the first project file (e.g. build.sbt) was found
-  local find_root_dir_max_project_nesting = config.find_root_dir_max_project_nesting or 2
+  local find_root_dir_max_project_nesting = config.find_root_dir_max_project_nesting or 1
 
   config.root_dir = find_root_dir(config.root_patterns, bufname, find_root_dir_max_project_nesting)
     or fn.expand("%:p:h")

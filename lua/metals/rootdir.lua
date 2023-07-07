@@ -21,7 +21,7 @@ end
 ---  - build.sbt <- this is not
 ---  - src/main/scala/Main.scala
 --- If your projects are multiple layers deep, set
---- config.find_root_dir_max_project_nesting to a greater number. Default is 2
+--- config.find_root_dir_max_project_nesting to a greater number. Default is 1
 --- for the behavior described above.
 local find_root_dir = function(patterns, startpath, maxParentSearch)
   local path = Path:new(startpath)
@@ -32,7 +32,7 @@ local find_root_dir = function(patterns, startpath, maxParentSearch)
 
   for i, parent in ipairs(path:parents()) do
     -- Exit loop before checking anything if we've exceeded the search limits
-    if firstFoundIdx >= 0 and (i - firstFoundIdx >= maxParentSearch) then
+    if firstFoundIdx >= 0 and (i - firstFoundIdx > maxParentSearch) then
       return ret
     end
     local pattern = has_pattern(patterns, parent)
