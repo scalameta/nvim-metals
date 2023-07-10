@@ -357,6 +357,9 @@ local function validate_config(config, bufnr)
 
   local get_java_version = function(java_home)
     java_home = java_home or os.getenv("JAVA_HOME")
+    print("-------")
+    print(java_home)
+    print("-------")
     if java_home == nil then
       return nil
     else
@@ -373,6 +376,7 @@ local function validate_config(config, bufnr)
         local version = vim.version.parse(version_line:sub(14, version_line:len()))
         return version
       else
+        print("no release file.....")
         return nil
       end
     end
