@@ -25,7 +25,6 @@ end
 --- for the behavior described above.
 local find_root_dir = function(patterns, startpath, maxParentSearch)
   local path = Path:new(startpath)
-  -- TODO if we don't find it do we really want to search / probably not... add a check for this
   -- First parent index in which we found a target file
   local firstFoundIdx = nil
   local ret = nil
@@ -33,7 +32,7 @@ local find_root_dir = function(patterns, startpath, maxParentSearch)
 
   for i, parent in ipairs(path:parents()) do
     -- Exit loop before checking anything if we've exceeded the search limits
-    if firstFoundIdx and (i - firstFoundIdx > maxParentSearch) then
+    if (firstFoundIdx and (i - firstFoundIdx > maxParentSearch)) or parent == "/" then
       return ret
     end
 
