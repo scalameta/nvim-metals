@@ -17,7 +17,7 @@ if not (multi_build_example:exists()) or not (mill_minimal:exists()) or not (sca
 else
   describe("The find root dir functionality", function()
     it("should return nil when no pattern is detected", function()
-      local result = root_dir.find_root_dir({ "build.sbt" }, Path:new("."):expand()) or "was_nil"
+      local result = root_dir.find_root_dir({ "build.sbt" }, Path:new("."):expand(), 1) or "was_nil"
       -- We expect nil here because nvim-metals has logic to then catch this nil and return the file that was opened.
       -- No idea why but locally using nil here works fine by in Linux CI nil here keeps thinking I'm only using
       -- one argument, so we instead replace it with "was_nil" which makes CI happy. who knows.
@@ -30,7 +30,8 @@ else
         expected,
         root_dir.find_root_dir(
           { "build.sbt" },
-          Path:new(multi_build_example:expand(), "core", "src", "main", "scala", "example", "Hello.scala").filename
+          Path:new(multi_build_example:expand(), "core", "src", "main", "scala", "example", "Hello.scala").filename,
+          1
         )
       )
     end)
@@ -41,7 +42,8 @@ else
         expected,
         root_dir.find_root_dir(
           { "build.sc" },
-          Path:new(mill_minimal:expand(), "MillMinimal", "src", "example", "Hello.scala").filename
+          Path:new(mill_minimal:expand(), "MillMinimal", "src", "example", "Hello.scala").filename,
+          1
         )
       )
     end)
@@ -52,7 +54,8 @@ else
       local expected = Path:new(scala_cli:expand(), "src").filename
       local result = root_dir.find_root_dir(
         { ".scala", ".scala-build", ".git" },
-        Path:new(scala_cli:expand(), "src", "Main.scala").filename
+        Path:new(scala_cli:expand(), "src", "Main.scala").filename,
+        1
       )
       eq(expected, result)
     end)

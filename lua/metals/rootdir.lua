@@ -27,18 +27,26 @@ local find_root_dir = function(patterns, startpath, maxParentSearch)
   local path = Path:new(startpath)
   -- TODO if we don't find it do we really want to search / probably not... add a check for this
   -- First parent index in which we found a target file
-  local firstFoundIdx = -1
+  local firstFoundIdx = nil
   local ret = nil
+  local found = nil
 
   for i, parent in ipairs(path:parents()) do
     -- Exit loop before checking anything if we've exceeded the search limits
-    if firstFoundIdx >= 0 and (i - firstFoundIdx > maxParentSearch) then
+    if firstFoundIdx and (i - firstFoundIdx > maxParentSearch) then
       return ret
     end
+
     local pattern = has_pattern(patterns, parent)
-    if pattern then
+
+    -- We add an extra guard here that if there is a pattern and we've already found one
+    -- we make sure it's the same as the found one. For example we don't want to detect a
+    -- .scala-build nested and then look one deeper and see a .git and incorrectly mark .git
+    -- as the root.
+    if (pattern and not found) or (pattern and found == pattern) then
       -- Mark the first parent that was found, so we can exit the loop when we've exhausted our search limits
-      if firstFoundIdx == -1 then
+      if not firstFoundIdx then
+        found = pattern
         firstFoundIdx = i
       end
       -- (over)write the return value with the highest parent found
