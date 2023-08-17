@@ -36,6 +36,18 @@ else
       )
     end)
 
+    it("should correctly find the root in an odly nested multi-build sbt project", function()
+      local expected = multi_build_example:expand()
+      eq(
+        expected,
+        root_dir.find_root_dir(
+          { "build.sbt" },
+          Path:new(multi_build_example:expand(), "other", "nested", "src", "main", "scala", "example", "Hello.scala").filename,
+          2 -- set to two here because we want to skip the other/nested/buid.sbt
+        )
+      )
+    end)
+
     it("should correctly find the root in a minimal mill build", function()
       local expected = mill_minimal:expand()
       eq(
