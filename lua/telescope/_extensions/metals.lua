@@ -22,8 +22,8 @@ local pickers = require("telescope.pickers")
 local function execute_command(bufnr)
   local selection = action_state.get_selected_entry(bufnr)
   actions.close(bufnr)
-  local cmd = selection.command
-  if cmd then
+  if selection then
+    local cmd = selection.command
     local success, msg = pcall(cmd)
     if not success then
       vim.api.nvim_notify(msg, 2, {})
