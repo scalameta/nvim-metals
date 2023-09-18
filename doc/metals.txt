@@ -473,7 +473,7 @@ parent/super methods of members.
 enableSemanticHighlighting                          *enableSemanticHighlighting* 
 
 Type: boolean ~
-Default: false ~
+Default: true ~
 
 When this option is enabled, Metals will provide semantic tokens for clients
 that support it. The feature is still experimental and does not work for
