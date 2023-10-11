@@ -173,7 +173,7 @@ M.info = function()
     table.insert(output, "  - https://github.com/scalameta/nvim-metals")
     table.insert(output, "  - https://github.com/scalameta/metals")
 
-    output = lsp.util._trim(output, {})
+    output = lsp.util.trim_empty_lines(output)
 
     local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
       title = "Metals Info",
