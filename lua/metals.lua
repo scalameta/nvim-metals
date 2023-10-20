@@ -358,7 +358,7 @@ M.show_build_target_info = function()
     if err then
       log.error_and_show(string.format("Unable to retrieve build targets", method))
       log.error(err)
-    elseif resp then
+    elseif resp and not vim.tbl_isempty(resp) then
       vim.ui.select(resp, {
         prompt = "Choose build target to view:",
       }, function(choice)
@@ -374,7 +374,7 @@ M.show_build_target_info = function()
         end
       end)
     else
-      log.warn_and_show("Metals returned no info for build target.")
+      log.warn_and_show("Metals returned no info for build targets. If you're still importing, wait and try again.")
     end
   end
   execute_command({ command = "metals.list-build-targets" }, choose_and_decode)
