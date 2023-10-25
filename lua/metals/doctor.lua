@@ -126,6 +126,26 @@ Doctor.create = function(args)
         end
 
         handle_explanations()
+
+        if doctor_version >= 5 then
+          if not vim.tbl_isempty(folder.errorReports) then
+            table.insert(output, "")
+            table.insert(output, "## Error Reports")
+            for _, report in ipairs(folder.errorReports) do
+              table.insert(output, "")
+              table.insert(output, string.format("### %s", report.name))
+              table.insert(output, string.format("- timestamp: %s", report.timestamp))
+              table.insert(output, string.format("- uri: %s", report.uri))
+              if report.buildTarget then
+                table.insert(output, string.format("- target: %s", report.buildTarget))
+              end
+              table.insert(output, string.format("- error type: %s", report.errorReportType))
+              table.insert(output, "")
+              table.insert(output, "#### Summary")
+              table.insert(output, report.shortSummary)
+            end
+          end
+        end
       end
     elseif doctor_version > 0 then
       table.insert(output, "## Build Targets")
