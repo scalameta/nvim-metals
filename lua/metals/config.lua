@@ -103,6 +103,7 @@ local metals_init_options = {
   inputBoxProvider = true,
   quickPickProvider = true,
   statusBarProvider = "show-message",
+  bspStatusBarProvider = "on",
   treeViewProvider = true,
 }
 
