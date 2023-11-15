@@ -142,7 +142,10 @@ Doctor.create = function(args)
               table.insert(output, string.format("- error type: %s", report.errorReportType))
               table.insert(output, "")
               table.insert(output, "#### Summary")
-              table.insert(output, report.shortSummary)
+              local summary_lines = util.split_on(report.shortSummary, "\n")
+              for _, line in pairs(summary_lines) do
+                table.insert(output, line)
+              end
             end
           end
         end
