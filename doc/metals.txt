@@ -110,6 +110,11 @@ enable the `statusBarProvider` like shown below: >
   metals_config.init_options.statusBarProvider = "on"
 <
 
+You can also get extra status information from Metals about your BSP
+connection. You can access this with `vim.g['metals_bsp_status']`. This will
+either return useful messages from your build server about things like
+disconnects or just the name of the build server being used.
+
 Then instead of passing an empty `{}` to |initialize_or_attach()|, you'd pass
 in `metals_config`.
 
