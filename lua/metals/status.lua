@@ -1,10 +1,11 @@
 local log = require("metals.log")
 
 -- @param status (string) a new status to be displayed
-local function set_status(status)
+local function set_status(status, type)
   -- Scaping the status to prevent % characters breaking the statusline
   local scaped_status = status:gsub("[%%]", "%%%1")
-  vim.api.nvim_set_var("metals_status", scaped_status)
+  local status_var = (type or "metals") .. "_status"
+  vim.api.nvim_set_var(status_var, scaped_status)
 end
 
 local function prompt_command(status)
@@ -36,11 +37,12 @@ end
 -- @param status (table) this is the normal status table as described in the
 --                       metals docs as well as the bufnr and client_id.
 local function handle_status(status)
+  local type = status.statusType
   if status.hide then
-    set_status("")
+    set_status("", type)
   else
     if status.text then
-      set_status(status.text)
+      set_status(status.text, type)
     end
 
     -- This status actually appears a lot in external sources, but really isn't
@@ -50,7 +52,7 @@ local function handle_status(status)
     local annoyingMessage = "This external library source has compile errors."
     if status.command and status.tooltip then
       prompt_command(status)
-    elseif status.tooltip and not string.find(status.tooltip, annoyingMessage) then
+    elseif status.tooltip and not string.find(status.tooltip, annoyingMessage) and not type == "bsp" then
       log.warn_and_show(status.tooltip)
     end
   end
