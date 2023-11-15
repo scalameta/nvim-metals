@@ -27,7 +27,7 @@ describe("metals/status", function()
     local msg = "bsp message"
     local metals_status = {
       text = msg,
-      statusType = "bsp"
+      statusType = "bsp",
     }
     local ctx = {
       client_id = "metals",
