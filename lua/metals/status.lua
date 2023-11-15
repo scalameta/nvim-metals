@@ -4,7 +4,16 @@ local log = require("metals.log")
 local function set_status(status, type)
   -- Scaping the status to prevent % characters breaking the statusline
   local scaped_status = status:gsub("[%%]", "%%%1")
-  local status_var = (type or "metals") .. "_status"
+  local _status = "_status"
+  local metals = "metals"
+  local status_var = nil
+  if type and type == metals then
+    status_var = type .. _status
+  elseif type then
+    status_var = "metals_" .. type .. _status
+  else
+    status_var = metals .. _status
+  end
   vim.api.nvim_set_var(status_var, scaped_status)
 end
 
