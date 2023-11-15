@@ -22,6 +22,27 @@ describe("metals/status", function()
     local empty_status = vim.api.nvim_get_var("metals_status")
     assert.are.same("", empty_status)
   end)
+
+  it("correctly can set the bsp status", function()
+    local msg = "bsp message"
+    local metals_status = {
+      text = msg,
+      statusType = "bsp"
+    }
+    local ctx = {
+      client_id = "metals",
+      bufnr = "2",
+    }
+    handlers["metals/status"](nil, metals_status, ctx)
+    local first_status = vim.api.nvim_get_var("metals_bsp_status")
+    assert.are.same(msg, first_status)
+
+    metals_status.hide = true
+
+    handlers["metals/status"](nil, metals_status, ctx)
+    local empty_status = vim.api.nvim_get_var("metals_bsp_status")
+    assert.are.same("", empty_status)
+  end)
 end)
 
 describe("status.set_status", function()
