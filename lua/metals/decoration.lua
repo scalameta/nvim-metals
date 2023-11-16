@@ -21,10 +21,12 @@ M.set_decoration = function(bufnr, decoration)
   local virt_text_opts = { virt_text = virt_texts, hl_mode = "combine" }
   local ext_id = api.nvim_buf_set_extmark(bufnr, M.decoration_namespace(), line, -1, virt_text_opts)
 
-  local hover_message = lsp.util.convert_input_to_markdown_lines(decoration.hoverMessage, {})
-  hover_message = lsp.util.trim_empty_lines(hover_message)
+  if decoration.hoverMessage then
+    local hover_message = lsp.util.convert_input_to_markdown_lines(decoration.hoverMessage, {})
+    hover_message = lsp.util.trim_empty_lines(hover_message)
 
-  hover_messages[ext_id] = hover_message
+    hover_messages[ext_id] = hover_message
+  end
 end
 
 M.hover_worksheet = function(opts)
