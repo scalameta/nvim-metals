@@ -508,11 +508,21 @@ M.toggle_setting = function(setting)
 end
 
 M.select_test_suite = function()
-  test_explorer.dap_select_test_suite()
+  local config = conf.get_config_cache()
+  if config and config.settings.metals.testUserInterface == "Test Explorer" then
+    test_explorer.dap_select_test_suite()
+  else
+    log.error_and_show(messages.enable_test_explorer)
+  end
 end
 
 M.select_test_case = function()
-  test_explorer.dap_select_test_case()
+  local config = conf.get_config_cache()
+  if config and config.settings.metals.testUserInterface == "Test Explorer" then
+    test_explorer.dap_select_test_case()
+  else
+    log.error_and_show(messages.enable_test_explorer)
+  end
 end
 
 M.open_new_github_issue = function()
