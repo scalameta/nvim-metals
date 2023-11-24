@@ -37,7 +37,7 @@ end
 
 M.analyze_stacktrace = function()
   local trace = fn.getreg("*")
-  if trace:len() > 0 then
+  if trace and trace:len() > 0 then
     execute_command({ command = "metals.analyze-stacktrace", arguments = { trace } })
   else
     log.warn_and_show("No text found in your register.")
@@ -126,28 +126,30 @@ end
 -- floating window.
 M.info = function()
   local config = conf.get_config_cache()
-  if not util.has_bins(conf.metals_bin()) and config.settings.metals.useGlobalExecutable then
+  if not util.has_bins(conf.metals_bin()) and config and config.settings.metals.useGlobalExecutable then
     log.error_and_show(messages.use_global_set_but_cant_find)
-  elseif not util.has_bins(conf.metals_bin()) and config.settings.metals.metalsBinaryPath then
+  elseif not util.has_bins(conf.metals_bin()) and config and config.settings.metals.metalsBinaryPath then
     log.error_and_show(messages.binary_path_set_but_cant_find)
   elseif not util.has_bins(conf.metals_bin()) then
     log.warn_and_show(messages.metals_not_installed)
   else
-    local metals_info = fn.system(conf.metals_bin() .. " --version")
-
     local output = {}
-    for s in metals_info:gmatch("[^\r\n]+") do
-      -- A little hacky but the version output is weird and we want to coerce
-      -- it to markdown, so we give the verstion line a # and then strip the
-      -- other lines of their #
-      if util.starts_with(s, "#") then
-        table.insert(output, s:sub(2))
-      else
-        table.insert(output, "# " .. s)
+
+    local metals_info = fn.system(conf.metals_bin() .. " --version")
+    if metals_info then
+      for s in metals_info:gmatch("[^\r\n]+") do
+        -- A little hacky but the version output is weird and we want to coerce
+        -- it to markdown, so we give the verstion line a # and then strip the
+        -- other lines of their #
+        if util.starts_with(s, "#") then
+          table.insert(output, s:sub(2))
+        else
+          table.insert(output, "# " .. s)
+        end
       end
     end
 
-    if config.settings.metals then
+    if config and config.settings.metals then
       table.insert(output, "")
       table.insert(output, "## Current settings")
       table.insert(output, "```json")
@@ -161,7 +163,7 @@ M.info = function()
     table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
     table.insert(output, string.format("  - nvim lsp log file: %s", lsp.get_log_path()))
     local loc_msg = "  - metals install location:"
-    if config.settings.metals.useGlobalExecutable then
+    if config and config.settings.metals.useGlobalExecutable then
       table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
     else
       table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))
@@ -271,31 +273,35 @@ M.did_focus = function()
 end
 
 M.find_in_dependency_jars = function()
-  local function send_request(mask, query)
-    lsp.buf_request(util.find_metals_buffer(), "metals/findTextInDependencyJars", {
-      options = { include = mask },
-      query = { pattern = query },
-    })
-  end
+  local metals_buf = util.find_metals_buffer()
 
-  local function get_query_and_send(mask)
+  if metals_buf then
+    local function send_request(mask, query)
+      lsp.buf_request(metals_buf, "metals/findTextInDependencyJars", {
+        options = { include = mask },
+        query = { pattern = query },
+      })
+    end
+
+    local function get_query_and_send(mask)
+      vim.ui.input({
+        prompt = "Query: ",
+      }, function(query)
+        if query ~= nil then
+          send_request(mask, query)
+        end
+      end)
+    end
+
     vim.ui.input({
-      prompt = "Query: ",
-    }, function(query)
-      if query ~= nil then
-        send_request(mask, query)
+      prompt = "File mask: ",
+      default = ".conf",
+    }, function(mask)
+      if mask ~= nil then
+        get_query_and_send(mask)
       end
     end)
   end
-
-  vim.ui.input({
-    prompt = "File mask: ",
-    default = ".conf",
-  }, function(mask)
-    if mask ~= nil then
-      get_query_and_send(mask)
-    end
-  end)
 end
 
 M.organize_imports = function()
