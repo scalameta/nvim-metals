@@ -49,9 +49,11 @@ local function handle_status(status)
   local type = status.statusType
   if status.hide then
     set_status("", type)
+    vim.cmd.redrawstatus()
   else
     if status.text then
       set_status(status.text, type)
+      vim.cmd.redrawstatus()
     end
 
     -- This status actually appears a lot in external sources, but really isn't
