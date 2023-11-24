@@ -63,4 +63,7 @@ You recieved a null response for the tree view.
 If you're using Scala 3, this is expected as it's not support yet.
 If you're using Scala 2, please create an issue for this in nvim-metals.]]
 
+M.enable_test_explorer = [[
+You can't use this command unless you have "Test Explorer" set as the value of testUserInterface in your config.
+You can read more about this in :h metals-nvim-dap.]]
 return M
