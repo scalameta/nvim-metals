@@ -134,6 +134,7 @@ local valid_metals_settings = {
   "showInferredType",
   "superMethodLensesEnabled",
   "testUserInterface",
+  "verboseCompilation",
 }
 
 -- We keep these separated from the `valid_metals_settings` just for clarity.

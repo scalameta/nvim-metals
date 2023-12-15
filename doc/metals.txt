@@ -168,6 +168,7 @@ _ones that are sent and used by the server_
   * |ammoniteJvmProperties|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
+  * |enableSemanticHighlighting|
   * |excludedPackages|
   * |fallbackScalaVersion|
   * |gradleScript|
@@ -187,7 +188,7 @@ _ones that are sent and used by the server_
   * |showImplicitConversionsAndClasses|
   * |showInferredType|
   * |superMethodLensesEnabled|
-  * |enableSemanticHighlighting|
+  * |verboseCompilation|
 
 _ones that are used internally by `nvim-metals`_
   * |disabledMode|
@@ -249,6 +250,15 @@ workspace until you close it. NOTE: The choice isn't persisted, so you need to
 continually do this every time you want to use it even in the same workspace.
 If people _actually_ use this setting and want that, submit a feature request,
 if not it's not worth the extra work.
+
+enableSemanticHighlighting                          *enableSemanticHighlighting* 
+
+Type: boolean ~
+Default: true ~
+
+When this option is enabled, Metals will provide semantic tokens for clients
+that support it. The feature is still experimental and does not work for
+all sources.
 
 excludedPackages                                              *excludedPackages*
 
@@ -474,16 +484,6 @@ Default: true ~
 When enabled Metals will populate code lenses for you to navigate to the
 parent/super methods of members.
 
-
-enableSemanticHighlighting                          *enableSemanticHighlighting* 
-
-Type: boolean ~
-Default: true ~
-
-When this option is enabled, Metals will provide semantic tokens for clients
-that support it. The feature is still experimental and does not work for
-all sources.
-
                                                            *useGlobalExecutable*
 Type: boolean ~
 Default: false ~
@@ -494,6 +494,14 @@ this, you are fully taking control of updating and installing Metals. Unless
 there is a specific reason that you want to manage your own version and
 install manually, then I'd recommend not using this setting and just letting
 `nvim-metals` handle it.
+
+                                                            *verboseCompilation*
+Type: boolean ~
+Default: false ~
+
+If a build server supports it (for example Bloop or Scala CLI), setting it to
+true will make the logs contain all the possible debugging information
+including that about incremental compilation in Zinc.
 
 ================================================================================
 COMMANDS                                                       *metals-commands*
