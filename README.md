@@ -34,20 +34,12 @@ v.0.9.x or newer. If you're still on v0.8.x then you'll want to target the
 - Unfamiliar with Lua and Neovim? Check out the great
     [`:h lua-guide`](https://neovim.io/doc/user/lua-guide.html#lua-guide).
 
-## Installation
+## Getting started
 
 _NOTE_: This plugin works without needing to install
 [neovim/nvim-lspconfig](https://github.com/neovim/nvim-lspconfig). If you have
 it installed for other languages, that's not a problem, but make sure you do not
 have Metals configured through `nvim-lspconfig` while using this plugin.[^no-lspconfig]
-
-Example if using [`packer`](https://github.com/wbthomason/packer.nvim):
-
-```lua
-use({'scalameta/nvim-metals', requires = { "nvim-lua/plenary.nvim" }})
-```
-
-## Getting started
 
 - You can find a full [minimal example configuration
     here](https://github.com/scalameta/nvim-metals/discussions/39).
