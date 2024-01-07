@@ -110,7 +110,7 @@ local function install_or_update(sync)
 
   local coursier_exe = conf.check_for_coursier()
   if not coursier_exe then
-    log.error_and_show(messages.coursier_installed)
+    log.error_and_show(messages.coursier_not_installed)
     return
   end
 
