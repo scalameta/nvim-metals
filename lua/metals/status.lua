@@ -17,31 +17,6 @@ local function set_status(status, type)
   vim.api.nvim_set_var(status_var, scaped_status)
 end
 
-local function prompt_command(status)
-  vim.ui.select({ "yes", "no" }, {
-    prompt = string.format(
-      "%s\nThere is a %s command attatched to this, would you like to execute it?",
-      status.tooltip,
-      status.command
-    ),
-  }, function(choice)
-    if choice == "yes" then
-      local client = vim.lsp.get_client_by_id(status.client_id)
-      local fn = client.commands[status.command]
-      if fn then
-        fn(status.command, { bufnr = status.bufnr, client_id = status.client_id })
-      else
-        log.error_and_show(
-          string.format(
-            "It seems we don't implement %s as a client command. We should, tell Chris to fix this.",
-            status.command
-          )
-        )
-      end
-    end
-  end)
-end
-
 -- Used to handle the full status response from Metals
 -- @param status (table) this is the normal status table as described in the
 --                       metals docs as well as the bufnr and client_id.
@@ -56,15 +31,14 @@ local function handle_status(status)
       vim.cmd.redrawstatus()
     end
 
-    -- This status actually appears a lot in external sources, but really isn't
-    -- a huge deal. In other editors like VS Code its fine becasue it doesn't
-    -- steal your focus, but in nvim it does causing you to have to hit enter.
-    -- Because of that when we see it we just ignore it.
-    local annoyingMessage = "This external library source has compile errors."
+    -- NOTE: I decided not to show this to the user since it's causing too many problems always
+    -- popping up and not providing any value.
+    -- I've yet to find a good way to support the status tooltips that don't steal the focus, but
+    -- allow you to select them if you choose. For now, we'll just comment it out and log them
+    -- to see if the amount of people complaining about the popups goes away and if no other issues
+    -- surface.
     if status.command and status.tooltip then
-      prompt_command(status)
-    elseif status.tooltip and not string.find(status.tooltip, annoyingMessage) and not type == "bsp" then
-      log.warn_and_show(status.tooltip)
+      log.warn(status.tooltip)
     end
   end
 end
