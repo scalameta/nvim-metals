@@ -39,7 +39,12 @@ describe("decorations", function()
     local hover_contents = vim.api.nvim_buf_get_lines(bufs_after[#bufs_after], 0, 1, true)
 
     assert.are.same(1, #hover_contents)
-    assert.are.same("x: Int 1", hover_contents[1])
+
+    -- A bit hacky but the next iteration of Neovim changes this a bit and just to make it easy
+    -- we check for both and just assert that it's one of the two. Once the new minor version of
+    -- Neovim comes out we can ditch this and instead check the entire contents.
+    local hover_result = hover_contents[1] == "x: Int 1" or hover_contents[1] == "```scala"
+    assert.are.same(true, hover_result)
   end)
 
   it("should be able to clear and replace existing decorations", function()
@@ -53,6 +58,11 @@ describe("decorations", function()
     local hover_contents = vim.api.nvim_buf_get_lines(bufs_after[#bufs_after], 0, 1, true)
 
     assert.are.same(1, #hover_contents)
-    assert.are.same("x: Int 2", hover_contents[1])
+
+    -- A bit hacky but the next iteration of Neovim changes this a bit and just to make it easy
+    -- we check for both and just assert that it's one of the two. Once the new minor version of
+    -- Neovim comes out we can ditch this and instead check the entire contents.
+    local hover_result = hover_contents[1] == "x: Int 2" or hover_contents[1] == "```scala"
+    assert.are.same(true, hover_result)
   end)
 end)
