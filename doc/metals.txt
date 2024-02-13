@@ -98,13 +98,23 @@ connect here, which you probably don't want. However, if you're primarily
 using Scala and also have _some_ Java to deal with, then ensuring that `java`
 is listed here is important or else Metals won't attach on Java files.
 
-NOTE: It's highly recommended to set your `statusBarProvider` to `on`. This
-enables `metals/status` and also other helpful messages that are shown to you.
-However, to enable this you _must_ have the metals status shown in your status
-bar somehow. This can be achieved by just accessing it with Lua via
-`vim.g['metals_status']`. Everything will still work without this, but the
-status messages and feedback that you will get will be much less. You can
-enable the `statusBarProvider` like shown below: >
+NOTE: It's highly recommended to set your `statusBarProvider` to either `"on"`
+or `"off"`. By default it's set to `"show-message"` to ensure that anyone
+starting out will see the messages, but this will *not* give you the best user
+experience.
+
+If you set it to `"off"`, you're telling Metals to use the default LSP
+progress mechanism. If you do this, you'll need to ensure you have a plugin
+installed that handles progress like https://github.com/j-hui/fidget.nvim, for
+example. This is the recommended way.
+
+If you set this to `"on"` it enables `metals/status`, which as a
+Metals-specific LSP extension for status messages that nvim-metals makes
+limited support of. However, to enable this you _must_ have the metals status
+shown in your status bar somehow. This can be achieved by just accessing it
+with Lua via `vim.g['metals_status']`.
+
+You can chage the value of `statusBarProvider` like shown below: >
 
   metals_config = require("metals").bare_config()
   metals_config.init_options.statusBarProvider = "on"
@@ -1172,7 +1182,9 @@ things that `nvim-metals` is providing you.
 
                                                              *['metals/status']*
 ['metals/status']({err}, {method}, {result})
-                          Used to enable handling of |metals/status|
+                          Used to enable handling of |metals/status|. NOTE:
+                          that `statusBarProvider` must be turned `"on"` for
+                          this to do anything.
 
                           Parameters:
                           {err}    Error
@@ -1189,7 +1201,7 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsstatus
 
                           Parameters:
                           {err}    Error
-                          {method} metals/status
+                          {method} metals/inputBox
                           {result} MetalsInputBoxParams
 
 The spec for this can be found here:
@@ -1202,7 +1214,7 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsinputbox
 
                           Parameters:
                           {err}    Error
-                          {method} metals/status
+                          {method} metals/quickPick
                           {result} MetalsQuickPickParams
 
 The spec for this can be found here:
@@ -1216,7 +1228,7 @@ https://scalameta.org/metals/docs/integrations/new-editor/#metalsquickpick
 
                           Parameters:
                           {err}    Error
-                          {method} metals/status
+                          {method} metals/executeClientCommand
                           {result} MetalsQuickPickParams
 
 The spec for this can be found here:
