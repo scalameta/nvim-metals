@@ -26,9 +26,9 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       env:
-        VERSION: "0.25.0"
+        VERSION: "0.26.1"
         # shashum -a 256 selene-<version>-linux.zip
-        SHA256_CHECKSUM: "39ca20f88a5e1c552854c30214129fdce0f8282c0d181d1d6268c85a6735ce37"
+        SHA256_CHECKSUM: "406697af6a13027a0f95fd65a790ca0b496a28ede4d7355f4b04ebf1d640134e"
 
     - name: Run selene
       run: make lint
@@ -44,7 +44,7 @@ jobs:
       uses: JohnnyMorganz/stylua-action@v3.0.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        version: 0.19.0
+        version: 0.20.0
         args: --check lua/
 
   test:
