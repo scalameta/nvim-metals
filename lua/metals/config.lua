@@ -171,7 +171,7 @@ local function toggle_logs()
   local bufs = api.nvim_list_bufs()
 
   for _, buf in ipairs(bufs) do
-    local buftype = api.nvim_buf_get_option(buf, "buftype")
+    local buftype = api.nvim_get_option_value("buftype", { buf = buf })
     local _, purpose = pcall(api.nvim_buf_get_var, buf, "metals_buf_purpose")
     if buftype == "terminal" and purpose == "logs" then
       local first_window_id = fn.win_findbuf(buf)[1]
@@ -192,6 +192,7 @@ local function toggle_logs()
     -- -n here allows for the last 100 lines to also be shown.
     -- Useful if you hit on an issue and first then toggle the logs.
     api.nvim_command(cmd)
+
     vim.b["metals_buf_purpose"] = "logs"
   else
     log.warn_and_show(string.format("Unable to find logs file where expected at '%s'", logs_location.filename))
