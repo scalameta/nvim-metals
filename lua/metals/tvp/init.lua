@@ -99,12 +99,12 @@ local function create_tvp_panel()
   local win_id = api.nvim_get_current_win()
   local bufnr = api.nvim_get_current_buf()
 
-  api.nvim_win_set_option(win_id, "spell", false)
-  api.nvim_win_set_option(win_id, "number", false)
-  api.nvim_win_set_option(win_id, "relativenumber", false)
-  api.nvim_win_set_option(win_id, "cursorline", false)
-  api.nvim_buf_set_option(bufnr, "filetype", "tvp")
-  api.nvim_buf_set_option(bufnr, "buftype", "nofile")
+  api.nvim_set_option_value("spell", false, { win = win_id })
+  api.nvim_set_option_value("number", false, { win = win_id })
+  api.nvim_set_option_value("relativenumber", false, { win = win_id })
+  api.nvim_set_option_value("cursorline", false, { win = win_id })
+  api.nvim_set_option_value("filetype", "tvp", { buf = bufnr })
+  api.nvim_set_option_value("buftype", "nofile", { buf = bufnr })
 
   return {
     bufnr = bufnr,
@@ -222,9 +222,9 @@ function Tree:set_lines(start_idx, end_idx, lines)
   -- ever becomes an issue it may be better to _only_ update the nodes that
   -- have changed and their children. For now this seems fast enough to just
   -- not care
-  api.nvim_buf_set_option(self.bufnr, "modifiable", true)
+  api.nvim_set_option_value("modifiable", true, { buf = self.bufnr })
   api.nvim_buf_set_lines(self.bufnr, start_idx, end_idx, true, lines)
-  api.nvim_buf_set_option(self.bufnr, "modifiable", false)
+  api.nvim_set_option_value("modifiable", false, { buf = self.bufnr })
 end
 
 local function get_sign(node)
