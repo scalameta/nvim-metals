@@ -114,6 +114,7 @@ local valid_metals_settings = {
   "autoImportBuild",
   "bloopSbtAlreadyInstalled",
   "bloopVersion",
+  "defaultBspToBuildTool",
   "enableSemanticHighlighting",
   "excludedPackages",
   "fallbackScalaVersion",
