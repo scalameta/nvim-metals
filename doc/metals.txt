@@ -176,6 +176,7 @@ All available settings:
 
 _ones that are sent and used by the server_
   * |ammoniteJvmProperties|
+  * |autoImportBuild|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
   * |enableSemanticHighlighting|
@@ -218,6 +219,19 @@ Optional list of JVM properties to pass along to the Ammonite server. Each
 property needs to be a separate item. >
   {"-Xmx1G", "-Xms100M"}
 <
+
+autoImportBuild                                                *autoImportBuild*
+
+Type: string ~
+Default: "off" ~
+
+Automatically import your build instead of recieving a prompt to ask you.
+
+"initial" means that your build will only be automatically be imported upon
+first opening a project.
+
+"all" means that your build will just always be automatically imported or
+reloaded upon detected changes.
 
 bloopSbtAlreadyInstalled                              *bloopSbtAlreadyInstalled*
 
