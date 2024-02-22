@@ -179,6 +179,7 @@ _ones that are sent and used by the server_
   * |autoImportBuild|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
+  * |defaultBspToBuildTool|
   * |enableSemanticHighlighting|
   * |excludedPackages|
   * |fallbackScalaVersion|
@@ -259,6 +260,14 @@ Default: 'Conceal' ~
 The highlight group that will be used to show decorations. For example, this
 will change the way worksheet evaluations are displayed in `*.worksheet.sc`
 file.
+
+defaultBspToBuildTool                                    *defaultBspToBuildTool*
+
+Type: boolean ~
+Default: false ~
+
+When your build tool can also serve as your build server, default to using it
+for BSP. The default is Bloop for build tools that Bloop supports.
 
                                                                   *disabledMode*
 Type: boolean ~
