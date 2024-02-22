@@ -111,6 +111,7 @@ local metals_init_options = {
 -- so they are just passed along.
 local valid_metals_settings = {
   "ammoniteJvmProperties",
+  "autoImportBuild",
   "bloopSbtAlreadyInstalled",
   "bloopVersion",
   "enableSemanticHighlighting",
