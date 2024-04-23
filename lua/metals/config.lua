@@ -318,7 +318,7 @@ local function validate_config(config, bufnr)
   -- custom patters to be passed in without doing the entire root_dir logic
   -- yourself.
   config.root_patterns = config.root_patterns
-    or { "build.sbt", "build.sc", "build.gradle", "pom.xml", ".scala-build", "bleep.yaml", ".git" }
+    or { "build.sbt", "build.sc", "build.gradle", "build.gradle.kts", "pom.xml", ".scala-build", "bleep.yaml", ".git" }
 
   local bufname = api.nvim_buf_get_name(bufnr)
 
