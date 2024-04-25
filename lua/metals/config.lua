@@ -391,7 +391,10 @@ local function validate_config(config, bufnr)
   else
     local user_on_attach = config.on_attach
     config.on_attach = function(client, _bufnr)
-      user_on_attach(client, _bufnr)
+      local ok, res = pcall(user_on_attach, client, _bufnr)
+      if not ok then
+        log.error_and_show(string.format("Unexpected error when evaluating user's on_attach callback: '%s'", res))
+      end
       auto_commands()
     end
   end
