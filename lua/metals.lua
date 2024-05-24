@@ -306,7 +306,7 @@ M.find_in_dependency_jars = function()
 end
 
 M.organize_imports = function()
-  local lsp_clients = lsp.get_active_clients({ bufnr = 0, name = "metals" })
+  local lsp_clients = lsp.get_clients({ bufnr = 0, name = "metals" })
   if not lsp_clients or vim.tbl_isempty(lsp_clients) then
     log.warn_and_show("Metals is not attatched to this buffer, so unable to organize imports.")
     return
@@ -335,7 +335,7 @@ end
 M.restart_metals = function()
   for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
     if vim.tbl_contains(conf.scala_file_types, api.nvim_get_option_value("filetype", { buf = buf.bufnr })) then
-      local clients = lsp.get_active_clients({ buffer = buf.bufnr, name = "metals" })
+      local clients = lsp.get_clients({ buffer = buf.bufnr, name = "metals" })
       for _, client in ipairs(clients) do
         client.stop()
       end
