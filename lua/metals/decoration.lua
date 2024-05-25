@@ -23,7 +23,7 @@ M.set_decoration = function(bufnr, decoration)
 
   if decoration.hoverMessage then
     local hover_message = lsp.util.convert_input_to_markdown_lines(decoration.hoverMessage, {})
-    hover_message = lsp.util.trim_empty_lines(hover_message)
+    hover_message = vim.split(table.concat(hover_message, "\n"), "\n", { trimempty = true })
 
     hover_messages[ext_id] = hover_message
   end
