@@ -122,83 +122,59 @@ M.generate_bsp_config = function()
   execute_command({ command = "metals.generate-bsp-config" })
 end
 
--- Capture info about the currently installed Metals and display it in a
--- floating window.
+-- Capture info about your Metals settings and display it in a floating window.
 M.info = function()
   local config = conf.get_config_cache()
-  if not util.has_bins(conf.metals_bin()) and config and config.settings.metals.useGlobalExecutable then
-    log.error_and_show(messages.use_global_set_but_cant_find)
-  elseif not util.has_bins(conf.metals_bin()) and config and config.settings.metals.metalsBinaryPath then
-    log.error_and_show(messages.binary_path_set_but_cant_find)
-  elseif not util.has_bins(conf.metals_bin()) then
-    log.warn_and_show(messages.metals_not_installed)
-  else
-    local output = {}
+  local output = {}
 
-    local metals_info = fn.system(conf.metals_bin() .. " --version")
-    if metals_info then
-      for s in metals_info:gmatch("[^\r\n]+") do
-        -- A little hacky but the version output is weird and we want to coerce
-        -- it to markdown, so we give the verstion line a # and then strip the
-        -- other lines of their #
-        if util.starts_with(s, "#") then
-          table.insert(output, s:sub(2))
-        else
-          table.insert(output, "# " .. s)
-        end
-      end
+  if config and config.settings.metals then
+    table.insert(output, "## Current settings")
+    table.insert(output, "```json")
+    for s in vim.inspect(config.settings.metals):gmatch("[^\r\n]+") do
+      table.insert(output, s)
     end
-
-    if config and config.settings.metals then
-      table.insert(output, "")
-      table.insert(output, "## Current settings")
-      table.insert(output, "```json")
-      for s in vim.inspect(config.settings.metals):gmatch("[^\r\n]+") do
-        table.insert(output, s)
-      end
-      table.insert(output, "```")
-    end
-    table.insert(output, "")
-    table.insert(output, "## Useful locations")
-    table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
-    table.insert(output, string.format("  - nvim lsp log file: %s", lsp.get_log_path()))
-    local loc_msg = "  - metals install location:"
-    if config and config.settings.metals.useGlobalExecutable then
-      table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
-    else
-      table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))
-    end
-    table.insert(output, "")
-    table.insert(output, "## Helpful links")
-    table.insert(output, "  - https://discord.gg/FaVDrJegEh")
-    table.insert(output, "  - https://matrix.to/#/#scalameta:vim-users")
-    table.insert(output, "  - https://github.com/scalameta/nvim-metals")
-    table.insert(output, "  - https://github.com/scalameta/metals")
-
-    output = vim.split(table.concat(output, "\n"), "\n", { trimempty = true })
-
-    local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
-      title = "Metals Info",
-      titlehighlight = "MetalsTitle",
-      topleft = "┌",
-      topright = "┐",
-      top = "─",
-      left = "│",
-      right = "│",
-      botleft = "└",
-      botright = "┘",
-      bot = "─",
-    })
-    -- It's seemingly impossibly to get the hl to work for me with Float, so we
-    -- just manually set them here.
-    api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.win_id })
-    api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.border_win_id })
-
-    api.nvim_set_option_value("filetype", "markdown", { buf = float.bufnr })
-    api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
-    api.nvim_buf_set_keymap(float.bufnr, "n", "q", "<cmd>close!<CR>", { nowait = true, noremap = true, silent = true })
-    api.nvim_set_option_value("readonly", true, { buf = float.bufnr })
+    table.insert(output, "```")
   end
+  table.insert(output, "")
+  table.insert(output, "## Useful locations")
+  table.insert(output, string.format("  - nvim-metals log file: %s", log.nvim_metals_log))
+  table.insert(output, string.format("  - nvim lsp log file: %s", lsp.get_log_path()))
+  local loc_msg = "  - metals install location:"
+  if config and config.settings.metals.useGlobalExecutable then
+    table.insert(output, string.format("%s %s", loc_msg, "Using metals executable on $PATH"))
+  else
+    table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))
+  end
+  table.insert(output, "")
+  table.insert(output, "## Helpful links")
+  table.insert(output, "  - https://discord.gg/FaVDrJegEh")
+  table.insert(output, "  - https://matrix.to/#/#scalameta:vim-users")
+  table.insert(output, "  - https://github.com/scalameta/nvim-metals")
+  table.insert(output, "  - https://github.com/scalameta/metals")
+
+  output = vim.split(table.concat(output, "\n"), "\n", { trimempty = true })
+
+  local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
+    title = "Metals Info",
+    titlehighlight = "MetalsTitle",
+    topleft = "┌",
+    topright = "┐",
+    top = "─",
+    left = "│",
+    right = "│",
+    botleft = "└",
+    botright = "┘",
+    bot = "─",
+  })
+  -- It's seemingly impossibly to get the hl to work for me with Float, so we
+  -- just manually set them here.
+  api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.win_id })
+  api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.border_win_id })
+
+  api.nvim_set_option_value("filetype", "markdown", { buf = float.bufnr })
+  api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
+  api.nvim_buf_set_keymap(float.bufnr, "n", "q", "<cmd>close!<CR>", { nowait = true, noremap = true, silent = true })
+  api.nvim_set_option_value("readonly", true, { buf = float.bufnr })
 end
 
 M.toggle_logs = conf.toggle_logs
