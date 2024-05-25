@@ -175,7 +175,7 @@ M.info = function()
     table.insert(output, "  - https://github.com/scalameta/nvim-metals")
     table.insert(output, "  - https://github.com/scalameta/metals")
 
-    output = lsp.util.trim_empty_lines(output)
+    output = vim.split(table.concat(output, "\n"), "\n", { trimempty = true })
 
     local float = Float.percentage_range_window(0.6, 0.4, { winblend = 0 }, {
       title = "Metals Info",
