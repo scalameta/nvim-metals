@@ -184,6 +184,7 @@ _ones that are sent and used by the server_
   * |excludedPackages|
   * |fallbackScalaVersion|
   * |gradleScript|
+  * |inlayHints|
   * |javaFormat.eclipseConfigPath|
   * |javaFormat.eclipseProfile|
   * |javaHome|
@@ -347,6 +348,21 @@ and Ammonite scripts.
 Note: Setting this to a higher version than Metals currently supports won't
 work and you'll just get a warning. So don't be cheeky and think you can bump
 faster than Metals can by using this.
+
+inlayHints                                                          *inlayHints*
+
+Type: table ~
+Default: {} ~
+
+Table of inlay hints to enable. >
+  {
+    hintsInPatternMatch = { enable = true },
+    implicitArguments = { enable = true },
+    implicitConversions = { enable = true },
+    inferredTypes = { enable = true },
+    typeParameters = { enable = true },
+  }
+<
 
 javaFormat.eclipseConfigPath                      *javaFormat.eclipseConfigPath*
 
