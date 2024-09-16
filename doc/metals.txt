@@ -158,7 +158,7 @@ example below shows: >
 
   metals_config = require("metals").bare_config()
   metals_config.settings = {
-    showImplicitArguments = true,
+    verboseCompilation = true,
     excludedPackages = {
       "akka.actor.typed.javadsl",
       "com.github.swagger.akka.javadsl"
@@ -184,6 +184,7 @@ _ones that are sent and used by the server_
   * |excludedPackages|
   * |fallbackScalaVersion|
   * |gradleScript|
+  * |inlayHints|
   * |javaFormat.eclipseConfigPath|
   * |javaFormat.eclipseProfile|
   * |javaHome|
@@ -196,9 +197,6 @@ _ones that are sent and used by the server_
   * |scalafixRulesDependencies|
   * |scalafmtConfigPath|
   * |serverProperties|
-  * |showImplicitArguments|
-  * |showImplicitConversionsAndClasses|
-  * |showInferredType|
   * |superMethodLensesEnabled|
   * |verboseCompilation|
 
@@ -348,6 +346,21 @@ Note: Setting this to a higher version than Metals currently supports won't
 work and you'll just get a warning. So don't be cheeky and think you can bump
 faster than Metals can by using this.
 
+inlayHints                                                          *inlayHints*
+
+Type: table ~
+Default: {} ~
+
+Table of inlay hints to enable. >
+  {
+    hintsInPatternMatch = { enable = true },
+    implicitArguments = { enable = true },
+    implicitConversions = { enable = true },
+    inferredTypes = { enable = true },
+    typeParameters = { enable = true },
+  }
+<
+
 javaFormat.eclipseConfigPath                      *javaFormat.eclipseConfigPath*
 
 Type: string ~
@@ -471,30 +484,6 @@ changed you need to do a |:MetalsInstall| or |:MetalsUpdate| again to ensure
 that it is installed. If you need to check what version you're currently
 using, you can use the |MetalsInfo| command. NOTE: that `latest.snapshot` is
 also available as a value to install whatever the latest snapshot is.
-
-showImplicitArguments                                    *showImplicitArguments*
-
-Type: boolean ~
-Default: false ~
-
-When this option is enabled, each method that has implicit arguments has them
-displayed as extra info in the hover.
-
-showImplicitConversionsAndClasses            *showImplicitConversionsAndClasses*
-
-Type: boolean ~
-Default: false ~
-
-When this option is enabled, each place where an implicit method or class is
-used has it displayed as extra info in the hover.
-
-showInferredType                                              *showInferredType*
-
-Type: boolean ~
-Default: false ~
-
-When this option is enabled, each method that can have inferred types has them
-displayed as extra info in the hover.
 
 serverProperties                                              *serverProperties*
 
@@ -1124,7 +1113,7 @@ toggle_setting({setting})
 
                            Example usage: >
 
-    lua require("metals").toggle_setting("showImplicitArguments")
+    lua require("metals").toggle_setting("verboseCompilation")
 <
 
                                                                 *type_of_range()*

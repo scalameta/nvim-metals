@@ -45,12 +45,12 @@ describe("config", function()
   it("should persist the config in cache", function()
     local bare_config = require("metals.setup").bare_config()
     bare_config.settings = {
-      showImplicitArguments = true,
+      verboseCompilation = true,
     }
 
     local valid_config = config.validate_config(bare_config, current_buf)
 
-    eq(valid_config.settings, { metals = { superMethodLensesEnabled = true, showImplicitArguments = true } })
+    eq(valid_config.settings, { metals = { superMethodLensesEnabled = true, verboseCompilation = true } })
 
     local cache = config.get_config_cache()
 

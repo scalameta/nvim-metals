@@ -119,6 +119,7 @@ local valid_metals_settings = {
   "excludedPackages",
   "fallbackScalaVersion",
   "gradleScript",
+  "inlayHints",
   "javaFormat.eclipseConfigPath",
   "javaFormat.eclipseProfile",
   "javaHome",
