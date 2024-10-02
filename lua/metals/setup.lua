@@ -120,19 +120,31 @@ local function setup_dap(execute_command)
     end
 
     if config.request == "attach" then
-      callback({
-        type = "server",
-        host = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
-        port = assert(config.port, "`port` is required for a scala `attach` configuration."),
-        options = {
-          initialize_timeout_sec = 10,
+      execute_command({
+        command = "metals.debug-adapter-start",
+        arguments = {
+          hostName = config.hostName,
+          port = config.port,
+          buildTarget = config.buildTarget,
         },
-        enrich_config = function(_config, on_config)
-          local final_config = vim.deepcopy(_config)
-          final_config.metals = nil
-          on_config (final_config)
-        end,
-      })
+      }, function(_, _, res)
+        if res then
+          callback({
+            type = "server",
+            host = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
+            hostName = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
+            port = assert(config.port, "`port` is required for a scala `attach` configuration."),
+            options = {
+              initialize_timeout_sec = 10,
+            },
+            enrich_config = function(_config, on_config)
+              local final_config = vim.deepcopy(_config)
+              final_config.metals = nil
+              on_config (final_config)
+            end,
+          })
+        end
+      end)
     else
       execute_command({
         command = "metals.debug-adapter-start",
