@@ -119,35 +119,51 @@ local function setup_dap(execute_command)
       end
     end
 
-    execute_command({
-      command = "metals.debug-adapter-start",
-      arguments = arguments,
-    }, function(_, _, res)
-      -- In metals we throw various exceptions when handling
-      -- debug-adapter-start but they are all handled and status messages are
-      -- given to the client, so they aren't errors here. That's why we don't
-      -- really capture or care about the err and instead just make sure res is
-      -- there and not null.
-      if res then
-        local port = util.split_on(res.uri, ":")[3]
+    if config.request == "attach" then
+      callback({
+        type = "server",
+        host = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
+        port = assert(config.port, "`port` is required for a scala `attach` configuration."),
+        options = {
+          initialize_timeout_sec = 10,
+        },
+        enrish_config = function(_config, on_config)
+          local final_config = vim.deepcopy(_config)
+          final_config.metals = nil
+          on_config (final_config)
+        end,
+      })
+    else
+      execute_command({
+        command = "metals.debug-adapter-start",
+        arguments = arguments,
+      }, function(_, _, res)
+        -- In metals we throw various exceptions when handling
+        -- debug-adapter-start but they are all handled and status messages are
+        -- given to the client, so they aren't errors here. That's why we don't
+        -- really capture or care about the err and instead just make sure res is
+        -- there and not null.
+        if res then
+          local port = util.split_on(res.uri, ":")[3]
 
-        callback({
-          type = "server",
-          host = "127.0.0.1",
-          port = port,
-          options = {
-            -- The default in nvim-dap is 4, which is too short for Metals.
-            initialize_timeout_sec = 10,
-          },
-          enrich_config = function(_config, on_config)
-            local final_config = vim.deepcopy(_config)
-            -- Just in case strip this out since it's metals-specific
-            final_config.metals = nil
-            on_config(final_config)
-          end,
-        })
-      end
-    end)
+          callback({
+            type = "server",
+            host = "127.0.0.1",
+            port = port,
+            options = {
+              -- The default in nvim-dap is 4, which is too short for Metals.
+              initialize_timeout_sec = 10,
+            },
+            enrich_config = function(_config, on_config)
+              local final_config = vim.deepcopy(_config)
+              -- Just in case strip this out since it's metals-specific
+              final_config.metals = nil
+              on_config(final_config)
+            end,
+          })
+        end
+      end)
+    end
   end
 end
 
