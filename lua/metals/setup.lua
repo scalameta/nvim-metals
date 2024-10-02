@@ -127,7 +127,7 @@ local function setup_dap(execute_command)
         options = {
           initialize_timeout_sec = 10,
         },
-        enrish_config = function(_config, on_config)
+        enrich_config = function(_config, on_config)
           local final_config = vim.deepcopy(_config)
           final_config.metals = nil
           on_config (final_config)
