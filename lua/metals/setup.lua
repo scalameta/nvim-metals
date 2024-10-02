@@ -132,7 +132,6 @@ local function setup_dap(execute_command)
           callback({
             type = "server",
             host = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
-            hostName = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
             port = assert(config.port, "`port` is required for a scala `attach` configuration."),
             options = {
               initialize_timeout_sec = 10,
