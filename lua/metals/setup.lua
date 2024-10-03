@@ -103,13 +103,9 @@ local function setup_dap(execute_command)
     local arguments = {}
     if config.request == "attach" then
       arguments = {
-        name = config.name,
-        request = config.request,
-        type = config.type,
-        host = config.hostName or "127.0.0.1",
+        hostName = config.hostName or "127.0.0.1",
         port = assert(config.port, "`port` is required for a scala `attach` configuration."),
         buildTarget = config.buildTarget,
-      -- __configurationTarget = 6,
       }
     elseif config.name == "from_lens" or config.name == "Run Test" then
       arguments = config.metals
