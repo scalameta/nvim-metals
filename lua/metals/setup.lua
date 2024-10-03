@@ -103,9 +103,15 @@ local function setup_dap(execute_command)
     local arguments = {}
     if config.request == "attach" then
       arguments = {
+        path = vim.uri_from_bufnr(0),
         host = config.hostName or "127.0.0.1",
         port = assert(config.port, "`port` is required for a scala `attach` configuration."),
         buildTarget = config.buildTarget,
+        args = {
+          host = config.hostName or "127.0.0.1",
+          port = assert(config.port, "`port` is required for a scala `attach` configuration."),
+          buildTarget = config.buildTarget,
+        }
       }
     elseif config.name == "from_lens" or config.name == "Run Test" then
       arguments = config.metals
