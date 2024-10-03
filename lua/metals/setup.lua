@@ -143,7 +143,10 @@ local function setup_dap(execute_command)
       -- there and not null.
       print(vim.inspect(res))
       if res then
-        local port = util.split_on(res.uri, ":")[3]
+        local port = config.port
+        if res.uri then
+          port = util.split_on(res.uri, ":")[3]
+        end
 
         callback({
           type = "server",
