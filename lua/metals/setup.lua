@@ -101,7 +101,13 @@ local function setup_dap(execute_command)
 
   dap.adapters.scala = function(callback, config)
     local arguments = {}
-    if config.name == "from_lens" or config.name == "Run Test" then
+    if config.request == "attach" then
+      arguments = {
+        host = config.hostName or "127.0.0.1",
+        port = assert(config.port, "`port` is required for a scala `attach` configuration."),
+        buildTarget = config.buildTarget,
+      }
+    elseif config.name == "from_lens" or config.name == "Run Test" then
       arguments = config.metals
     else
       local metals_dap_settings = config.metals or {}
@@ -127,23 +133,7 @@ local function setup_dap(execute_command)
           port = config.port,
           buildTarget = config.buildTarget,
         },
-      }, function(_, _, res)
-        if res then
-          callback({
-            type = "server",
-            host = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
-            port = assert(config.port, "`port` is required for a scala `attach` configuration."),
-            options = {
-              initialize_timeout_sec = 10,
-            },
-            enrich_config = function(_config, on_config)
-              local final_config = vim.deepcopy(_config)
-              final_config.metals = nil
-              on_config (final_config)
-            end,
-          })
-        end
-      end)
+      })
     else
       execute_command({
         command = "metals.debug-adapter-start",
@@ -159,7 +149,7 @@ local function setup_dap(execute_command)
 
           callback({
             type = "server",
-            host = "127.0.0.1",
+            host = config.hostName or "127.0.0.1",
             port = port,
             options = {
               -- The default in nvim-dap is 4, which is too short for Metals.
