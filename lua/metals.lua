@@ -26,6 +26,7 @@ local M = {}
 -- @param command_params (optional, table) Parameters to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
+  print(vim.inspect(command_params))
   lsp.buf_request(0, "workspace/executeCommand", command_params, function(err, result, ctx)
     if callback then
       callback(err, ctx.method, result)
