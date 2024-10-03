@@ -1268,7 +1268,7 @@ metals configuration with the following `on_attach` function. >
 
 This will ensure that the correct |dap-adapter| is configured for Scala.
 
-From here, there are 2 main ways you can interact with `nvim-dap`. The first
+From here, there are 3 main ways you can interact with `nvim-dap`. The first
 requires no further setup and relies on code lenses. You'll notice that you
 will have `run` and `debug` code lenses on your main methods and `test` and
 `testDebug` code lenses on your test classes. By triggering these behind the
@@ -1289,6 +1289,10 @@ the metals table are as follows: >
   }
 <
 
+The final option is to attach to a remote debugger, here the expected
+configuration should match the vscode configuration, requiring a
+hostName, port, and buildTarget.
+
 NOTE: Keep in mind that if you are defining these configurations you'll want
 to trigger them with your dap mappings, not the code lenses.
 
@@ -1308,7 +1312,8 @@ The following run types are valid for Metals.
     run it or if there are tests in the file, run those)
 
 Below you can see an example of configurations, one for running or testing the
-current file and the other for testing the entire target. >
+current file, one for testing the entire target, and one for attaching to
+an existing remote debugger. >
 
   local dap = require("dap")
 
@@ -1329,6 +1334,14 @@ current file and the other for testing the entire target. >
         runType = "testTarget",
       },
     },
+    {
+      type = "scala",
+      request = "attach",
+      name = "Attach to Localhost",
+      hostName = "localhost",
+      port = 5005,
+      buildTarget = "root",
+    }
   }
 <
 You may also want to use the `Select Test Suite` and `Select Test Case`
