@@ -103,7 +103,7 @@ local function setup_dap(execute_command)
     local arguments = {}
     if config.request == "attach" then
       arguments = {
-        hostName = config.hostName or "127.0.0.1",
+        hostName = assert(config.hostName, "`hostName` is required for a scala `attach` configuration."),
         port = assert(config.port, "`port` is required for a scala `attach` configuration."),
         buildTarget = config.buildTarget,
       }
