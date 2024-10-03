@@ -137,14 +137,11 @@ local function setup_dap(execute_command)
       -- there and not null.
       print(vim.inspect(res))
       if res then
-        local port = config.port
-        if res.uri then
-          port = util.split_on(res.uri, ":")[3]
-        end
+        local port = util.split_on(res.uri, ":")[3]
 
         callback({
           type = "server",
-          host = config.hostName or "127.0.0.1",
+          host = "127.0.0.1",
           port = port,
           options = {
             -- The default in nvim-dap is 4, which is too short for Metals.
