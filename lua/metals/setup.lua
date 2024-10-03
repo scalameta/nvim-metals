@@ -131,7 +131,7 @@ local function setup_dap(execute_command)
 
     print(vim.inspect(arguments))
     execute_command({
-      command = "metals.debug-adapter-start",
+      command = "debug-adapter-start",
       arguments = arguments,
     }, function(_, _, res)
       -- In metals we throw various exceptions when handling
