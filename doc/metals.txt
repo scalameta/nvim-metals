@@ -1291,7 +1291,7 @@ the metals table are as follows: >
 
 The final option is to attach to a remote debugger, here the expected
 configuration should match the vscode configuration, requiring a
-hostName, port, and buildTarget.
+hostName, port, buildTarget, and setting request to "attach".
 
 NOTE: Keep in mind that if you are defining these configurations you'll want
 to trigger them with your dap mappings, not the code lenses.
