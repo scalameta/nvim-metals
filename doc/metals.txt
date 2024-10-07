@@ -100,7 +100,7 @@ is listed here is important or else Metals won't attach on Java files.
 
 NOTE: It's highly recommended to set your `statusBarProvider` to either `"on"`
 or `"off"`. By default it's set to `"show-message"` to ensure that anyone
-starting out will see the messages, but this will *not* give you the best user
+starting out will see the messages, but this will not give you the best user
 experience.
 
 If you set it to `"off"`, you're telling Metals to use the default LSP
