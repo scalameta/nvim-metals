@@ -26,11 +26,17 @@ local M = {}
 -- @param command_params (optional, table) Parameters to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
-  lsp.buf_request(0, "workspace/executeCommand", command_params, function(err, result, ctx)
-    if callback then
-      callback(err, ctx.method, result)
-    elseif err then
-      log.error_and_show(string.format("Could not execute command: %s", err.message))
+  lsp.buf_request_all(0, "workspace/executeCommand", command_params, function(responses)
+    local metals_id = util.find_metals_client_id()
+
+    for client_id, response in pairs(responses) do
+      if client_id ~= metals_id then
+        return
+      elseif callback then
+        callback(response.err, response.ctx.method, responses)
+      elseif response.err then
+        log.error_and_show(string.format("Could not execute command: %s", response.err.message))
+      end
     end
   end)
 end

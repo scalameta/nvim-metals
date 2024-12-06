@@ -99,6 +99,12 @@ end
 M.is_windows = vim.loop.os_uname().version:match("Windows")
 
 ---@return integer|nil
+M.find_metals_client_id = function()
+  local metals = vim.lsp.get_clients({ name = "metals" })
+  return metals[1].id or nil
+end
+
+---@return integer|nil
 M.find_metals_buffer = function()
   local metals_buf = nil
   local bufs = api.nvim_list_bufs()
