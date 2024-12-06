@@ -26,9 +26,9 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       env:
-        VERSION: "0.26.1"
+        VERSION: "0.27.1"
         # shashum -a 256 selene-<version>-linux.zip
-        SHA256_CHECKSUM: "406697af6a13027a0f95fd65a790ca0b496a28ede4d7355f4b04ebf1d640134e"
+        SHA256_CHECKSUM: "22dabfe070c6d10cbb0b8ae56a82abfa131fbb902bff03d9924f0f73fd3d3318"
 
     - name: Run selene
       run: make lint
@@ -44,7 +44,7 @@ jobs:
       uses: JohnnyMorganz/stylua-action@v4.0.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        version: 0.20.0
+        version: 2.0.1
         args: --check lua/
 
   test:
@@ -53,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        neovim_version: ['v0.10.0', 'nightly']
+        neovim_version: ['v0.10.2', 'nightly']
 
     steps:
       - uses: actions/checkout@v4
