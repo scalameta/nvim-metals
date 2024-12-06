@@ -26,9 +26,9 @@ jobs:
         echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       env:
-        VERSION: "0.26.1"
+        VERSION: "0.27.1"
         # shashum -a 256 selene-<version>-linux.zip
-        SHA256_CHECKSUM: "406697af6a13027a0f95fd65a790ca0b496a28ede4d7355f4b04ebf1d640134e"
+        SHA256_CHECKSUM: "22dabfe070c6d10cbb0b8ae56a82abfa131fbb902bff03d9924f0f73fd3d3318"
 
     - name: Run selene
       run: make lint
