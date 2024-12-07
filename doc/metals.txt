@@ -179,6 +179,7 @@ _ones that are sent and used by the server_
   * |autoImportBuild|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
+  * |bloopJvmProperties|
   * |defaultBspToBuildTool|
   * |enableSemanticHighlighting|
   * |excludedPackages|
@@ -250,6 +251,15 @@ Default: Whichever is included in your version of Metals ~
 This version will be used for the Bloop build tool plugin, for any supported
 build tool, while importing in Metals as well as for running the embedded
 server. More than likely you'll never need to use this.
+
+bloopJvmProperties                                          *bloopVjmProperties*
+
+Type: table as list ~
+Default: {} ~
+
+Optional list of JVM properties to pass along to the Bloop server. Please
+follow this guide for the format
+https://scalacenter.github.io/bloop/docs/server-reference#global-settings-for-the-server.
 
                                                                *decorationColor*
 Type: string ~
