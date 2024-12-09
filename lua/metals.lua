@@ -33,7 +33,8 @@ local function execute_command(command_params, callback)
       if client_id ~= metals_id then
         return
       elseif callback then
-        callback(response.err, response.ctx.method, responses)
+        local context = response.ctx and response.ctx.method or ""
+        callback(response.err, context, response)
       elseif response.err then
         log.error_and_show(string.format("Could not execute command: %s", response.err.message))
       end
