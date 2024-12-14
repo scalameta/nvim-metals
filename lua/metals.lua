@@ -536,4 +536,6 @@ M.commands = function()
   end)
 end
 
+M.fzf_menu = require("fzf-lua._extensions.metals")
+
 return M
