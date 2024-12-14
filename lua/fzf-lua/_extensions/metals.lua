@@ -25,19 +25,21 @@ local function run_selected(label)
   end
 end
 
-return function()
+return function(opts)
+  opts = opts or {}
+  opts.prompt = "Metals Commands> "
+  opts.previewer = false
+  opts.actions = {
+    ["default"] = function(sel)
+      run_selected(sel[1])
+    end,
+  }
+  opts.winopts = { width = 40, height = 12, fullscreen = false }
+
   local labels = {}
   for _, entry in ipairs(commands_table) do
     table.insert(labels, entry.label)
   end
 
-  return fzf.fzf_exec(labels, {
-    prompt = "Metals Commands> ",
-    previewer = false,
-    actions = {
-      ["default"] = function(sel)
-        run_selected(sel[1])
-      end,
-    },
-  })
+  return fzf.fzf_exec(labels, opts)
 end
