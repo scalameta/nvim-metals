@@ -94,7 +94,7 @@ To see the full details on the available configurations, checkout out `:help
 metals-integrations`. The currently available integrations are:
 - [nvim-dap](https://github.com/mfussenegger/nvim-dap)
 - [Telescope](https://github.com/nvim-telescope/telescope.nvim)
-
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua)
 
 [^no-lspconfig]: If you're familiar with nvim and LSP you'll probably know of
   [`nvim-lspconfig`](https://github.com/neovim/nvim-lspconfig) which also has a
