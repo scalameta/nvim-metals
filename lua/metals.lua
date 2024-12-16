@@ -296,7 +296,7 @@ M.organize_imports = function()
   end
   local metals_client = lsp_clients[1]
 
-  local params = lsp.util.make_range_params()
+  local params = lsp.util.make_range_params(nil, "utf-8")
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }
 
   local response = metals_client.request_sync("textDocument/codeAction", params, 1000, 0)
