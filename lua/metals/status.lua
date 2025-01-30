@@ -2,19 +2,23 @@ local log = require("metals.log")
 
 -- @param status (string) a new status to be displayed
 local function set_status(status, type)
-  -- Scaping the status to prevent % characters breaking the statusline
-  local scaped_status = status:gsub("[%%]", "%%%1")
-  local _status = "_status"
-  local metals = "metals"
-  local status_var = nil
-  if type and type == metals then
-    status_var = type .. _status
-  elseif type then
-    status_var = "metals_" .. type .. _status
-  else
-    status_var = metals .. _status
+  -- Not really sure why but this is at times getting called when status is nil
+  -- so in that scenario we just do nothing
+  if status ~= nil then
+    -- Scaping the status to prevent % characters breaking the statusline
+    local scaped_status = status:gsub("[%%]", "%%%1")
+    local _status = "_status"
+    local metals = "metals"
+    local status_var = nil
+    if type and type == metals then
+      status_var = type .. _status
+    elseif type then
+      status_var = "metals_" .. type .. _status
+    else
+      status_var = metals .. _status
+    end
+    vim.api.nvim_set_var(status_var, scaped_status)
   end
-  vim.api.nvim_set_var(status_var, scaped_status)
 end
 
 -- Used to handle the full status response from Metals

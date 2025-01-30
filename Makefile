@@ -1,11 +1,11 @@
 format:
-	stylua lua/ tests/
+	stylua lua/ spec/
 
 format-check:
-	stylua --check lua/ tests/
+	stylua --check lua/ spec/
 
 lint:
-	selene lua/ tests/
+	selene lua/ spec/
 
 local-test-setup:
 	git clone https://github.com/ckipp01/multiple-build-file-example.git
@@ -13,13 +13,13 @@ local-test-setup:
 	git clone https://github.com/ckipp01/minimal-scala-cli-test.git
 
 test-setup:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/setup/ { minimal = true, sequential = true }"
+	luarocks test spec/setup --local
 
 test:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/ { minimal = true, sequential = true }"
+	luarocks test --local
 
 test-handlers:
-	nvim --headless --noplugin -u tests/minimal.vim -c "PlenaryBustedDirectory tests/tests/handlers/ { minimal = true, sequential = true }"
+	luarocks test spec/tests/test-handlers --local
 
 clean:
 	rm -rf mill-minimal
