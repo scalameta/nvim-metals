@@ -38,9 +38,8 @@ off to make sure they aren't better there:
   - `git clone git@github.com:scalameta/nvim-metals.git`
   - Load up the plugin to test what you're doing. There are basically two ways
       to do this:
-      1.  You can directly use the plugin from your filesystem using
-          [`packer`](https://github.com/wbthomason/packer.nvim) as outlined in
-          the docs. This will basically just be `use '~/your-path-to/nvim-metals'`.
+      1.  You can directly use the plugin from your filesystem using whativer
+          system your plugin manager has to use a local plugin.
       2. You can also just manually add the plugin to your `runtimepath` with an
          alias. For example you could have something like `nvim --cmd 'set rtp+=/your-path-to/nvim-metals`.
   - Make sure to branch off main to send in your changes. This allows the
@@ -64,13 +63,11 @@ After installed you can just use the commands in the Makefile to use them.
 
 ## Testing
 
-You can find the tests that exist for `nvim-metals` in the `tests/` directory.
-These are ran using the
-[`plenary.test_harness`](https://github.com/nvim-lua/plenary.nvim/tree/master#plenarytest_harness).
-It's useful to give the plenary page a read about this to better understand what
-is happening. However, before running the tests locally make sure to run `make
-local-test-setup` which will clone some repos used for testing. After this you
-can use `make test`.
+You can find the tests that exist for `nvim-metals` in the `spec/` directory.
+These are ran using [nlua](https://github.com/mfussenegger/nlua). You'll want to
+read the installation instructions over there. However, before running the tests
+locally make sure to run `make local-test-setup` which will clone some repos
+used for testing. After this you can use `make test`.
 
 ## Other Libraries / Integrations
 
