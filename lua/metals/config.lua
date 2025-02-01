@@ -2,7 +2,6 @@ local api = vim.api
 local fn = vim.fn
 local lsp = vim.lsp
 
-local decoration = require("metals.decoration")
 local default_handlers = require("metals.handlers")
 local jvmopts = require("metals.jvmopts")
 local log = require("metals.log")
@@ -94,8 +93,6 @@ local metals_init_options = {
   compilerOptions = {},
   debuggingProvider = debugging_provider,
   testExplorerProvider = debugging_provider,
-  decorationProvider = true,
-  didFocusProvider = true,
   disableColorOutput = true,
   doctorProvider = "json",
   doctorVisibilityProvider = true,
@@ -147,7 +144,6 @@ local valid_metals_settings = {
 -- but having multiple ways to set "settings" for metals may confuse the user
 -- even more, so it's a risk I think is worth it.
 local valid_nvim_metals_settings = {
-  "decorationColor",
   "disabledMode",
   "metalsBinaryPath",
   "serverOrg",
@@ -287,7 +283,6 @@ local function validate_config(config, bufnr)
   -- config.settings.
   -----------------------------------------------------------------------------
 
-  decoration.set_color(config.settings.metals.decorationColor)
   tvp.setup_config(config.tvp or {})
 
   if not util.has_bins(metals_bin()) and config.settings.metals.useGlobalExecutable then
