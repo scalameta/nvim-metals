@@ -5,7 +5,6 @@ local lsp = vim.lsp
 local commands = require("metals.commands")
 local conf = require("metals.config")
 local decoder = require("metals.decoder")
-local decoration = require("metals.decoration")
 local install = require("metals.install")
 local log = require("metals.log")
 local messages = require("metals.messages")
@@ -468,8 +467,35 @@ M.initialize_or_attach = setup.initialize_or_attach
 M.install = install.install_or_update
 M.update = install.install_or_update
 
+-- NOTE: This whole thing is a hack. Nvim doesn't provide a nice way to get tooltips at the moment so we
+-- need manually look up the inlay_hint for the current line and then display it in a floating window.
+-- In order to do this, we make a couple assumptions:
+-- 1. We don't call the server with resolve. Why? Because metals already sends the tooltip with the inlay hint.
+--    Therefore we just skip that part and work with what we have in the inlay_hint
+-- 2. We assume that the worksheet evaluation is the last inlay_hint on the line. I don't really know why
+--    it wouldn't be, so we just say screw it and grab the last one.
 M.hover_worksheet = function(opts)
-  return decoration.hover_worksheet(opts)
+  local buf = api.nvim_get_current_buf()
+  local current_line = vim.api.nvim_win_get_cursor(0)[1] - 1
+  local line_content = vim.api.nvim_buf_get_lines(0, current_line, current_line + 1, false)[1]
+
+  -- Range for the entire line
+  local range = {
+    start = { line = current_line, character = 0 },
+    ["end"] = { line = current_line, character = #line_content },
+  }
+
+  local line_hints = vim.lsp.inlay_hint.get({ bufnr = buf, range = range })
+
+  -- we assume the last one is the evaluation result
+  local evaluation_result = line_hints[#line_hints]
+
+  if evaluation_result then
+    local tooltip = evaluation_result.inlay_hint.tooltip
+
+    local floating_preview_opts = util.check_exists_and_merge({ pad_left = 1, pad_right = 1 }, opts)
+    lsp.util.open_floating_preview({ tooltip }, "markdown", floating_preview_opts)
+  end
 end
 
 M.setup_dap = function()
