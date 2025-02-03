@@ -308,7 +308,7 @@ M.organize_imports = function()
     if result.edit then
       lsp.util.apply_workspace_edit(result.edit, "utf-16")
     elseif result.disabled then
-      vim.notify(result.disabled.reason, vim.log.levels.WARN)
+      log.warn_and_show(result.disabled.reason)
     else
       lsp.buf.execute_command(result)
     end
