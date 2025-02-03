@@ -307,6 +307,8 @@ M.organize_imports = function()
   for _, result in pairs(response.result or {}) do
     if result.edit then
       lsp.util.apply_workspace_edit(result.edit, "utf-16")
+    elseif result.disabled then
+      vim.notify(result.disabled.reason, vim.log.levels.WARN)
     else
       lsp.buf.execute_command(result)
     end
