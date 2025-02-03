@@ -203,7 +203,6 @@ _ones that are sent and used by the server_
 
 _ones that are used internally by `nvim-metals`_
   * |disabledMode|
-  * |decorationColor|
   * |metalsBinaryPath|
   * |serverOrg|
   * |serverVersion|
@@ -260,14 +259,6 @@ Default: {} ~
 Optional list of JVM properties to pass along to the Bloop server. Please
 follow this guide for the format
 https://scalacenter.github.io/bloop/docs/server-reference#global-settings-for-the-server.
-
-                                                               *decorationColor*
-Type: string ~
-Default: 'Conceal' ~
-
-The highlight group that will be used to show decorations. For example, this
-will change the way worksheet evaluations are displayed in `*.worksheet.sc`
-file.
 
 defaultBspToBuildTool                                    *defaultBspToBuildTool*
 
@@ -903,9 +894,12 @@ find_in_dependency_jars()  Use to send in a `meatals/findTextInDependencyJars`
                            request to the server.
 
                                                               *hover_worksheet()*
-hover_worksheet({opts})    Use to expand the decoration to show the full hover
-                           message that was returned from the decoration.
+hover_worksheet({opts})    Use to expand the evaluation inlay_hint to show the
+                           full tooltip message that was returned from the
+                           evaluation.
+
                            Parameter is optional.
+
                            Parameters:
                            {opts} (table) Options that are passed to
                            |vim.lsp.util.open_floating_preview()|
