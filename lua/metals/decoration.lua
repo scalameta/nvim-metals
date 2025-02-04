@@ -31,36 +31,31 @@ end
 
 M.hover_worksheet = function(opts)
   local buf = api.nvim_get_current_buf()
-  local line, _ = unpack(api.nvim_win_get_cursor(0))
+  local line,_ = unpack(api.nvim_win_get_cursor(0))
 
-  local exists, ext_ids = pcall(
-    api.nvim_buf_get_extmarks,
-    buf,
-    M.decoration_namespace(),
-    { line - 1, 0 },
-    { line - 1, -1 },
-    { details = true }
-  )
+  local hints = vim.lsp.inlay_hint.get({ bufnr = buf })
 
-  if not exists then
+  local hintsFiltered = vim.tbl_filter(function(item)
+    return item.inlay_hint.position.line == line -1
+  end, hints)
+
+  if #hintsFiltered == 0 then
     return
-    -- In reality extmarks can have x amount extmarks in any given position,
-    -- but with worksheets it's only logical to have an extmark one per line
-    -- (after evaluation). So we double check this. If this does happen, then
-    -- I've done something wrong with my logic here.
-  elseif #ext_ids > 1 then
-    log.error_and_show(
-      "Recieved two extmarks on a single line. This should never happen with worksheets. Please create a nvim-metals issue."
-    )
+  elseif #hintsFiltered > 1 then
+    log.error_and_show("Received two inlay hints on a single line. This should never happen with worksheets. Please create a nvim-metals issue.")
     return
-  elseif #ext_ids == 1 then
-    -- We only want the extmark_id which is in pos 1
-    local id = ext_ids[1][1]
+  elseif #hintsFiltered == 1 then
+    local hint = hintsFiltered[1]
 
-    local hover_message = hover_messages[id]
+    local client = vim.lsp.get_client_by_id(hint.client_id)
+    local resp = client.request_sync('inlayHint/resolve', hint.inlay_hint, 100, 0)
+    local resolved_hint = assert(resp and resp.result, resp.err)
 
-    -- This also shuoldn't happen but to avoid an empty window we do a sanity check
-    if hover_message == nil then
+    local hover_message = {}
+    hover_message[1] = resolved_hint.tooltip
+
+    -- This also shouldn't happen but to avoid an empty window we do a sanity check
+    if hover_message[1] == nil then
       return
     end
 
