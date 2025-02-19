@@ -28,11 +28,10 @@ local M = {}
 local function execute_command(command_params, callback)
   lsp.buf_request_all(0, "workspace/executeCommand", command_params, function(responses)
     local metals_id = util.find_metals_client_id()
+    local response = responses[metals_id]
 
-    for client_id, response in pairs(responses) do
-      if client_id ~= metals_id then
-        return
-      elseif callback then
+    if response then
+      if callback then
         local context = response.ctx and response.ctx.method or ""
         callback(response.err, context, response)
       elseif response.err then
