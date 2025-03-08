@@ -10,7 +10,7 @@ local is_windows = uv.os_uname().version:match("Windows")
 local path_sep = is_windows and "\\" or "/"
 
 local function path_join(...)
-  local result = table.concat(vim.tbl_flatten({ ... }), path_sep):gsub(path_sep .. "+", path_sep)
+  local result = table.concat(vim.iter({ ... }):flatten(), path_sep):gsub(path_sep .. "+", path_sep)
   return result
 end
 
