@@ -297,7 +297,7 @@ M.organize_imports = function()
   local params = lsp.util.make_range_params(nil, "utf-8")
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }
 
-  local response = Metals_client:request_sync("textDocument/codeAction", params, 1000, 0)
+  local response = Metals_client.request_sync("textDocument/codeAction", params, 1000, 0)
   if not response or vim.tbl_isempty(response) then
     return
   end
