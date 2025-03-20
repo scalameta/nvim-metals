@@ -292,12 +292,12 @@ M.organize_imports = function()
     log.warn_and_show("Metals is not attatched to this buffer, so unable to organize imports.")
     return
   end
-  local Metals_client = lsp_clients[1]
+  local metals_client = lsp_clients[1]
 
   local params = lsp.util.make_range_params(nil, "utf-8")
   params.context = { diagnostics = {}, only = { "source.organizeImports" } }
 
-  local response = Metals_client:request_sync("textDocument/codeAction", params, 1000, 0)
+  local response = metals_client.request_sync("textDocument/codeAction", params, 1000, 0)
   if not response or vim.tbl_isempty(response) then
     return
   end
@@ -308,7 +308,7 @@ M.organize_imports = function()
     elseif result.disabled then
       log.warn_and_show(result.disabled.reason)
     else
-      Metals_client:exec_cmd(result)
+      lsp.buf.execute_command(result)
     end
   end
 end
@@ -318,9 +318,9 @@ end
 M.restart_metals = function()
   for _, buf in pairs(fn.getbufinfo({ bufloaded = true })) do
     if vim.tbl_contains(conf.scala_file_types, api.nvim_get_option_value("filetype", { buf = buf.bufnr })) then
-      local Clients = lsp.get_clients({ buffer = buf.bufnr, name = "metals" })
-      for _, Client in ipairs(Clients) do
-        Client:stop()
+      local clients = lsp.get_clients({ buffer = buf.bufnr, name = "metals" })
+      for _, client in ipairs(clients) do
+        client.stop()
       end
     end
   end
@@ -407,7 +407,7 @@ M.start_server = function()
 end
 
 M.goto_super_method = function()
-  local text_doc_position = lsp.util.make_position_params(0, "utf-16")
+  local text_doc_position = lsp.util.make_position_params()
   execute_command({
     command = "metals.goto-super-method",
     arguments = { text_doc_position },
@@ -415,7 +415,7 @@ M.goto_super_method = function()
 end
 
 M.super_method_hierarchy = function()
-  local text_doc_position = lsp.util.make_position_params(0, "utf-16")
+  local text_doc_position = lsp.util.make_position_params()
   execute_command({
     command = "metals.super-method-hierarchy",
     arguments = { text_doc_position },
@@ -423,12 +423,12 @@ M.super_method_hierarchy = function()
 end
 
 M.run_scalafix = function()
-  local text_doc_position = lsp.util.make_position_params(0, "utf-16")
+  local text_doc_position = lsp.util.make_position_params()
   execute_command({ command = "metals.scalafix-run", arguments = { text_doc_position } })
 end
 
 M.run_single_scalafix = function(rules)
-  local text_doc_position = lsp.util.make_position_params(0, "utf-16")
+  local text_doc_position = lsp.util.make_position_params()
   local args = { textDocumentPositionParams = text_doc_position }
   if not rules == nil and type(rules) == "table" then
     args.rules = rules
@@ -457,7 +457,7 @@ M.type_of_range = function()
     end_pos = { range_end_row, range_end_col - 1 }
   end
 
-  vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_given_range_params(start_pos, end_pos, 0, "utf-16"))
+  vim.lsp.buf_request(0, "textDocument/hover", vim.lsp.util.make_given_range_params(start_pos, end_pos))
 end
 
 -- Since we want metals to be the entrypoint for everything, just for ensure that it's

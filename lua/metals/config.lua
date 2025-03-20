@@ -220,7 +220,7 @@ end
 commands["metals-run-session-start"] = debug_start_command(true)
 commands["metals-debug-session-start"] = debug_start_command(false)
 commands["metals-diagnostics-focus"] = function()
-  vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
+  vim.diagnostic.setqflist({ severity = "E" })
 end
 -- We can re-se require("metals").run_doctor which does the same thing or we'd
 -- hae a cyclical dependency
