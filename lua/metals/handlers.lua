@@ -48,7 +48,7 @@ end
 -- - https://scalameta.org/metals/docs/integrations/new-editor#metalsexecuteclientcommand
 M["metals/executeClientCommand"] = function(_, result)
   if result.command == "metals-goto-location" then
-    lsp.util.jump_to_location(result.arguments[1], "utf-16")
+    lsp.util.show_document(result.arguments[1], "utf-16", { focus = true })
   elseif result.command == "metals-doctor-run" then
     local args = fn.json_decode(result.arguments[1])
     doctor.create(args)
@@ -59,7 +59,7 @@ M["metals/executeClientCommand"] = function(_, result)
       doctor.create(args)
     end
   elseif result.command == "metals-diagnostics-focus" then
-    vim.diagnostic.setqflist({ severity = "E" })
+    vim.diagnostic.setqflist({ severity = vim.diagnostic.severity.ERROR })
   elseif result.command == "metals-model-refresh" then
     lsp.codelens.refresh()
   elseif result.command == "metals-update-test-explorer" then
