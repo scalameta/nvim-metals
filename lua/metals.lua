@@ -108,8 +108,8 @@ M.copy_worksheet_output = function()
       if err then
         log.error_and_show(string.format("Server error with [%s]. Check logs for details.", method))
         log.error(err)
-      elseif resp.value then
-        fn.setreg("+", resp.value)
+      elseif resp.result.value then
+        fn.setreg("+", resp.result.value)
         log.info_and_show("Copied worksheet output to your +register")
         -- no final else needed since if there is no err and there is no val, Metals will
         -- return a warning with logMessage, so we can skip it here.
