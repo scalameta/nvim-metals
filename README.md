@@ -20,8 +20,8 @@ the available features
 ## Prerequisites
 
 - Before you get started you need to ensure that you are using the latest nvim
-v.0.10.x or newer. If you're still on v0.9.x then you'll want to target the
-`v0.9.x` tag.
+v.0.11.x or newer. If you're still on an older version then you'll want to target the
+tag that matches your release version.
 - Ensure [Coursier](https://get-coursier.io/docs/cli-installation) is
     installed locally.[^coursier]
 - Ensure that you have all the LSP mappings for the core functionality you want
