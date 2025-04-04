@@ -493,8 +493,10 @@ M.hover_worksheet = function(opts)
   if evaluation_result then
     local tooltip = evaluation_result.inlay_hint.tooltip
 
-    local floating_preview_opts = util.check_exists_and_merge({ pad_left = 1, pad_right = 1 }, opts)
-    lsp.util.open_floating_preview({ "```scala", tooltip, "```" }, "markdown", floating_preview_opts)
+    if tooltip then
+      local floating_preview_opts = util.check_exists_and_merge({ pad_left = 1, pad_right = 1 }, opts)
+      lsp.util.open_floating_preview({ "```scala", tooltip, "```" }, "markdown", floating_preview_opts)
+    end
   end
 end
 
