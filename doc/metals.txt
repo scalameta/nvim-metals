@@ -367,6 +367,7 @@ Default: {} ~
 
 Table of inlay hints to enable. >
   {
+    byNameParameters = { enable = true },
     hintsInPatternMatch = { enable = true },
     implicitArguments = { enable = true },
     implicitConversions = { enable = true },
