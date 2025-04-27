@@ -30,7 +30,7 @@ Doctor.close = function()
 end
 
 --- Create the Doctor.
--- @param args table of the args give by `metals/executeClientCommand`
+-- @param args table of the args given by `metals/executeClientCommand`
 Doctor.create = function(args)
   local output = {}
 
