@@ -44,10 +44,14 @@ Doctor.create = function(args)
     "jdkInfo",
   }
 
-  if doctor_version == 3 then
+  if doctor_version >= 3 then
     table.insert(fields, "buildTool")
     table.insert(fields, "buildServer")
     table.insert(fields, "importBuildStatus")
+  end
+
+  if doctor_version >= 6 then
+    table.insert(fields, "projectsJavaInfo")
   end
 
   if doctor_version >= 3 then
