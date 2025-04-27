@@ -44,6 +44,8 @@ Doctor.create = function(args)
     "jdkInfo",
   }
 
+  table.insert(output, "  - Metals Doctor Version: " .. tostring(doctor_version))
+
   if doctor_version >= 3 then
     table.insert(fields, "buildTool")
     table.insert(fields, "buildServer")
