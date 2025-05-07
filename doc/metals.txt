@@ -147,8 +147,8 @@ If no version is set, it defaults to the latest stable release. If a new
 release comes out or you change your server version, you can issue a
 |MetalsUpdate| command to re-install it.
 
-NOTE: If you're using worksheets, the work by giving you `inlay_hint`s to show
-the evaluated relults. By default you won't see anyting unless you call
+NOTE: If you're using worksheets, they work by giving you `inlay_hint`s to show
+the evaluated results. By default you won't see anyting unless you call
 `vim.lsp.inlay_hint.enable(true)`. You can turn this on by default in
 worksheets, have it on all the time, or create a toggle for it. An example
 autocmd to automatically turn it on is below: >
