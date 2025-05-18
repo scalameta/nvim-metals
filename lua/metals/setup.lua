@@ -134,7 +134,7 @@ local function setup_dap(execute_command)
       -- given to the client, so they aren't errors here. That's why we don't
       -- really capture or care about the err and instead just make sure res is
       -- there and not null.
-      if res then
+      if res and res.result then
         local port = util.split_on(res.result.uri, ":")[3]
 
         callback({
