@@ -66,6 +66,8 @@ local function create_args_for_install(server_org, binary_version, version)
     string.format("%s:metals_%s:%s", server_org, binary_version, version),
     "-r",
     "sonatype:snapshots",
+    "-r",
+    "https://central.sonatype.com/repository/maven-snapshots/",
     "-o",
     conf.metals_install_name(),
     "-f",
