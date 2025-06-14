@@ -88,7 +88,7 @@ local make_handler = function(decoder, format)
       log.error_and_show(string.format("Something went wrong trying to get %s. Please check the logs.", decoder))
       log.error(err)
     else
-      handle_decoder_response(result, decoder, format)
+      handle_decoder_response(result.result, decoder, format)
     end
   end
 end
