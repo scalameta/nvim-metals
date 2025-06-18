@@ -43,7 +43,7 @@ jobs:
       uses: JohnnyMorganz/stylua-action@v4.1.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        version: 2.0.2
+        version: 2.1.0
         args: --check lua/
 
   test:
@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        neovim_version: ['v0.11.0', 'nightly']
+        neovim_version: ['v0.11.2', 'nightly']
 
     steps:
       - uses: actions/checkout@v4
@@ -74,7 +74,7 @@ jobs:
 
       - uses: coursier/setup-action@v1
         with:
-          jvm: adoptium:17
+          jvm: adoptium:21
           apps: ""
 
       - name: Setup neovim
