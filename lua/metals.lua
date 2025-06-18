@@ -348,8 +348,8 @@ M.show_build_target_info = function()
     if err then
       log.error_and_show(string.format("Unable to retrieve build targets", method))
       log.error(err)
-    elseif resp and not vim.tbl_isempty(resp) then
-      vim.ui.select(resp, {
+    elseif resp.result and not vim.tbl_isempty(resp.result) then
+      vim.ui.select(resp.result, {
         prompt = "Choose build target to view:",
       }, function(choice)
         if choice ~= nil then
