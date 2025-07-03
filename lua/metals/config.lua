@@ -130,6 +130,7 @@ local valid_metals_settings = {
   "javaFormatConfig",
   "javaHome",
   "mavenScript",
+  "mcpClient",
   "millScript",
   "remoteLanguageServer",
   "sbtScript",
