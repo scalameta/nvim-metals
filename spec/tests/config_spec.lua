@@ -23,7 +23,7 @@ describe("config", function()
   local current_buf = api.nvim_get_current_buf()
   local config = require("metals.config")
   local utils = require("metals.util")
-  local Path = require("plenary.path")
+  local path = require("metals.path")
 
   before_each(function()
     package.loaded["metals.config"] = nil
@@ -87,7 +87,7 @@ describe("config", function()
     local bare_config = require("metals.setup").bare_config()
     bare_config.settings.serverProperties = { "-XX", "someFakeProperty" }
 
-    local metals_path = Path:new(utils.nvim_metals_cache_dir, "metals").filename
+    local metals_path = path.join(utils.nvim_metals_cache_dir, "metals")
 
     bare_config.settings.metalsBinaryPath = metals_path
 

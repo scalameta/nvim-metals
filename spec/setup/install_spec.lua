@@ -1,14 +1,14 @@
 local install = require("metals.install")
 local eq = assert.are.same
-local Path = require("plenary.path")
+local path = require("metals.path")
 local config = require("metals.config")
 local util = require("metals.util")
 
 describe("install", function()
-  local path = Path:new(util.nvim_metals_cache_dir, "metals")
+  local metals_path = path.join(util.nvim_metals_cache_dir, "metals")
 
   before_each(function()
-    path:rm()
+    vim.fn.delete(metals_path)
   end)
 
   it("should be able to install latest.stable", function()
@@ -17,9 +17,9 @@ describe("install", function()
     local current_buf = vim.api.nvim_get_current_buf()
     local _ = config.validate_config({}, current_buf)
 
-    eq(path:exists(), false)
+    eq(path.exists(metals_path), false)
     install.install_or_update(true)
-    eq(path:exists(), true)
+    eq(path.exists(metals_path), true)
   end)
 
   it("should be able to install with an old 2.12", function()
@@ -27,9 +27,9 @@ describe("install", function()
     bare_config.settings = { serverVersion = "0.11.0" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
-    eq(path:exists(), false)
+    eq(path.exists(metals_path), false)
     install.install_or_update(true)
-    eq(path:exists(), true)
+    eq(path.exists(metals_path), true)
   end)
 
   it("should be able to install with a new 2.13 snapshot", function()
@@ -37,9 +37,9 @@ describe("install", function()
     bare_config.settings = { serverVersion = "0.11.12+30-c205bbc9-SNAPSHOT" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
-    eq(path:exists(), false)
+    eq(path.exists(metals_path), false)
     install.install_or_update(true)
-    eq(path:exists(), true)
+    eq(path.exists(metals_path), true)
   end)
 
   it("should block you from using latest.snapshot with a imposter metals", function()
@@ -47,9 +47,9 @@ describe("install", function()
     bare_config.settings = { serverVersion = "latest.snapshot", serverOrg = "some-other-org" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
-    eq(path:exists(), false)
+    eq(path.exists(metals_path), false)
     install.install_or_update(true)
-    eq(path:exists(), false)
+    eq(path.exists(metals_path), false)
   end)
 
   it("should be able to install with latest.snapshot", function()
@@ -57,10 +57,10 @@ describe("install", function()
     bare_config.settings = { serverVersion = "latest.snapshot" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
-    eq(path:exists(), false)
+    eq(path.exists(metals_path), false)
     -- This takes a bit longer here so we just pause for a couple seconds to
     -- ensure both jobs runs.
     vim.wait(2000, install.install_or_update(true))
-    eq(path:exists(), true)
+    eq(path.exists(metals_path), true)
   end)
 end)

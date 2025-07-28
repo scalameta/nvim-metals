@@ -8,7 +8,7 @@ local decoder = require("metals.decoder")
 local install = require("metals.install")
 local log = require("metals.log")
 local messages = require("metals.messages")
-local Path = require("plenary.path")
+local path = require("metals.path")
 local setup = require("metals.setup")
 local test_explorer = require("metals.test_explorer")
 local util = require("metals.util")
@@ -225,9 +225,9 @@ end
 M.quick_worksheet = function()
   local dir = fn.expand("%:p:h")
   local name = fn.expand("%:p:h:t")
-  local path = Path:new(dir, name .. ".worksheet.sc")
-  if path:exists() then
-    local cmd = ":e" .. path.filename
+  local worksheet_path = path.join(dir, name .. ".worksheet.sc")
+  if path.exists(worksheet_path) then
+    local cmd = ":e" .. worksheet_path
     vim.cmd(cmd)
   else
     local dir_uri = "file://" .. dir
