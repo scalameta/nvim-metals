@@ -1,11 +1,11 @@
-local Path = require("plenary.path")
+local path = require("metals.path")
 
 --- Checks to see if the default or passed in patterns for a root file are
 --- found or not for the given target level.
 local has_pattern = function(patterns, target)
   for _, pattern in ipairs(patterns) do
-    local what_we_are_looking_for = Path:new(target, pattern)
-    if what_we_are_looking_for:exists() then
+    local what_we_are_looking_for = path.join(target, pattern)
+    if path.exists(what_we_are_looking_for) then
       return pattern
     end
   end
@@ -24,13 +24,13 @@ end
 --- config.find_root_dir_max_project_nesting to a greater number. Default is 1
 --- for the behavior described above.
 local find_root_dir = function(patterns, startpath, maxParentSearch)
-  local path = Path:new(startpath)
+  local parents = path.parents(startpath)
   -- First parent index in which we found a target file
   local firstFoundIdx = nil
   local ret = nil
   local found = nil
 
-  for i, parent in ipairs(path:parents()) do
+  for i, parent in ipairs(parents) do
     -- Exit loop before checking anything if we've exceeded the search limits
     if (firstFoundIdx and (i - firstFoundIdx > maxParentSearch)) or parent == "/" then
       return ret

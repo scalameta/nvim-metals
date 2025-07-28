@@ -1,6 +1,7 @@
 local conf = require("metals.config")
 local log = require("metals.log")
 local messages = require("metals.messages")
+local path = require("metals.path")
 local status = require("metals.status")
 local util = require("metals.util")
 
@@ -116,8 +117,8 @@ local function install_or_update(sync)
     return
   end
 
-  if not util.nvim_metals_cache_dir:exists() then
-    util.nvim_metals_cache_dir:mkdir()
+  if not path.exists(util.nvim_metals_cache_dir) then
+    path.mkdir(util.nvim_metals_cache_dir)
   end
 
   local server_version = config.settings.metals.serverVersion or latest_stable

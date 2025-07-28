@@ -6,10 +6,10 @@ local default_handlers = require("metals.handlers")
 local jvmopts = require("metals.jvmopts")
 local log = require("metals.log")
 local messages = require("metals.messages")
+local path = require("metals.path")
 local root_dir = require("metals.rootdir")
 local tvp = require("metals.tvp")
 local util = require("metals.util")
-local Path = require("plenary.path")
 
 local dap_available, dap = pcall(require, "dap")
 
@@ -41,7 +41,7 @@ end
 --- Used to generate Metals installation file
 --- @return string fileame
 local function metals_install_name()
-  return Path:new(util.nvim_metals_cache_dir, metals_name).filename
+  return path.join(util.nvim_metals_cache_dir, metals_name)
 end
 
 --- Ultimately what will be passed to the config.cmd to initialize the LSP
@@ -62,7 +62,7 @@ local function metals_bin()
   elseif config_cache and config_cache.settings.metals.metalsBinaryPath then
     return config_cache.settings.metals.metalsBinaryPath
   else
-    return Path:new(util.nvim_metals_cache_dir, metals_filename).filename
+    return path.join(util.nvim_metals_cache_dir, metals_filename)
   end
 end
 
@@ -199,9 +199,9 @@ local function toggle_logs()
     end
   end
 
-  local logs_location = Path:new(config_cache.root_dir, ".metals", "metals.log")
-  if logs_location:exists() then
-    local cmd = [[tabnew +set\ ft=log term://tail -n 100 -f ]] .. logs_location.filename
+  local logs_location = path.join(config_cache.root_dir, ".metals", "metals.log")
+  if path.exists(logs_location) then
+    local cmd = [[tabnew +set\ ft=log term://tail -n 100 -f ]] .. logs_location
     -- Only open them if a terminal isn't already open
     -- -n here allows for the last 100 lines to also be shown.
     -- Useful if you hit on an issue and first then toggle the logs.
@@ -209,7 +209,7 @@ local function toggle_logs()
 
     vim.b["metals_buf_purpose"] = "logs"
   else
-    log.warn_and_show(string.format("Unable to find logs file where expected at '%s'", logs_location.filename))
+    log.warn_and_show(string.format("Unable to find logs file where expected at '%s'", logs_location))
   end
 end
 
@@ -348,8 +348,12 @@ local function validate_config(config, bufnr)
   -- Maximum parent folders to search AFTER the first project file (e.g. build.sbt) was found
   local find_root_dir_max_project_nesting = config.find_root_dir_max_project_nesting or 1
 
-  config.root_dir = find_root_dir(config.root_patterns, bufname, find_root_dir_max_project_nesting)
-    or fn.expand("%:p:h")
+  -- If bufname is empty (like in tests), skip root dir finding and use getcwd
+  if bufname == "" then
+    config.root_dir = fn.getcwd()
+  else
+    config.root_dir = find_root_dir(config.root_patterns, bufname, find_root_dir_max_project_nesting) or fn.getcwd()
+  end
 
   local base_handlers = vim.tbl_extend("error", default_handlers, tvp.handlers)
 

@@ -1,5 +1,5 @@
 local api = vim.api
-local Path = require("plenary.path")
+local path = require("metals.path")
 
 local M = {}
 
@@ -32,7 +32,7 @@ end
 
 --- Location of any files or executables that nvim-metals will create on your system
 ---@type string
-M.nvim_metals_cache_dir = Path.new(vim.fn.stdpath("cache"), "nvim-metals")
+M.nvim_metals_cache_dir = path.join(vim.fn.stdpath("cache"), "nvim-metals")
 
 --- Given a delimter split a string into a table.
 ---@param s string
