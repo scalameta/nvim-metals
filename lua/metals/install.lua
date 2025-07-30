@@ -6,7 +6,6 @@ local status = require("metals.status")
 local util = require("metals.util")
 
 local Job = require("plenary.job")
-local Curl = require("plenary.curl")
 
 local latest_stable = "latest.release"
 local latest_snapshot = "latest.snapshot"
@@ -138,10 +137,24 @@ local function install_or_update(sync)
     -- install job. Coursier won't handle latest.snapshot for us or return
     -- all the snapshots if asked, so that's why we resort to this madness.
     -- https://github.com/scalameta/nvim-metals/issues/122
-    local res = Curl.get("https://scalameta.org/metals/latests.json", { accept = "application/json" })
+    local result = vim
+      .system({
+        "curl",
+        "-s",
+        "-H",
+        "Accept: application/json",
+        "https://scalameta.org/metals/latests.json",
+      })
+      :wait()
 
-    if res and res.status == 200 then
-      server_version = vim.fn.json_decode(res.body).snapshot
+    if result.code == 0 and result.stdout then
+      local ok, data = pcall(vim.fn.json_decode, result.stdout)
+      if ok and data and data.snapshot then
+        server_version = data.snapshot
+      else
+        log.error_and_show("Failed to parse latest snapshot data, defaulting to latest stable.")
+        server_version = latest_stable
+      end
     else
       log.error_and_show("Something went wrong getting the latest snapshot so defaulting to latest stable.")
       server_version = latest_stable
