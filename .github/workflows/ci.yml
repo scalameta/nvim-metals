@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        neovim_version: ['v0.11.2', 'nightly']
+        neovim_version: ['v0.11.3', 'nightly']
 
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
       - name: Install Luarocks
         uses: hishamhm/gh-actions-luarocks@master
         with:
-          luarocksVersion: "3.11.0"
+          luarocksVersion: "3.12.2"
 
       - name: Clear nvim-metals cache
         run: rm -rf ~/.cache/nvim/nvim-metals/
