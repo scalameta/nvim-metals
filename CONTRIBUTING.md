@@ -71,11 +71,7 @@ used for testing. After this you can use `make test`.
 
 ## Other Libraries / Integrations
 
-`nvim-metals` utilizes
-[`nvim-lua/plenary.nvim`](https://github.com/nvim-lua/plenary.nvim) for a few
-things such as popups, jobs, and some utility methods. You can check out that
-project for _some_ documentation, but you'll need to dig into the code a bit to
-see what's going on. We also use this for testing.
+`nvim-metals` uses native Neovim APIs for floating windows, process execution, and other functionality.
 
 Debugging support in `nvim-metals` is provided by
 [`mfussenegger/nvim-dap`](https://github.com/mfussenegger/nvim-dap/blob/master/doc/dap.txt).

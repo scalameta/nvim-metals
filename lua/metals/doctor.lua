@@ -2,8 +2,7 @@ local api = vim.api
 local lsp = vim.lsp
 
 local util = require("metals.util")
-
-local Float = require("plenary.window.float")
+local Float = require("metals.float")
 
 --- Module meant to control the Metals doctor.
 --- It doesn't do a whole lot except create the doctor, and only
@@ -198,10 +197,6 @@ Doctor.create = function(args)
     botright = "┘",
     bot = "─",
   })
-  -- It's seemingly impossibly to get the hl to work for me with Float, so we
-  -- just manually set them here.
-  api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.win_id })
-  api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.border_win_id })
   api.nvim_set_option_value("filetype", "markdown", { buf = float.bufnr })
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
   api.nvim_buf_set_keymap(float.bufnr, "n", "q", "<cmd>close!<CR>", { nowait = true, noremap = true, silent = true })

@@ -5,8 +5,7 @@ version = 'scm-1'
 test_dependencies = {
   'lua >= 5.1',
   'nlua',
-  'nui.nvim',
-  'plenary.nvim'
+  'nui.nvim'
 }
 
 source = {

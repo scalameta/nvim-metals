@@ -26,8 +26,6 @@ tag that matches your release version.
     installed locally.[^coursier]
 - Ensure that you have all the LSP mappings for the core functionality you want
     setup.[^mappings]
-- Ensure [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) is
-    installed.[^plenary]
 - Subscribe to [this
     discussion](https://github.com/scalameta/nvim-metals/discussions/253) which
     will notify you of any breaking changes.
@@ -46,9 +44,6 @@ have Metals configured through `nvim-lspconfig` while using this plugin.[^no-lsp
 ```lua
 {
   "scalameta/nvim-metals",
-  dependencies = {
-    "nvim-lua/plenary.nvim",
-  },
   ft = { "scala", "sbt", "java" },
   opts = function()
     local metals_config = require("metals").bare_config()
@@ -112,6 +107,5 @@ metals-integrations`. The currently available integrations are:
   references, etc are there, but not automatically mapped. You can find a
   minimal example configuration
   [here](https://github.com/scalameta/nvim-metals/discussions/39).
-[^plenary]: You're more than likely already relying on for other plugins.
   However, make sure to also have this installed as Metals uses it for things
   like Jobs, popups, and paths.

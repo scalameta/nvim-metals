@@ -52,9 +52,6 @@ PREREQUISITES                                             *metals-prerequisites*
 - Make sure you have your mappings for various LSP functionality configured.
   Neovim provides functions for things like goto-definition, find references,
   etc, but they need to be mapped.
-- This plugin relies on https://github.com/nvim-lua/plenary.nvim which you're
-  more than likely already relying on for other plugins. However, make sure to
-  also have this installed.
 - Subscribe to https://github.com/scalameta/nvim-metals/discussions/253 which
   will list any breaking changes to `nvim-metals`.
 - Check out the features list in
