@@ -5,8 +5,6 @@ local path = require("metals.path")
 local status = require("metals.status")
 local util = require("metals.util")
 
-local Job = require("plenary.job")
-
 local latest_stable = "latest.release"
 local latest_snapshot = "latest.snapshot"
 local the_one_true_metals = "org.scalameta"
@@ -16,38 +14,30 @@ local the_one_true_metals = "org.scalameta"
 -- @param args (table) args to pass into the install job
 -- @param sync (boolean) whether to run the job sync or async
 local function do_install(coursier_exe, args, sync)
-  local job = Job:new({
-    command = coursier_exe,
-    args = args,
-    on_exit = vim.schedule_wrap(function(_, exit)
-      if exit == 0 then
-        status.set_status("Metals installed!")
-        log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
-      else
-        log.error_and_show("Something went wrong with the Metals install. Please check the logs.")
-        status.set_status("Install failed!")
-      end
-    end),
-    on_stdout = vim.schedule_wrap(function(err, data)
-      if err then
-        log.error_and_show(err)
-      else
-        status.set_status(data)
-      end
-    end),
-    on_stderr = vim.schedule_wrap(function(err, data)
-      if err then
-        log.error_and_show(err)
-      else
-        status.set_status(data)
-        log.info(data)
-      end
-    end),
-  })
+  local cmd = { coursier_exe }
+  vim.list_extend(cmd, args)
+
   if sync then
-    job:sync(20000)
+    local result = vim.system(cmd, { timeout = 60000 }):wait()
+    if result.code == 0 then
+      status.set_status("Metals installed!")
+      log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
+    else
+      log.error_and_show("Something went wrong with the Metals install. Please check the logs.")
+      status.set_status("Install failed!")
+    end
   else
-    job:start()
+    vim.system(cmd, {}, function(result)
+      vim.schedule(function()
+        if result.code == 0 then
+          status.set_status("Metals installed!")
+          log.info_and_show("Metals installed! Start/Restart the server, and have fun coding Scala!")
+        else
+          log.error_and_show("Something went wrong with the Metals install. Please check the logs.")
+          status.set_status("Install failed!")
+        end
+      end)
+    end)
   end
 end
 
@@ -64,8 +54,6 @@ local function create_args_for_install(server_org, binary_version, version)
     "--java-opt",
     "-Xms100m",
     string.format("%s:metals_%s:%s", server_org, binary_version, version),
-    "-r",
-    "sonatype:snapshots",
     "-r",
     "https://central.sonatype.com/repository/maven-snapshots/",
     "-o",
