@@ -12,12 +12,7 @@ local path = require("metals.path")
 local setup = require("metals.setup")
 local test_explorer = require("metals.test_explorer")
 local util = require("metals.util")
-
-local has_plenary, Float = pcall(require, "plenary.window.float")
-
-if not has_plenary then
-  log.error_and_show("Plenary required for nvim-metals. Please install nvim-lua/plenary.nvim")
-end
+local Float = require("metals.float")
 
 local M = {}
 
@@ -171,10 +166,6 @@ M.info = function()
     botright = "┘",
     bot = "─",
   })
-  -- It's seemingly impossibly to get the hl to work for me with Float, so we
-  -- just manually set them here.
-  api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.win_id })
-  api.nvim_set_option_value("winhl", "NormalFloat:Normal", { win = float.border_win_id })
 
   api.nvim_set_option_value("filetype", "markdown", { buf = float.bufnr })
   api.nvim_buf_set_lines(float.bufnr, 0, -1, false, output)
