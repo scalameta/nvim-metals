@@ -93,5 +93,8 @@ jobs:
         with:
           luarocksVersion: "3.11.0"
 
+      - name: Clear nvim-metals cache
+        run: rm -rf ~/.cache/nvim/nvim-metals/
+
       - name: Run tests
         run: make test
