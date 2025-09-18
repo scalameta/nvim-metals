@@ -20,17 +20,16 @@ local M = {}
 -- @param command_params (optional, table) Parameters to send to the server (arguments and command).
 -- @param callback (function) callback function for the request response.
 local function execute_command(command_params, callback)
-  lsp.buf_request_all(0, "workspace/executeCommand", command_params, function(responses)
-    local metals_id = util.find_metals_client_id()
-    local response = responses[metals_id]
+  local metals_id = util.find_metals_client_id()
+  local client = vim.lsp.get_client_by_id(metals_id)
 
-    if response then
-      if callback then
-        local context = response.ctx and response.ctx.method or ""
-        callback(response.err, context, response)
-      elseif response.err then
-        log.error_and_show(string.format("Could not execute command: %s", response.err.message))
-      end
+  client:request("workspace/executeCommand", command_params, function(err, result, ctx)
+    local response = { err = err, result = result, ctx = ctx }
+    if callback then
+      local context = response.ctx and response.ctx.method or ""
+      callback(response.err, context, response)
+    elseif response.err then
+      log.error_and_show(string.format("Could not execute command: %s", response.err.message))
     end
   end)
 end
