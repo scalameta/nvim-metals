@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        neovim_version: ['v0.11.3', 'nightly']
+        neovim_version: ['v0.11.5', 'nightly']
 
     steps:
       - uses: actions/checkout@v5
