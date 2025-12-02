@@ -72,7 +72,7 @@ jobs:
           repository: "ckipp01/minimal-scala-cli-test"
           path: "minimal-scala-cli-test"
 
-      - uses: coursier/setup-action@v1
+      - uses: coursier/setup-action@v2
         with:
           jvm: adoptium:21
           apps: ""
