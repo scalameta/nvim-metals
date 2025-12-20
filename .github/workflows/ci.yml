@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout sources
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Setup selene
       run: |
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Run StyLua
       uses: JohnnyMorganz/stylua-action@v4.1.0
@@ -55,19 +55,19 @@ jobs:
         neovim_version: ['v0.11.5', 'nightly']
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           repository: "ckipp01/multiple-build-file-example"
           path: "multiple-build-file-example"
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           repository: "ckipp01/mill-minimal"
           path: "mill-minimal"
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           repository: "ckipp01/minimal-scala-cli-test"
           path: "minimal-scala-cli-test"
