@@ -388,7 +388,42 @@ local function validate_config(config, bufnr)
 
   local passed_in_options = config.settings.metals.serverProperties or {}
 
-  local all_opts = util.merge_lists(passed_in_options, valid_java_opts)
+  -- Required VM options for Metals v2.x (from resource file META-INF/metals-required-vm-options.txt).
+  -- These are needed for JDK internals access (javac APIs, JOL, etc.).
+  -- Added first so they can be overridden by user settings if needed.
+  --
+  -- To update these options for a new Metals version, run:
+  --   unzip -p $(cs fetch --intransitive org.scalameta:metals_2.13:VERSION) META-INF/metals-required-vm-options.txt | sed 's/.*/"&",/'
+  local metals_required_opts = {
+    "-Djol.magicFieldOffset=true",
+    "-Djol.tryWithSudo=true",
+    "-Djdk.attach.allowAttachSelf",
+    "--add-opens=java.base/java.nio=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.jvm=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.model=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.processing=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.resources=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+    "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+    "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.comp=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+    "--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+    "-XX:+DisplayVMOutputToStderr",
+    "-Xlog:disable",
+    "-Xlog:all=warning,gc=warning:stderr",
+  }
+
+  -- Build the full options list: required VM options first, then java opts, then user settings
+  local all_opts = util.merge_lists(metals_required_opts, valid_java_opts)
+  all_opts = util.merge_lists(all_opts, passed_in_options)
 
   for i, opt in ipairs(all_opts) do
     -- In order to pass these options to coursier they need to be prefaced with `-J`

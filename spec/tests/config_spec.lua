@@ -6,13 +6,16 @@ local eq = assert.are.same
 
 local base_capabilities = lsp.protocol.make_client_capabilities()
 
+-- Number of required VM options added by default for Metals v2.x
+local NUM_REQUIRED_VM_OPTS = 24
+
 -- Base asserts that are all expected to be true when starting from nothing.
 local function base_asserts(valid_config)
   -- It can't find something with root patterns, so it defaults to the cwd
   eq(valid_config.root_dir, fn.getcwd())
   -- Since the path to metals will be different per machine, for this we just
-  -- ensure that the cmd is actually getting set
-  eq(#valid_config.cmd, 1)
+  -- ensure that the cmd is actually getting set (1 binary + required VM opts)
+  eq(#valid_config.cmd, 1 + NUM_REQUIRED_VM_OPTS)
   eq(valid_config.capabilities, base_capabilities)
   eq(valid_config.settings, { metals = { superMethodLensesEnabled = true } })
   eq(valid_config.filetypes, { "sbt", "scala" })
@@ -63,7 +66,8 @@ describe("config", function()
 
     local valid_config = config.validate_config(bare_config, current_buf)
 
-    eq(#valid_config.cmd, 3)
+    -- 1 binary + required VM opts + 2 user properties
+    eq(#valid_config.cmd, 1 + NUM_REQUIRED_VM_OPTS + 2)
   end)
 
   it("should be able to handle tvp configs", function()
@@ -93,7 +97,13 @@ describe("config", function()
 
     local valid_config = config.validate_config(bare_config, current_buf)
 
-    eq(valid_config.cmd, { metals_path, "-J-XX", "-JsomeFakeProperty" })
+    -- Check total length: 1 binary + required VM opts + 2 user properties
+    eq(#valid_config.cmd, 1 + NUM_REQUIRED_VM_OPTS + 2)
+    -- Check first element is the metals binary
+    eq(valid_config.cmd[1], metals_path)
+    -- Check user properties are at the end (after required VM opts)
+    eq(valid_config.cmd[#valid_config.cmd - 1], "-J-XX")
+    eq(valid_config.cmd[#valid_config.cmd], "-JsomeFakeProperty")
   end)
 
   it("should error if you try to use metalsBinaryPath and it doesn't exist", function()
