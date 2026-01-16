@@ -5,7 +5,7 @@ local path = require("metals.path")
 local status = require("metals.status")
 local util = require("metals.util")
 
-local latest_stable = "latest.release"
+local latest_stable = "latest.stable"
 local latest_snapshot = "latest.snapshot"
 local the_one_true_metals = "org.scalameta"
 
