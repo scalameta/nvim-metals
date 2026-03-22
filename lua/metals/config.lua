@@ -142,6 +142,7 @@ local valid_metals_settings = {
   "showImplicitArguments",
   "showImplicitConversionsAndClasses",
   "showInferredType",
+  "shutdownBloopOnEditorClose",
   "startMcpServer",
   "superMethodLensesEnabled",
   "superMethodLensesEnabled",

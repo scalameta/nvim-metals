@@ -261,7 +261,7 @@ This version will be used for the Bloop build tool plugin, for any supported
 build tool, while importing in Metals as well as for running the embedded
 server. More than likely you'll never need to use this.
 
-bloopJvmProperties                                          *bloopVjmProperties*
+bloopJvmProperties                                          *bloopJvmProperties*
 
 Type: table as list ~
 Default: {} ~
@@ -372,6 +372,125 @@ Table of inlay hints to enable. >
     typeParameters = { enable = true },
   }
 <
+
+automaticImportBuild                                              *automaticImportBuild*
+
+Type: string ~
+Default: "off" ~
+
+Alias for `autoImportBuild`. Accepts "off", "initial", or "all" to control automatic build import behavior.
+
+customProjectRoot                                                *customProjectRoot*
+
+Type: string ~
+Default: '' ~
+
+Optional absolute path to use as the project root instead of discovering it from files in the workspace.
+
+defaultShell                                                      *defaultShell*
+
+Type: string ~
+Default: '' ~
+
+Optional shell executable (for example "/bin/bash" or "powershell.exe") to use when running build tool commands.
+
+enableBestEffort                                                  *enableBestEffort*
+
+Type: boolean ~
+Default: false ~
+
+If true, enables best-effort features in Metals that may provide fallbacks or heuristics when exact information is not available.
+
+enableIndentOnPaste                                               *enableIndentOnPaste*
+
+Type: boolean ~
+Default: false ~
+
+When enabled, Metals will attempt to re-indent pasted code to match surrounding indentation.
+
+enableStripMarginOnTypeFormatting                                 *enableStripMarginOnTypeFormatting*
+
+Type: boolean ~
+Default: false ~
+
+If true, strip margin markers when applying type-formatting operations.
+
+inlayHintsOptions                                                 *inlayHintsOptions*
+
+Type: table ~
+Default: {} ~
+
+Additional options to customize inlay hints rendering and behavior beyond the top-level `inlayHints` table.
+
+javaFormatConfig                                                   *javaFormatConfig*
+
+Type: string ~
+Default: '' ~
+
+Optional path or inline configuration for Java formatting rules. Use when `javaFormat.eclipseConfigPath` or `javaFormat.eclipseProfile` are insufficient.
+
+mcpClient                                                          *mcpClient*
+
+Type: string ~
+Default: '' ~
+
+Configuration to enable or point to an MCP client when using Metals integrations that require it.
+
+showImplicitArguments                                              *showImplicitArguments*
+
+Type: boolean ~
+Default: false ~
+
+When enabled, show implicit arguments in editor hints or completions where supported.
+
+showImplicitConversionsAndClasses                                   *showImplicitConversionsAndClasses*
+
+Type: boolean ~
+Default: false ~
+
+When enabled, show implicit conversions and implicit classes in hints or diagnostics where supported.
+
+showInferredType                                                   *showInferredType*
+
+Type: boolean ~
+Default: false ~
+
+When enabled, show inferred types in hints or quick-info where supported.
+
+shutdownBloopOnEditorClose                                         *shutdownBloopOnEditorClose*
+
+Type: boolean ~
+Default: false ~
+
+If true, shutdown the Bloop server when the editor closes. Useful to free resources when editing sessions end.
+
+startMcpServer                                                      *startMcpServer*
+
+Type: boolean ~
+Default: false ~
+
+If true, start the MCP server alongside Metals when initializing. Use for MCP-based integrations.
+
+symbolPrefixes                                                      *symbolPrefixes*
+
+Type: table ~
+Default: {} ~
+
+Optional table to configure prefixes for symbol kinds used by Metals when presenting symbols in UI elements.
+
+worksheetCancelTimeout                                              *worksheetCancelTimeout*
+
+Type: number ~
+Default: 0 ~
+
+Timeout (in milliseconds) to wait before canceling a running worksheet computation. A value of 0 disables automatic cancellation.
+
+worksheetScreenWidth                                                *worksheetScreenWidth*
+
+Type: number ~
+Default: 120 ~
+
+Width (in characters) used when rendering worksheet output to control wrapping and formatting.
 
 javaFormat.eclipseConfigPath                      *javaFormat.eclipseConfigPath*
 

@@ -8,7 +8,8 @@ describe("install", function()
   local metals_path = path.join(util.nvim_metals_cache_dir, "metals")
 
   before_each(function()
-    vim.fn.delete(metals_path)
+    -- Ensure the cache dir is removed recursively between tests
+    vim.fn.delete(metals_path, "rf")
   end)
 
   it("should be able to install latest.stable", function()
@@ -34,7 +35,7 @@ describe("install", function()
 
   it("should be able to install with a new 2.13 snapshot", function()
     local bare_config = require("metals.setup").bare_config()
-    bare_config.settings = { serverVersion = "1.6.4+48-e2f699ed-SNAPSHOT" }
+    bare_config.settings = { serverVersion = "1.6.6+21-e70ead3d-SNAPSHOT" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path.exists(metals_path), false)
