@@ -67,7 +67,14 @@ You can find the tests that exist for `nvim-metals` in the `spec/` directory.
 These are ran using [nlua](https://github.com/mfussenegger/nlua). You'll want to
 read the installation instructions over there. However, before running the tests
 locally make sure to run `make local-test-setup` which will clone some repos
-used for testing. After this you can use `make test`.
+used for testing. After this you can run the tests with:
+
+```
+eval $(luarocks path --no-bin) && make test
+```
+
+The `eval $(luarocks path --no-bin)` is necessary to ensure the luarocks
+packages are on your path before running the tests.
 
 ## Other Libraries / Integrations
 

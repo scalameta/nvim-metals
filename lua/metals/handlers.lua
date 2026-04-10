@@ -81,6 +81,28 @@ M["metals/status"] = function(_, _status, ctx)
   status.handle_status(_status)
 end
 
+-- Neovim 0.12 introduced a stricter glob parser (vim/glob.lua) that rejects
+-- URI-style glob patterns such as "file:///path/*.sbt" that Metals sends as
+-- flat Pattern strings in workspace/didChangeWatchedFiles registrations.
+-- Strip the URI scheme + authority so that "/path/*.sbt" is passed instead.
+M["client/registerCapability"] = function(err, result, ctx, _config)
+  if result and result.registrations then
+    for _, reg in ipairs(result.registrations) do
+      if reg.method == "workspace/didChangeWatchedFiles" and reg.registerOptions and reg.registerOptions.watchers then
+        for _, watcher in ipairs(reg.registerOptions.watchers) do
+          if type(watcher.globPattern) == "string" then
+            watcher.globPattern = watcher.globPattern:gsub("^file://[^/]*", "")
+          end
+        end
+      end
+    end
+  end
+  local builtin = vim.lsp.handlers["client/registerCapability"]
+  if builtin then
+    return builtin(err, result, ctx, _config)
+  end
+end
+
 -- https://scalameta.org/metals/docs/integrations/new-editor/#metalsfindtextindependencyjars
 M["metals/findTextInDependencyJars"] = function(_, result, _, config)
   if not result or vim.tbl_isempty(result) then
