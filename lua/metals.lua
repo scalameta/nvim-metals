@@ -71,6 +71,10 @@ M.disconnect_build = function()
   execute_command({ command = "metals.build-disconnect" })
 end
 
+M.disconnect_build_and_shutdown = function()
+  execute_command({ command = "metals.build-disconnect-and-shutdown" })
+end
+
 M.import_build = function()
   execute_command({ command = "metals.build-import" })
 end
@@ -111,6 +115,25 @@ M.copy_worksheet_output = function()
     end
     execute_command({ command = "metals.copy-worksheet-output", arguments = uri }, copy_response)
   end
+end
+
+M.copy_fqn = function()
+  local text_doc_position = lsp.util.make_position_params(0, "utf-16")
+  local copy_response = function(err, method, resp)
+    if err then
+      log.error_and_show(string.format("Server error with [%s]. Check logs for details.", method))
+      log.error(err)
+    elseif resp.result and resp.result.value then
+      fn.setreg("+", resp.result.value)
+      log.info_and_show("Copied FQN to your +register")
+    end
+  end
+  execute_command({ command = "metals.copy-fqn", arguments = { text_doc_position } }, copy_response)
+end
+
+M.explain_diagnostic = function()
+  local text_doc_position = lsp.util.make_position_params(0, "utf-16")
+  execute_command({ command = "metals.explain-diagnostic", arguments = { text_doc_position } })
 end
 
 M.run_doctor = function()
@@ -233,6 +256,10 @@ M.reset_choice = function()
   execute_command({ command = "metals.reset-choice" })
 end
 
+M.reset_notifications = function()
+  execute_command({ command = "metals.reset-notifications" })
+end
+
 M.reset_workspace = function()
   execute_command({ command = "metals.reset-workspace" })
 end
@@ -301,6 +328,10 @@ M.organize_imports = function()
       Metals_client:exec_cmd(result)
     end
   end
+end
+
+M.restart_presentation_compiler = function()
+  execute_command({ command = "metals.presentation-compiler-restart" })
 end
 
 -- Used to fully restart Metals. This will send a shutdown request to Metals,

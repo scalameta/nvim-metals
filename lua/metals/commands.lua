@@ -33,6 +33,11 @@ local commands_table = {
     hint = "Connect to the current build server.",
   },
   {
+    id = "copy_fqn",
+    label = "Copy FQN",
+    hint = "Copy the fully qualified name of the symbol under the cursor.",
+  },
+  {
     id = "copy_worksheet_output",
     label = "Copy Worksheet Output",
     hint = "Copy the evaluated worksheet output to your clipboard.",
@@ -41,6 +46,16 @@ local commands_table = {
     id = "disconnect_build",
     label = "Disconnect Build",
     hint = "Disconnect from the current build server.",
+  },
+  {
+    id = "disconnect_build_and_shutdown",
+    label = "Disconnect Build and Shutdown",
+    hint = "Disconnect from the build server and shut it down.",
+  },
+  {
+    id = "explain_diagnostic",
+    label = "Explain Diagnostic",
+    hint = "Get a detailed explanation of the diagnostic under the cursor.",
   },
   {
     id = "find_in_dependency_jars",
@@ -108,6 +123,11 @@ local commands_table = {
     hint = "Reset a specific choice.",
   },
   {
+    id = "reset_notifications",
+    label = "Reset Notifications",
+    hint = "Reset all dismissed notifications.",
+  },
+  {
     id = "reset_workspace",
     label = "Reset workspace",
     hint = "Fully clean the workspace and re-start the build server.",
@@ -121,6 +141,11 @@ local commands_table = {
     id = "restart_metals",
     label = "Restart Metals",
     hint = "Restart Metals server.",
+  },
+  {
+    id = "restart_presentation_compiler",
+    label = "Restart Presentation Compiler",
+    hint = "Restart the presentation compiler.",
   },
   {
     id = "run_doctor",

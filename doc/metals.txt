@@ -187,19 +187,27 @@ All available settings:
 _ones that are sent and used by the server_
   * |ammoniteJvmProperties|
   * |autoImportBuild|
+  * |automaticImportBuild|
+  * |bloopJvmProperties|
   * |bloopSbtAlreadyInstalled|
   * |bloopVersion|
-  * |bloopJvmProperties|
+  * |customProjectRoot|
   * |defaultBspToBuildTool|
+  * |defaultShell|
+  * |enableBestEffort|
+  * |enableIndentOnPaste|
   * |enableSemanticHighlighting|
+  * |enableStripMarginOnTypeFormatting|
   * |excludedPackages|
   * |fallbackScalaVersion|
   * |gradleScript|
   * |inlayHints|
+  * |inlayHintsOptions|
   * |javaFormat.eclipseConfigPath|
   * |javaFormat.eclipseProfile|
   * |javaHome|
   * |mavenScript|
+  * |mcpClient|
   * |millScript|
   * |remoteLanguageServer|
   * |sbtScript|
@@ -208,8 +216,14 @@ _ones that are sent and used by the server_
   * |scalafixRulesDependencies|
   * |scalafmtConfigPath|
   * |serverProperties|
+  * |shutdownBloopOnEditorClose|
+  * |startMcpServer|
   * |superMethodLensesEnabled|
+  * |symbolPrefixes|
+  * |testUserInterface|
   * |verboseCompilation|
+  * |worksheetCancelTimeout|
+  * |worksheetScreenWidth|
 
 _ones that are used internally by `nvim-metals`_
   * |disabledMode|
@@ -478,6 +492,16 @@ Default: {} ~
 
 Optional table to configure prefixes for symbol kinds used by Metals when presenting symbols in UI elements.
 
+testUserInterface                                                  *testUserInterface*
+
+Type: string ~
+Default: "code lenses" ~
+
+Controls which UI is used for running tests. Valid values are "code lenses"
+(the default) and "Test Explorer". Setting this to "Test Explorer" enables the
+|MetalsSelectTestSuite| and |MetalsSelectTestCase| commands and deactivates
+code lenses on test classes.
+
 worksheetCancelTimeout                                              *worksheetCancelTimeout*
 
 Type: number ~
@@ -665,22 +689,28 @@ The following commands are provided by `nvim-metals`:
   * |MetalsCompileCascade|
   * |MetalsCompileClean|
   * |MetalsConnectBuild|
+  * |MetalsCopyFqn|
   * |MetalsCopyWorksheetOutput|
   * |MetalsDisconnectBuild|
+  * |MetalsDisconnectBuildAndShutdown|
+  * |MetalsExplainDiagnostic|
   * |MetalsFindInDependencyJars|
   * |MetalsGenerateBspConfig|
   * |MetalsGotoSuperMethod|
   * |MetalsImportBuild|
   * |MetalsInstall|
   * |MetalsInfo|
+  * |MetalsNewJavaFile|
   * |MetalsNewScalaFile|
   * |MetalsNewScalaProject|
   * |MetalsOpenNewGithubIssue|
   * |MetalsOrganizeImports|
   * |MetalsQuickWorksheet|
   * |MetalsResetChoice|
+  * |MetalsResetNotifications|
   * |MetalsResetWorkspace|
   * |MetalsRestartBuild|
+  * |MetalsRestartPresentationCompiler|
   * |MetalsRestartServer|
   * |MetalsRunDoctor|
   * |MetalsRunScalafix|
@@ -735,9 +765,26 @@ MetalsConnectBuild           Manually connect to the build server.
 MetalsCopyWorksheetOutput    Copy the contents of a worksheet to your local
                              buffer.
 
+                                                                *MetalsCopyFqn*
+MetalsCopyFqn                Copy the fully qualified name of the symbol under
+                             the cursor to the + register.
+
                                                          *MetalsDisconnectBuild*
 MetalsDisconnectBuild        Manually disconnect from the build server without
                              reconnecting.
+
+                                             *MetalsDisconnectBuildAndShutdown*
+MetalsDisconnectBuildAndShutdown
+                             Disconnect from the build server and shut it down
+                             so its process exits. Useful when closing the
+                             editor if you want no leftover build server process
+                             (e.g. Bloop) running in the background.
+
+                                                        *MetalsExplainDiagnostic*
+MetalsExplainDiagnostic      Compiles the current file with the Scala 3
+                             -explain flag and opens a file showing a detailed
+                             explanation of the diagnostic under the cursor.
+                             NOTE: Only works for Scala 3 sources.
 
                                                     *MetalsFindInDependencyJars*
 MetalsFindInDependencyJars   Used to find values in dependency jar files. Note
@@ -774,6 +821,11 @@ MetalsInfo                   Give info about the currently installed version
                                                                  *MetalsInstall*
 MetalsInstall                Install Metals. NOTE that behind the scenes this
                              calls the exact same function as |MetalsUpdate|.
+
+                                                             *MetalsNewJavaFile*
+MetalsNewJavaFile            Create a new Java file. This will produce a prompt
+                             for the user to choose what type of file they'd
+                             like and also prompts for a name.
 
                                                             *MetalsNewScalaFile*
 MetalsNewScalaFile           Create a new Scala file. This will produce a
@@ -819,6 +871,12 @@ MetalsResetChoice            ResetChoicePopup command allows you to reset a
                              E.g. If you choose to import workspace with sbt
                              you can decide to reset and change it again.
 
+                                                       *MetalsResetNotifications*
+MetalsResetNotifications     Reset all previously dismissed notifications so
+                             they appear again. For example, if you dismissed
+                             a build import prompt permanently, this will make
+                             it show up again.
+
                                                           *MetalsResetWorkspace*
 MetalsResetWorkspace         Fully clean the workspace and restart the build
                              server. When things seem to get borked and you
@@ -830,6 +888,13 @@ MetalsResetWorkspace         Fully clean the workspace and restart the build
 
                                                             *MetalsRestartBuild*
 MetalsRestartBuild           Manually restart the build server.
+
+                                              *MetalsRestartPresentationCompiler*
+MetalsRestartPresentationCompiler
+                             Restart the presentation compiler instances.
+                             Metals restarts the presentation compiler
+                             automatically after successful compilation, so
+                             this should rarely be needed.
 
                                                            *MetalsRestartServer*
 MetalsRestartServer          Restart the Metals server.
@@ -1004,12 +1069,24 @@ compile_clean()            Use to execute a |metals.compile-clean| command.
                                                                 *connect_build()*
 connect_build()            Use to execute a |metals.build-connect| command.
 
+                                                                  *copy_fqn()*
+copy_fqn()                 Copy the fully qualified name of the symbol under
+                           the cursor to the + register.
+
                                                         *copy_worksheet_output()*
 copy_worksheet_output()    Use to execute a |metals.copy-worksheet-output|
                            command.
 
                                                              *disconnect_build()*
 disconnect_build()         Use to execute a |metals.build-disconnect| command.
+
+                                              *disconnect_build_and_shutdown()*
+disconnect_build_and_shutdown()
+                           Use to execute a |metals.build-disconnect-and-shutdown|
+                           command.
+
+                                                           *explain_diagnostic()*
+explain_diagnostic()       Use to execute a |metals.explain-diagnostic| command.
 
                                                           *generate_bsp_config()*
 generate_bsp_config()      Use to execute a |metals.generate-bsp-config| command.
@@ -1163,6 +1240,9 @@ quick_worksheet()          Create a quick worksheet in your current dir with
                                                                  *reset_choice()*
 reset_choice()             Use to execute a |metals.reset-choice| command.
 
+                                                          *reset_notifications()*
+reset_notifications()      Use to execute a |metals.reset-notifications| command.
+
                                                               *reset_workspace()*
 reset_workspace()          Use to execute a |metals.reset-workspace| command.
 
@@ -1171,6 +1251,11 @@ restart_build_server()     Use to execute a |metals.build-restart| command.
 
                                                                *restart_metals()*
 restart_metals()           Restart the Metals server.
+
+                                              *restart_presentation_compiler()*
+restart_presentation_compiler()
+                           Use to execute a |metals.presentation-compiler-restart|
+                           command.
 
                                                                    *run_doctor()*
 run_doctor()               Use to execute a |metals.doctor-run| command.
@@ -1216,12 +1301,18 @@ show_tasty()               Show TASTy representation of the current file.
                                                                *start_ammonite()*
 start_ammonite()           Use to execute a |metals.ammonite-start| command.
 
+                                                              *start_scala_cli()*
+start_scala_cli()          Use to execute a |metals.scala-cli-start| command.
+
                                                                  *start_server()*
 start_server()             Start Metals server. Must be in a Scala or sbt file
                            in a workspace where Metals is not yet started.
 
                                                                 *stop_ammonite()*
 stop_ammonite()            Use to execute a |metals.ammonite-stop| command.
+
+                                                               *stop_scala_cli()*
+stop_scala_cli()           Use to execute a |metals.scala-cli-stop| command.
 
                                                        *super_method_hierarchy()*
 super_method_hierarchy()   Use to execute a |metals.super-method-hierarchy|
