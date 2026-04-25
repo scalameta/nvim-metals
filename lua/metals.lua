@@ -167,7 +167,13 @@ M.info = function()
   else
     table.insert(output, string.format("%s %s", loc_msg, conf.metals_bin()))
   end
+  if config then
+    table.insert(output, string.format("  - metals root dir: %s", config.root_dir))
+  else
+    table.insert(output, "  - metals config is nil")
+  end
   table.insert(output, "")
+
   table.insert(output, "## Helpful links")
   table.insert(output, "  - https://discord.gg/FaVDrJegEh")
   table.insert(output, "  - https://matrix.to/#/#scalameta:vim-users")
