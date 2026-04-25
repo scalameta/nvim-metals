@@ -6,6 +6,7 @@ local doctor = require("metals.doctor")
 local log = require("metals.log")
 local status = require("metals.status")
 local test_explorer = require("metals.test_explorer")
+local util = require("metals.util")
 
 local M = {}
 
@@ -47,7 +48,11 @@ end
 -- Implementation of the `metals/executeClientCommand` Metals LSP extension.
 -- - https://scalameta.org/metals/docs/integrations/new-editor#metalsexecuteclientcommand
 M["metals/executeClientCommand"] = function(_, result)
-  if result.command == "metals-goto-location" then
+  if result.command == "metals-echo-command" then
+    local metals_id = util.find_metals_client_id()
+    local client = vim.lsp.get_client_by_id(metals_id)
+    client:request("workspace/executeCommand", { command = result.arguments[1] })
+  elseif result.command == "metals-goto-location" then
     lsp.util.show_document(result.arguments[1], "utf-16", { focus = true })
   elseif result.command == "metals-doctor-run" then
     local args = fn.json_decode(result.arguments[1])

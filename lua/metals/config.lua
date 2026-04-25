@@ -108,7 +108,6 @@ local metals_init_options = {
 -- so they are just passed along.
 local valid_metals_settings = {
   "ammoniteJvmProperties",
-  "autoImportBuild",
   "automaticImportBuild",
   "bloopJvmProperties",
   "bloopSbtAlreadyInstalled",
@@ -136,6 +135,7 @@ local valid_metals_settings = {
   "sbtScript",
   "scalaCliLauncher",
   "scalafixConfigPath",
+  "scalafixLintEnabled",
   "scalafixRulesDependencies",
   "scalafmtConfigPath",
   "serverProperties",
@@ -145,8 +145,8 @@ local valid_metals_settings = {
   "shutdownBloopOnEditorClose",
   "startMcpServer",
   "superMethodLensesEnabled",
-  "superMethodLensesEnabled",
   "symbolPrefixes",
+  "targetBuildTool",
   "testUserInterface",
   "verboseCompilation",
   "worksheetCancelTimeout",

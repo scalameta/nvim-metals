@@ -186,7 +186,6 @@ All available settings:
 
 _ones that are sent and used by the server_
   * |ammoniteJvmProperties|
-  * |autoImportBuild|
   * |automaticImportBuild|
   * |bloopJvmProperties|
   * |bloopSbtAlreadyInstalled|
@@ -213,6 +212,7 @@ _ones that are sent and used by the server_
   * |sbtScript|
   * |scalaCliLauncher|
   * |scalafixConfigPath|
+  * |scalafixLintEnabled|
   * |scalafixRulesDependencies|
   * |scalafmtConfigPath|
   * |serverProperties|
@@ -220,6 +220,7 @@ _ones that are sent and used by the server_
   * |startMcpServer|
   * |superMethodLensesEnabled|
   * |symbolPrefixes|
+  * |targetBuildTool|
   * |testUserInterface|
   * |verboseCompilation|
   * |worksheetCancelTimeout|
@@ -243,18 +244,6 @@ property needs to be a separate item. >
   {"-Xmx1G", "-Xms100M"}
 <
 
-autoImportBuild                                                *autoImportBuild*
-
-Type: string ~
-Default: "off" ~
-
-Automatically import your build instead of receiving a prompt to ask you.
-
-"initial" means that your build will only be automatically be imported upon
-first opening a project.
-
-"all" means that your build will just always be automatically imported or
-reloaded upon detected changes.
 
 bloopSbtAlreadyInstalled                              *bloopSbtAlreadyInstalled*
 
@@ -387,12 +376,18 @@ Table of inlay hints to enable. >
   }
 <
 
-automaticImportBuild                                              *automaticImportBuild*
+automaticImportBuild                                      *automaticImportBuild*
 
 Type: string ~
 Default: "off" ~
 
-Alias for `autoImportBuild`. Accepts "off", "initial", or "all" to control automatic build import behavior.
+Automatically import your build instead of receiving a prompt to ask you.
+
+"initial" means that your build will only be automatically imported upon
+first opening a project.
+
+"all" means that your build will always be automatically imported or reloaded
+upon detected changes.
 
 customProjectRoot                                                *customProjectRoot*
 
@@ -491,6 +486,14 @@ Type: table ~
 Default: {} ~
 
 Optional table to configure prefixes for symbol kinds used by Metals when presenting symbols in UI elements.
+
+targetBuildTool                                                *targetBuildTool*
+
+Type: string ~
+Default: '' ~
+
+When multiple build tools are detected in your workspace, set this to the name
+of the build tool you prefer Metals to use (e.g. "sbt", "mill", "gradle").
 
 testUserInterface                                                  *testUserInterface*
 
@@ -606,6 +609,14 @@ Default: '' ~
 
 Optional custom path to the .scalafix.conf file. Should be an absolute path
 and use forward slashes / for file separators (even on Windows).
+
+scalafixLintEnabled                                        *scalafixLintEnabled*
+
+Type: boolean ~
+Default: false ~
+
+When enabled, Metals will run Scalafix lint rules and surface their diagnostics
+directly in the editor alongside compiler diagnostics.
 
 scalafixRulesDependencies                            *scalafixRulesDependencies*
 
