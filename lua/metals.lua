@@ -532,25 +532,39 @@ M.setup_dap = function()
 end
 
 M.toggle_setting = function(setting)
-  if not vim.tbl_contains(conf.valid_metals_settings, setting) then
-    log.warn_and_show(string.format("%s is not a valid metals settings. Doing nothing.", setting))
-  elseif not type(setting) == "boolean" then
-    log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
-  else
-    local message
-    local settings = conf.get_config_cache().settings.metals
-    if settings[setting] == nil then
-      message = string.format("Enabled %s", setting)
-      settings[setting] = true
-    else
-      local new_setting = not settings[setting]
-      message = string.format("%s is now %s", setting, new_setting)
-      settings[setting] = not settings[setting]
-    end
-    log.info_and_show(message)
+  local settings = conf.get_config_cache().settings.metals
 
-    lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { metals = settings } })
+  if not vim.tbl_contains(conf.valid_metals_settings, setting) then
+    log.warn_and_show(string.format("%s is not a valid metals setting. Doing nothing.", setting))
+    return
   end
+
+  local parts = vim.split(setting, ".", { plain = true })
+
+  local current = settings
+  for i = 1, #parts - 1 do
+    if not current[parts[i]] then
+      current[parts[i]] = {}
+    end
+    current = current[parts[i]]
+  end
+
+  local final_key = parts[#parts]
+  local current_value = current[final_key]
+
+  if current_value == nil then
+    log.info_and_show(string.format("Enabled %s", setting))
+    current[final_key] = true
+  elseif type(current_value) ~= "boolean" then
+    log.warn_and_show(string.format("%s is not a boolean setting. You can only toggle boolean settings", setting))
+    return
+  else
+    local new_value = not current_value
+    log.info_and_show(string.format("%s is now %s", setting, new_value))
+    current[final_key] = new_value
+  end
+
+  lsp.buf_notify(0, "workspace/didChangeConfiguration", { settings = { metals = settings } })
 end
 
 M.select_test_suite = function()
