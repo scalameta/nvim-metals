@@ -34,7 +34,7 @@ local scala_file_types = { "sbt", "scala" }
 -- yet.
 local function in_disabled_mode(config)
   local disabled = (config.settings and config.settings.disabledMode)
-    or (config.settings and config.settings.metals and config.settings.metals.disabledMode)
+      or (config.settings and config.settings.metals and config.settings.metals.disabledMode)
   return disabled
 end
 
@@ -156,6 +156,7 @@ local valid_metals_settings = {
   "testUserInterface",
   "verboseCompilation",
   "worksheetCancelTimeout",
+  "protobufLsp",
   "worksheetScreenWidth",
 }
 
@@ -255,10 +256,10 @@ local function validate_config(config, bufnr)
   if not config or type(config) ~= "table" then
     log.error_and_show(
       "Recieved: "
-        .. vim.inspect(config)
-        .. " as your config.\n"
-        .. "Your config must be a table.\n"
-        .. "If you are just using the default, just use {}"
+      .. vim.inspect(config)
+      .. " as your config.\n"
+      .. "Your config must be a table.\n"
+      .. "If you are just using the default, just use {}"
     )
     return
   end
@@ -336,16 +337,16 @@ local function validate_config(config, bufnr)
   -- custom patters to be passed in without doing the entire root_dir logic
   -- yourself.
   config.root_patterns = config.root_patterns
-    or {
-      "build.sbt",
-      "build.sc",
-      "build.mill",
-      "settings.gradle",
-      "pom.xml",
-      ".scala-build",
-      "bleep.yaml",
-      ".git",
-    }
+      or {
+        "build.sbt",
+        "build.sc",
+        "build.mill",
+        "settings.gradle",
+        "pom.xml",
+        ".scala-build",
+        "bleep.yaml",
+        ".git",
+      }
 
   local bufname = api.nvim_buf_get_name(bufnr)
 
@@ -383,11 +384,11 @@ local function validate_config(config, bufnr)
   local valid_java_opts = {}
   for _, opt in ipairs(java_opts) do
     if
-      not util.starts_with(opt, "-Xms")
-      and not util.starts_with(opt, "-Xmx")
-      and not util.starts_with(opt, "-Xss")
-      -- Do not alter stdout that we capture when using Coursier
-      and opt ~= "-XX:+PrintCommandLineFlags"
+        not util.starts_with(opt, "-Xms")
+        and not util.starts_with(opt, "-Xmx")
+        and not util.starts_with(opt, "-Xss")
+        -- Do not alter stdout that we capture when using Coursier
+        and opt ~= "-XX:+PrintCommandLineFlags"
     then
       table.insert(valid_java_opts, opt)
     end
