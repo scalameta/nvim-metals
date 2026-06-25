@@ -137,6 +137,7 @@ local valid_metals_settings = {
   "mavenScript",
   "mcpClient",
   "millScript",
+  "protobufLsp",
   "remoteLanguageServer",
   "sbtScript",
   "scalaCliLauncher",
