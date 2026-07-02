@@ -35,7 +35,7 @@ describe("install", function()
 
   it("should be able to install with a new 2.13 snapshot", function()
     local bare_config = require("metals.setup").bare_config()
-    bare_config.settings = { serverVersion = "1.6.6+21-e70ead3d-SNAPSHOT" }
+    bare_config.settings = { serverVersion = "1.6.7+117-0e01c3f6-SNAPSHOT" }
     config.validate_config(bare_config, vim.api.nvim_get_current_buf())
 
     eq(path.exists(metals_path), false)
