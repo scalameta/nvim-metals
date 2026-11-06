@@ -115,12 +115,14 @@ local function setup_dap(execute_command)
       local env = config.env or metals_dap_settings.env
       local envFile = config.envFile or metals_dap_settings.envFile
       local jvmOptions = config.jvmOptions or metals_dap_settings.jvmOptions
+      local cwd = config.cwd or metals_dap_settings.cwd
       arguments = {
         path = vim.uri_from_bufnr(0),
         args = args,
         jvmOptions = jvmOptions,
         env = env,
         envFile = envFile,
+        cwd = cwd,
       }
       if metals_dap_settings.mainClass then
         arguments.mainClass = metals_dap_settings.mainClass
